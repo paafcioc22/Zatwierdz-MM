@@ -16,15 +16,15 @@ namespace Zatwierdz_MM.Views
     // Learn more about making custom code visible in the Xamarin.Forms previewer
     // by visiting https://aka.ms/xamarinforms-previewer
     [DesignTimeVisible(false)]
-    public partial class ItemsPage : ContentPage
+    public partial class SkanujPage : ContentPage
     {
-        ItemsViewModel viewModel;
+        SkanujViewModel viewModel;
 
-        public ItemsPage()
+        public SkanujPage()
         {
             InitializeComponent();
 
-            BindingContext = viewModel = new ItemsViewModel();
+            BindingContext = viewModel = new SkanujViewModel();
         }
 
         async void OnItemSelected(object sender, EventArgs args)
@@ -43,5 +43,12 @@ namespace Zatwierdz_MM.Views
             if (viewModel.Items.Count == 0)
                 viewModel.IsBusy = true;
         }
+
+        //private async void Entry_Completed(object sender, EventArgs e)
+        //{
+            
+        //    await DisplayAlert("info", $"Dodano MM do listy : {entry_MM.Text}", "OK");
+        //    entry_MM.Text = "";
+        //}
     }
 }

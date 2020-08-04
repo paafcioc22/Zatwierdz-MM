@@ -31,10 +31,10 @@ namespace Zatwierdz_MM.Views
                 switch (id)
                 {
                     case (int)MenuItemType.Skanuj:
-                        MenuPages.Add(id, new NavigationPage(new ItemsPage()));
+                        MenuPages.Add(id, new NavigationPage(new SkanujPage()));
                         break;
                     case (int)MenuItemType.Lista:
-                        MenuPages.Add(id, new NavigationPage(new ItemsPage()));
+                        MenuPages.Add(id, new NavigationPage(new SkanujPage()));
                         break;
                     case (int)MenuItemType.About:
                         MenuPages.Add(id, new NavigationPage(new AboutPage()));

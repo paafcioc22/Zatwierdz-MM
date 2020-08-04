@@ -4,44 +4,23 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="Zatwierdz_MM.Views.ItemsPage"
+             x:Class="Zatwierdz_MM.Views.SkanujPage"
              Title="{Binding Title}"
              x:Name="BrowseItemsPage">
 
-    
 
-    <RefreshView IsRefreshing="{Binding IsBusy, Mode=TwoWay}" Command="{Binding LoadItemsCommand}">
-        <CollectionView x:Name="ItemsCollectionView"
-                ItemsSource="{Binding Items}">
-            <d:CollectionView.ItemsSource>
-                <x:Array Type="{x:Type x:String}">
-                    <x:String>First Item</x:String>
-                    <x:String>Second Item</x:String>
-                    <x:String>Third Item</x:String>
-                    <x:String>Fourth Item</x:String>
-                    <x:String>Fifth Item</x:String>
-                    <x:String>Sixth Item</x:String>
-                </x:Array>
-            </d:CollectionView.ItemsSource>
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <StackLayout Padding="10">
-                        <Label Text="{Binding Text}" 
-                                d:Text="{Binding .}"
-                                LineBreakMode="NoWrap" 
-                                Style="{DynamicResource ListItemTextStyle}" 
-                                FontSize="16" />
-                        <Label Text="{Binding Description}" 
-                                d:Text="Item descripton"
-                                LineBreakMode="NoWrap"
-                                Style="{DynamicResource ListItemDetailTextStyle}"
-                                FontSize="13" />
-                        <StackLayout.GestureRecognizers>
-                            <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="OnItemSelected"></TapGestureRecognizer>
-                        </StackLayout.GestureRecognizers>
-                    </StackLayout>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </RefreshView>
+
+    <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" BackgroundColor="Aqua">
+        <Frame VerticalOptions="CenterAndExpand">
+            <Entry Placeholder="Skanuj lub wprowadź"  FontSize="20" x:Name="entry_MM" 
+               HorizontalTextAlignment="Center" VerticalOptions="CenterAndExpand"
+               HorizontalOptions="CenterAndExpand" WidthRequest="300" HeightRequest="80"
+               Keyboard="Numeric"    ReturnCommand="{Binding InsertToBase}"  ReturnCommandParameter="{Binding InsertToBase, Source=entry_MM,}"
+                   >
+              
+            </Entry>
+        </Frame>
+         
+                
+    </StackLayout>
 </ContentPage>
