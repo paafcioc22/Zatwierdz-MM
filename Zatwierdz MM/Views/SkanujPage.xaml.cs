@@ -19,12 +19,19 @@ namespace Zatwierdz_MM.Views
     public partial class SkanujPage : ContentPage
     {
         SkanujViewModel viewModel;
-
+         
         public SkanujPage()
         {
             InitializeComponent();
 
             BindingContext = viewModel = new SkanujViewModel();
+            entry_MM.Completed += Entry_MM_Completed;
+           
+        }
+
+        private void Entry_MM_Completed(object sender, EventArgs e)
+        {
+            entry_MM.Focus();
         }
 
         async void OnItemSelected(object sender, EventArgs args)
@@ -39,9 +46,12 @@ namespace Zatwierdz_MM.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
+          //  Appearing += (object sender, System.EventArgs e) => entry_MM.Focus();
+            //kodean.ReturnCommand = new Command(() => ilosc.Focus());
 
             if (viewModel.Items.Count == 0)
                 viewModel.IsBusy = true;
+            //entry_MM.Focus();
         }
 
         //private async void Entry_Completed(object sender, EventArgs e)

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<discovery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/disco/">
+  <contractRef ref="http://serwer.szachownica.com.pl/cdnofflinesrv/cdnofflinesrv.asmx?wsdl" docRef="http://serwer.szachownica.com.pl/cdnofflinesrv/cdnofflinesrv.asmx" xmlns="http://schemas.xmlsoap.org/disco/scl/" />
+  <soap address="http://serwer.szachownica.com.pl/cdnofflinesrv/cdnofflinesrv.asmx" xmlns:q1="http://www.comarch.pl/cdn/Products/CDN XL/" binding="q1:CDNOffLineSrvSoap" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
+  <soap address="http://serwer.szachownica.com.pl/cdnofflinesrv/cdnofflinesrv.asmx" xmlns:q2="http://www.comarch.pl/cdn/Products/CDN XL/" binding="q2:CDNOffLineSrvSoap12" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
+</discovery>

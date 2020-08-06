@@ -15,9 +15,11 @@
             <Entry Placeholder="Skanuj lub wprowadź"  FontSize="20" x:Name="entry_MM" 
                HorizontalTextAlignment="Center" VerticalOptions="CenterAndExpand"
                HorizontalOptions="CenterAndExpand" WidthRequest="300" HeightRequest="80"
-               Keyboard="Numeric"    ReturnCommand="{Binding InsertToBase}"  ReturnCommandParameter="{Binding InsertToBase, Source=entry_MM,}"
-                   >
-              
+               Keyboard="Default" Text="{Binding NrMMki}"  
+                   ReturnCommand="{Binding InsertToBase}" 
+                   ReturnCommandParameter="{Binding Source={x:Reference entry_MM}, Path=Text}"
+                   
+                   > 
             </Entry>
         </Frame>
          

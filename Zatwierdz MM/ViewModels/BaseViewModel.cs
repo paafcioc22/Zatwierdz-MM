@@ -12,7 +12,8 @@ namespace Zatwierdz_MM.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
-        public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>();
+         
+        public IWebService DataStore => DependencyService.Get<IWebService>();
 
         bool isBusy = false;
         public bool IsBusy
@@ -26,6 +27,13 @@ namespace Zatwierdz_MM.ViewModels
         {
             get { return title; }
             set { SetProperty(ref title, value); }
+        }
+
+        string nrMMki = string.Empty;
+        public string NrMMki
+        {
+            get { return nrMMki; }
+            set { SetProperty(ref nrMMki, value); }
         }
 
         protected bool SetProperty<T>(ref T backingStore, T value,

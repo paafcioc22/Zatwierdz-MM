@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.comarch.pl/cdn/Products/CDN XL/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://www.comarch.pl/cdn/Products/CDN XL/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.comarch.pl/cdn/Products/CDN XL/">
+      <s:element name="ReceiveData">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="oddzialID" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ReceiveDataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ReceiveDataResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SendData">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="data" type="s:base64Binary" />
+            <s:element minOccurs="1" maxOccurs="1" name="oddzialID" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SendDataResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="ExecuteSQLCommand">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sqlCommand" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ExecuteSQLCommandResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ExecuteSQLCommandResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ExecuteSQLXmlCommand">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sqlCommand" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ExecuteSQLXmlCommandResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ExecuteSQLXmlCommandResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="ReceiveDataSoapIn">
+    <wsdl:part name="parameters" element="tns:ReceiveData" />
+  </wsdl:message>
+  <wsdl:message name="ReceiveDataSoapOut">
+    <wsdl:part name="parameters" element="tns:ReceiveDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="SendDataSoapIn">
+    <wsdl:part name="parameters" element="tns:SendData" />
+  </wsdl:message>
+  <wsdl:message name="SendDataSoapOut">
+    <wsdl:part name="parameters" element="tns:SendDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="ExecuteSQLCommandSoapIn">
+    <wsdl:part name="parameters" element="tns:ExecuteSQLCommand" />
+  </wsdl:message>
+  <wsdl:message name="ExecuteSQLCommandSoapOut">
+    <wsdl:part name="parameters" element="tns:ExecuteSQLCommandResponse" />
+  </wsdl:message>
+  <wsdl:message name="ExecuteSQLXmlCommandSoapIn">
+    <wsdl:part name="parameters" element="tns:ExecuteSQLXmlCommand" />
+  </wsdl:message>
+  <wsdl:message name="ExecuteSQLXmlCommandSoapOut">
+    <wsdl:part name="parameters" element="tns:ExecuteSQLXmlCommandResponse" />
+  </wsdl:message>
+  <wsdl:portType name="CDNOffLineSrvSoap">
+    <wsdl:operation name="ReceiveData">
+      <wsdl:input message="tns:ReceiveDataSoapIn" />
+      <wsdl:output message="tns:ReceiveDataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SendData">
+      <wsdl:input message="tns:SendDataSoapIn" />
+      <wsdl:output message="tns:SendDataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ExecuteSQLCommand">
+      <wsdl:input message="tns:ExecuteSQLCommandSoapIn" />
+      <wsdl:output message="tns:ExecuteSQLCommandSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ExecuteSQLXmlCommand">
+      <wsdl:input message="tns:ExecuteSQLXmlCommandSoapIn" />
+      <wsdl:output message="tns:ExecuteSQLXmlCommandSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CDNOffLineSrvSoap" type="tns:CDNOffLineSrvSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ReceiveData">
+      <soap:operation soapAction="http://www.comarch.pl/cdn/Products/CDN XL/ReceiveData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendData">
+      <soap:operation soapAction="http://www.comarch.pl/cdn/Products/CDN XL/SendData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExecuteSQLCommand">
+      <soap:operation soapAction="http://www.comarch.pl/cdn/Products/CDN XL/ExecuteSQLCommand" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExecuteSQLXmlCommand">
+      <soap:operation soapAction="http://www.comarch.pl/cdn/Products/CDN XL/ExecuteSQLXmlCommand" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="CDNOffLineSrvSoap12" type="tns:CDNOffLineSrvSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ReceiveData">
+      <soap12:operation soapAction="http://www.comarch.pl/cdn/Products/CDN XL/ReceiveData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendData">
+      <soap12:operation soapAction="http://www.comarch.pl/cdn/Products/CDN XL/SendData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExecuteSQLCommand">
+      <soap12:operation soapAction="http://www.comarch.pl/cdn/Products/CDN XL/ExecuteSQLCommand" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExecuteSQLXmlCommand">
+      <soap12:operation soapAction="http://www.comarch.pl/cdn/Products/CDN XL/ExecuteSQLXmlCommand" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="CDNOffLineSrv">
+    <wsdl:port name="CDNOffLineSrvSoap" binding="tns:CDNOffLineSrvSoap">
+      <soap:address location="http://serwer.szachownica.com.pl/cdnofflinesrv/cdnofflinesrv.asmx" />
+    </wsdl:port>
+    <wsdl:port name="CDNOffLineSrvSoap12" binding="tns:CDNOffLineSrvSoap12">
+      <soap12:address location="http://serwer.szachownica.com.pl/cdnofflinesrv/cdnofflinesrv.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

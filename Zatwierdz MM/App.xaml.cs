@@ -8,7 +8,7 @@ namespace Zatwierdz_MM
 {
     public partial class App : Application
     {
-
+        public static WebMenager TodoManager { get; set; }
         public App()
         {
             InitializeComponent();
