@@ -40,7 +40,7 @@ namespace Zatwierdz_MM.Views
         {
             base.OnAppearing();
 
-            if (zatwierdzonevm.Items.Count == 0)
+            //if (zatwierdzonevm.Items.Count == 0)
                 zatwierdzonevm.LoadItemsCommand.Execute(null);
         }
     }

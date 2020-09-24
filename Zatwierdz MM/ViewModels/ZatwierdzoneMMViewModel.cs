@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Xamarin.Forms;
 using Zatwierdz_MM.Models;
 
@@ -13,6 +15,7 @@ namespace Zatwierdz_MM.ViewModels
     {
         public ObservableCollection<DaneMM> Items { get; private set; }
         public Command LoadItemsCommand { get; set; }
+        private string _filter;
 
         public ZatwierdzoneMMViewModel()
         {
@@ -21,7 +24,33 @@ namespace Zatwierdz_MM.ViewModels
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
         }
 
-        async Task ExecuteLoadItemsCommand()
+        public string Filter
+        {
+            get { return _filter; }
+            set
+            {
+                SetProperty(ref _filter, value);
+                Search();
+            }
+        }
+
+
+        public  ICommand SearchCommand => new Command(Search);
+        async public void Search()
+        {
+            if (string.IsNullOrWhiteSpace(_filter))
+            {
+                 await ExecuteLoadItemsCommand();
+                //OrderList = GetOrders;// ItemData.Items;
+            }
+            else
+            {
+                await ExecuteLoadItemsCommand(_filter);
+            }
+
+        }
+
+        async Task ExecuteLoadItemsCommand(string filtr ="")
         {
             if (IsBusy)
                 return;
@@ -31,11 +60,25 @@ namespace Zatwierdz_MM.ViewModels
             try
             {
                 Items.Clear();
-                var items = await DataStore.GetItemsAsync(true);
-                foreach (var item in items)
+                var items = await App.TodoManager.GetItemsAsync();
+                if(!string.IsNullOrWhiteSpace(filtr))
                 {
-                    Items.Add(item);
+                    //var tmp = items.Where(c => c.Trn_NrDokumentu.ToString().Contains(filtr)).ToList();
+                    foreach (var item in items)
+                    {
+                      if(item.Trn_NrDokumentu.Contains(filtr.ToUpper()))
+                        Items.Add(item);
+                    }
+
                 }
+                else
+                {
+                    foreach (var item in items)
+                    {
+                        Items.Add(item);
+                    }
+                }
+               
             }
             catch (Exception ex)
             {
@@ -45,6 +88,12 @@ namespace Zatwierdz_MM.ViewModels
             {
                 IsBusy = false;
             }
+        }
+
+
+        public static ObservableCollection<T> Convert2<T>(IList<T> original)
+        {
+            return new ObservableCollection<T>(original);
         }
     }
 }

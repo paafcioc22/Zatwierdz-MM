@@ -27,9 +27,9 @@ namespace Zatwierdz_MM.Services
         }
 
 
-        public Task<IEnumerable<DaneMM>> GetItemsAsync(bool forceRefresh = false)
+        public Task<IEnumerable<DaneMM>> GetItemsAsync(string filtr="")
         {
-            return soapService.GetItemsAsync(false);
+            return soapService.GetItemsAsync();
         }
        
 

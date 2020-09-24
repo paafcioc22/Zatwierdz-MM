@@ -12,9 +12,14 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Xamarin.Forms;
+using Zatwierdz_MM.Droid;
 using Zatwierdz_MM.Models;
 using Zatwierdz_MM.Services;
 
+
+
+[assembly: Dependency(typeof(WebServiceSzacho))]
 namespace Zatwierdz_MM.Droid
 {
     public class WebServiceSzacho : IWebService
@@ -28,11 +33,22 @@ namespace Zatwierdz_MM.Droid
             client = new WebSzacho.CDNOffLineSrv();
         }
 
-        public async Task<IEnumerable<DaneMM>> GetItemsAsync(bool forceRefresh = false)
+
+        public void ShowLong(string message)
+        {
+            Android.Widget.Toast.MakeText(Android.App.Application.Context, message, ToastLength.Long).Show();
+        }
+
+
+        public async Task<IEnumerable<DaneMM>> GetItemsAsync(string filtr = "")
         {
             items = new List<DaneMM>();
 
-            var query = $@"cdn.PC_WykonajSelect N'select * from cdn.pc_zatwierdzonemm '";
+            var query = $@"cdn.PC_WykonajSelect N'select mm.Trn_GidNumer,mm.Trn_GidTyp,mm.Trn_NrDokumentu,mm.Trn_DataSkan,mm.Trn_DataZatwierdz,mm.Trn_StanMM,trn.TrN_Stan Trn_Stan , mag_kod DclMagKod 
+                        from cdn.PC_ZatwierdzoneMM mm
+                        join cdn.tranag trn on trn.TrN_GIDNumer=mm.Trn_GidNumer and trn.TrN_GIDTyp=mm.Trn_GidTyp
+                        join cdn.Magazyny on trn.TrN_MagDNumer = MAG_GIDNumer
+                        order by mm.Trn_DataSkan desc '";
 
             var respone = client.ExecuteSQLCommand(query);
 
@@ -46,8 +62,26 @@ namespace Zatwierdz_MM.Droid
             List<DaneMM> mm = (List<DaneMM>)serializer.Deserialize(reader);
 
 
+
+
             foreach (var i in mm)
             {
+                i.Trn_DataSkan ="Data skanowania : "+ DateTimeOffset.Parse(i.Trn_DataSkan).ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
+
+                switch (i.Trn_Stan)
+                {
+                    case "1":
+                        i.Trn_Stan = "Bufor";
+                        break;
+
+                    case "5":
+                        i.Trn_Stan = "Zatwierdzona";
+                        break;
+
+                    default:
+                        break;
+                }
+
                 items.Add(i);
             }
 
@@ -86,7 +120,7 @@ namespace Zatwierdz_MM.Droid
                 daneMM = new DaneMM();
 
                 var respone = client.ExecuteSQLCommand(query);
-
+               
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.LoadXml(respone);
 
@@ -100,32 +134,41 @@ namespace Zatwierdz_MM.Droid
 
                 try
                 {
-                    if (mm.Count > 0)
+                    if (mm.Count > 0 )
                     {
-                        daneMM.Trn_NrDokumentu = mm[0].Trn_NrDokumentu;
-                        daneMM.Trn_Gidnumer = mm[0].Trn_Gidnumer;
-                        daneMM.Trn_Gidtyp = mm[0].Trn_Gidtyp;
-                        daneMM.TrN_Stan = mm[0].TrN_Stan;
+                        if (mm[0].Trn_GidNumer != null)
+                        {
 
-                        var InsertString = $@"cdn.PC_WykonajSelect N' 
-                            if not exists(select *  from cdn.pc_zatwierdzonemm where trn_gidnumer={daneMM.Trn_Gidnumer})
-                        begin                            
-                        insert into cdn.pc_zatwierdzonemm 
-                                            values ({daneMM.Trn_Gidnumer},
-                                            {daneMM.Trn_Gidtyp},''{daneMM.Trn_NrDokumentu}'',{daneMM.TrN_Stan},null,null)
-                                            select ''OK'' as statuss
+                            daneMM = mm[0];
+                            if(daneMM.Trn_Stan=="5")
+                            {
+                                daneMM.Trn_NrDokumentu = "zatwierdzona";
+                            }
+                            else
+                            {
+                                var czas = DateTime.Now.ToLocalTime();//.ToString("yyyy-MM-dd hh:mm:ss.000");
+                                var InsertString = $@"cdn.PC_WykonajSelect N' 
+                                if not exists(select *  from cdn.pc_zatwierdzonemm where trn_gidnumer={daneMM.Trn_GidNumer})
+                            begin                            
+                            insert into cdn.pc_zatwierdzonemm 
+                                                values ({daneMM.Trn_GidNumer},
+                                                {daneMM.Trn_GidTyp},''{daneMM.Trn_NrDokumentu}'',{daneMM.Trn_Stan},''{czas}'',null,0)
+                                                select ''OK'' as statuss
 
-                        end else
-                        begin
-                            select ''not'' as statuss
-                        end'
-                        ";
-                       
-                        respone = client.ExecuteSQLCommand(InsertString);
-                        respone = respone.Replace("<ROOT>\r\n  <Table>\r\n    <statuss>", "").Replace("</statuss>\r\n  </Table>\r\n</ROOT>", "");
+                            end else
+                            begin
+                                select ''not'' as statuss
+                            end'
+                            ";
 
-                        if (respone == "not")
-                            daneMM.Trn_NrDokumentu = "not";
+                                respone = client.ExecuteSQLCommand(InsertString);
+                                respone = respone.Replace("<ROOT>\r\n  <Table>\r\n    <statuss>", "").Replace("</statuss>\r\n  </Table>\r\n</ROOT>", "");
+
+                                if (respone == "not")
+                                    daneMM.Trn_NrDokumentu = "not";
+                            }
+                            
+                        }
                     }
 
                 }

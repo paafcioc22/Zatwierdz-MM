@@ -9,8 +9,8 @@ namespace Zatwierdz_MM.Services
     {
         Task<string> InsertMM(DaneMM item); 
         Task<DaneMM> SelectMM(string query);
-
-        Task<IEnumerable<DaneMM>> GetItemsAsync(bool forceRefresh = false);
+        Task<IEnumerable<DaneMM>> GetItemsAsync(string filtr = "");
+        void ShowLong(string message);
 
     }
 }

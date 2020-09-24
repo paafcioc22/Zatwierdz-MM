@@ -6,7 +6,6 @@ using System.Windows.Input;
 using Xamarin.Forms;
 
 using Zatwierdz_MM.Models;
-using Zatwierdz_MM.Views;
 
 namespace Zatwierdz_MM.ViewModels
 {
@@ -16,6 +15,10 @@ namespace Zatwierdz_MM.ViewModels
         public Command LoadItemsCommand { get; set; }
         public ICommand InsertToBase { get; set; }
 
+        //ZXing.Mobile.MobileBarcodeScanningOptions opts;
+        //ZXingScannerPage scanPage;
+        //ZXingScannerView zxing;
+
         public SkanujViewModel()
         {
             Title = "Skanuj";
@@ -24,39 +27,63 @@ namespace Zatwierdz_MM.ViewModels
             InsertToBase = new Command<string>(async (string query) => await ExecIsartToBase(query));
           
            
-    }
+        }
 
          
 
-        async Task ExecIsartToBase(object nrmmki)
+        async Task ExecIsartToBase(string nrmmki)
         {
             //await Application.Current.MainPage.DisplayAlert("info",$"Dodano do listy {nrmmki}", "OK");
 
             var select = $@"cdn.PC_WykonajSelect N'
-                  declare @nrdok as varchar(33)  
-                  set @nrdok=''{nrmmki}''
-                  set @nrdok=substring(@nrdok, patindex(''%[/0]%'',@nrdok)+1, 33)  
-                  set @nrdok=substring(@nrdok, patindex(''%[^0]%'',@nrdok), 33)  
-                  set @nrdok=''mmw-''+@nrdok  
-                  select mmp.trn_gidnumer Trn_Gidnumer,mmp.TrN_GIDTyp Trn_Gidtyp,mmp.TrN_Stan  
+                  
+                     	declare @nrdok as varchar(13)  , @rok varchar(4),@seria varchar(4), @string as varchar(33)
+					set @string=''{nrmmki}''
+					set @string=substring(@string, patindex(''%[/0]%'',@string)+1, 30) 			 
+					set @string=substring(@string, patindex(''%[^0]%'',@string), 30) 				 
+					set @rok=right(@string,4)			 
+					set @nrdok=substring(@string, 1,patindex(''%[/]%'',@string)-1 ) 			 
+					set @seria=replace(REPLACE(REPLACE(@string,@nrdok,''''),@rok,''''),''/'','''')
+ 
+
+				  if (ISNUMERIC(@nrdok)=1 and ISNUMERIC(@rok)=1	 )
+				begin
+
+				  select mmp.trn_gidnumer Trn_GidNumer,mmp.TrN_GIDTyp Trn_GidTyp,mmp.Trn_Stan  
                     ,cdn.nazwaobiektu(mmp.trn_gidtyp, mmp.trn_gidnumer,0,2)Trn_NrDokumentu
-                    from cdn.tranag mmw   
+                  from cdn.tranag mmw   
                   join cdn.tranag mmp on mmp.trn_zwrnumer =mmw.trn_GIDNumer   
-                  where mmw.TrN_GIDTyp = 1603  and mmw.TrN_DokumentObcy like   @nrdok'              
+                  where 
+				  mmw.TrN_GIDTyp = 1603 and 
+				  mmw.TrN_TrNNumer=@nrdok and 
+				  mmw.TrN_TrNSeria=@seria and
+				  mmw.TrN_TrNRok=@rok
+				  if @@ROWCOUNT=0 
+					begin 
+						select ''brak dokumnetu'' statuss
+					end	
+				end
+				else
+					select ''błędny ciąg'' statuss'              
         ";
 
             var mmka = await App.TodoManager.GetDataFromWeb(select);
-            if(mmka.Trn_NrDokumentu!="not")
-                await Application.Current.MainPage.DisplayAlert("info",$"Dodano do listy {mmka.Trn_NrDokumentu}", "OK");
-            else
+            if(mmka.Trn_NrDokumentu!="not" &&!string.IsNullOrEmpty(mmka.Trn_NrDokumentu)&&mmka.Trn_NrDokumentu!= "zatwierdzona")
+                DependencyService.Get<Services.IWebService>().ShowLong($"Dodano do listy {mmka.Trn_NrDokumentu}");
+            else if(string.IsNullOrEmpty(mmka.Trn_NrDokumentu))
+                await Application.Current.MainPage.DisplayAlert("info", $"Brak dokumentu", "OK");
+            else if(mmka.Trn_NrDokumentu == "zatwierdzona")
+                await Application.Current.MainPage.DisplayAlert("info", $"Dokument jest już zatwierdzony", "OK");
+            else 
                 await Application.Current.MainPage.DisplayAlert("info", $"Nie udał się dodać pozycji", "OK");
 
 
             NrMMki = "";
-            //InsertToBase = new Command<View>((view) =>
-            //{
-            //    view?.Focus();
-            //} ) ;
+            //entry_MM.Focus();
+            InsertToBase = new Command<View>((view) =>
+            {
+                view?.Focus();
+            });
         }
 
         async Task ExecuteLoadItemsCommand()

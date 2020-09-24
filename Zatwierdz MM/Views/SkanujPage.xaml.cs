@@ -10,6 +10,7 @@ using Xamarin.Forms.Xaml;
 using Zatwierdz_MM.Models;
 using Zatwierdz_MM.Views;
 using Zatwierdz_MM.ViewModels;
+using System.Threading;
 
 namespace Zatwierdz_MM.Views
 {
@@ -29,8 +30,10 @@ namespace Zatwierdz_MM.Views
            
         }
 
-        private void Entry_MM_Completed(object sender, EventArgs e)
+        private async void Entry_MM_Completed(object sender, EventArgs e)
         {
+            entry_MM.Unfocus();
+            await Task.Delay(5000);
             entry_MM.Focus();
         }
 
