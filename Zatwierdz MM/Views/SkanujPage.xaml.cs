@@ -32,9 +32,17 @@ namespace Zatwierdz_MM.Views
 
         private async void Entry_MM_Completed(object sender, EventArgs e)
         {
-            entry_MM.Unfocus();
-            await Task.Delay(5000);
-            entry_MM.Focus();
+            try
+            {
+                entry_MM.Unfocus();
+                await Task.Delay(5000);
+                entry_MM.Focus();
+            }
+            catch (Exception s)
+            {
+
+                await DisplayAlert("Bład", s.Message, "OK");
+            }
         }
 
         async void OnItemSelected(object sender, EventArgs args)

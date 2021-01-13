@@ -24,18 +24,20 @@ namespace Zatwierdz_MM.ViewModels
             Title = "Skanuj";
             Items = new ObservableCollection<Item>();
           //  LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
-            InsertToBase = new Command<string>(async (string query) => await ExecIsartToBase(query));
+            InsertToBase = new Command<string>(async (string query) => await ExecInsertToBase(query));
           
            
         }
 
          
 
-        async Task ExecIsartToBase(string nrmmki)
+        async Task ExecInsertToBase(string nrmmki)
         {
             //await Application.Current.MainPage.DisplayAlert("info",$"Dodano do listy {nrmmki}", "OK");
+            try
+            {
 
-            var select = $@"cdn.PC_WykonajSelect N'
+                var select = $@"cdn.PC_WykonajSelect N'
                   
                      	declare @nrdok as varchar(13)  , @rok varchar(4),@seria varchar(4), @string as varchar(33)
 					set @string=''{nrmmki}''
@@ -67,23 +69,29 @@ namespace Zatwierdz_MM.ViewModels
 					select ''błędny ciąg'' statuss'              
         ";
 
-            var mmka = await App.TodoManager.GetDataFromWeb(select);
-            if(mmka.Trn_NrDokumentu!="not" &&!string.IsNullOrEmpty(mmka.Trn_NrDokumentu)&&mmka.Trn_NrDokumentu!= "zatwierdzona")
-                DependencyService.Get<Services.IWebService>().ShowLong($"Dodano do listy {mmka.Trn_NrDokumentu}");
-            else if(string.IsNullOrEmpty(mmka.Trn_NrDokumentu))
-                await Application.Current.MainPage.DisplayAlert("info", $"Brak dokumentu", "OK");
-            else if(mmka.Trn_NrDokumentu == "zatwierdzona")
-                await Application.Current.MainPage.DisplayAlert("info", $"Dokument jest już zatwierdzony", "OK");
-            else 
-                await Application.Current.MainPage.DisplayAlert("info", $"Nie udał się dodać pozycji", "OK");
+                var mmka = await App.TodoManager.GetDataFromWeb(select);
+                if (mmka.Trn_NrDokumentu != "not" && !string.IsNullOrEmpty(mmka.Trn_NrDokumentu) && mmka.Trn_NrDokumentu != "zatwierdzona")
+                    DependencyService.Get<Services.IWebService>().ShowLong($"Dodano do listy {mmka.Trn_NrDokumentu}");
+                else if (string.IsNullOrEmpty(mmka.Trn_NrDokumentu))
+                    await Application.Current.MainPage.DisplayAlert("info", $"Brak dokumentu", "OK");
+                else if (mmka.Trn_NrDokumentu == "zatwierdzona")
+                    await Application.Current.MainPage.DisplayAlert("info", $"Dokument jest już zatwierdzony", "OK");
+                else
+                    await Application.Current.MainPage.DisplayAlert("info", $"Nie udał się dodać pozycji", "OK");
 
 
-            NrMMki = "";
-            //entry_MM.Focus();
-            InsertToBase = new Command<View>((view) =>
+                NrMMki = "";
+                //entry_MM.Focus();
+                InsertToBase = new Command<View>((view) =>
+                {
+                    view?.Focus();
+                });
+            }
+            catch (Exception s)
             {
-                view?.Focus();
-            });
+                throw;
+               
+            }
         }
 
         async Task ExecuteLoadItemsCommand()

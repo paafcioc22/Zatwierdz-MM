@@ -74,6 +74,10 @@ namespace Zatwierdz_MM.Droid
                         i.Trn_Stan = "Bufor";
                         break;
 
+                    case "2":
+                        i.Trn_Stan = "Bufor";
+                        break;
+
                     case "5":
                         i.Trn_Stan = "Zatwierdzona";
                         break;
@@ -147,12 +151,16 @@ namespace Zatwierdz_MM.Droid
                             else
                             {
                                 var czas = DateTime.Now.ToLocalTime();//.ToString("yyyy-MM-dd hh:mm:ss.000");
+
+
+                                //.ToString("yyyy-MM-dd HH:mm:ss")
+
                                 var InsertString = $@"cdn.PC_WykonajSelect N' 
                                 if not exists(select *  from cdn.pc_zatwierdzonemm where trn_gidnumer={daneMM.Trn_GidNumer})
                             begin                            
                             insert into cdn.pc_zatwierdzonemm 
                                                 values ({daneMM.Trn_GidNumer},
-                                                {daneMM.Trn_GidTyp},''{daneMM.Trn_NrDokumentu}'',{daneMM.Trn_Stan},''{czas}'',null,0)
+                                                {daneMM.Trn_GidTyp},''{daneMM.Trn_NrDokumentu}'',{daneMM.Trn_Stan},''{czas.ToString("yyyy-MM-dd HH:mm:ss")}'',null,0)
                                                 select ''OK'' as statuss
 
                             end else

@@ -10,7 +10,7 @@ using Zatwierdz_MM.Services;
 
 namespace Zatwierdz_MM.Droid
 {
-    [Activity(Label = "Zatwierdz_MM", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(Label = "Zatwierdz_MM", Icon = "@mipmap/skanerICO", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
