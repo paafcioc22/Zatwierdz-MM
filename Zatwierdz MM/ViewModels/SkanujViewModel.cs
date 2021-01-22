@@ -31,22 +31,35 @@ namespace Zatwierdz_MM.ViewModels
 
          
 
-        async Task ExecInsertToBase(string nrmmki)
+        public async Task ExecInsertToBase(string nrmmki)
         {
             //await Application.Current.MainPage.DisplayAlert("info",$"Dodano do listy {nrmmki}", "OK");
+
+//            --declare @nrdok as varchar(13)  , @rok varchar(4),@seria varchar(4), @string as varchar(33)
+//             --set @string = ''{ nrmmki}
+//            ''
+//--set @string = substring(@string, patindex('' %[/ 0] % '', @string) + 1, 30)
+//--set @string = substring(@string, patindex('' %[^0] % '', @string), 30)
+//--set @rok = right(@string, 4)
+//--set @nrdok = substring(@string, 1, patindex('' %[/] % '', @string) - 1)
+//--set @seria = replace(REPLACE(REPLACE(@string, @nrdok, ''''), @rok, ''''), '' / '', '''')
+
+
             try
             {
 
-                var select = $@"cdn.PC_WykonajSelect N'
-                  
-                     	declare @nrdok as varchar(13)  , @rok varchar(4),@seria varchar(4), @string as varchar(33)
-					set @string=''{nrmmki}''
-					set @string=substring(@string, patindex(''%[/0]%'',@string)+1, 30) 			 
-					set @string=substring(@string, patindex(''%[^0]%'',@string), 30) 				 
-					set @rok=right(@string,4)			 
-					set @nrdok=substring(@string, 1,patindex(''%[/]%'',@string)-1 ) 			 
-					set @seria=replace(REPLACE(REPLACE(@string,@nrdok,''''),@rok,''''),''/'','''')
+                var select = $@"cdn.PC_WykonajSelect N' 
+                declare @nrdok as int  , @rok varchar(4)  , @seria varchar(4)  
+		        	 
+			set @nrdok=PARSENAME(REPLACE(''{nrmmki}'',''/'',''.''), 3) 
+			set @seria=PARSENAME(REPLACE(''{nrmmki}'',''/'',''.''), 2) 
+			set @rok=PARSENAME(REPLACE(''{nrmmki}'',''/'',''.''), 1) 
  
+			if(ISNUMERIC(@seria)=1 )
+				begin
+					set @rok=PARSENAME(REPLACE(''{nrmmki}'',''/'',''.''), 2)  
+					set @seria=PARSENAME(REPLACE(''{nrmmki}'',''/'',''.''), 1) 
+				end 
 
 				  if (ISNUMERIC(@nrdok)=1 and ISNUMERIC(@rok)=1	 )
 				begin
@@ -77,7 +90,7 @@ namespace Zatwierdz_MM.ViewModels
                 else if (mmka.Trn_NrDokumentu == "zatwierdzona")
                     await Application.Current.MainPage.DisplayAlert("info", $"Dokument jest już zatwierdzony", "OK");
                 else
-                    await Application.Current.MainPage.DisplayAlert("info", $"Nie udał się dodać pozycji", "OK");
+                    await Application.Current.MainPage.DisplayAlert("info", $"Nie udał się dodać pozycji- paczka już zeskanowana?", "OK");
 
 
                 NrMMki = "";

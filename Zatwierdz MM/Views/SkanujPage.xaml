@@ -22,7 +22,7 @@
                    > 
             </Entry>
         </Frame>
-         
-                
+
+        <Button Text="Skanuj aparatem" Clicked="Button_Clicked" HeightRequest="80"/>
     </StackLayout>
 </ContentPage>
