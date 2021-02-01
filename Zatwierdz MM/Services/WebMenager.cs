@@ -31,8 +31,12 @@ namespace Zatwierdz_MM.Services
         {
             return soapService.GetItemsAsync();
         }
-       
 
+        public Task<IList<T>> PobierzDaneZWeb<T>(string query)
+        {
+            return soapService.PobierzDaneZWeb<T>(query);
+        }
     }
-        
 }
+        
+

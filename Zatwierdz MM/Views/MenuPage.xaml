@@ -28,6 +28,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <Label x:Name="wersja" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center" FontSize="18"/>
     </StackLayout>
 
 </ContentPage>

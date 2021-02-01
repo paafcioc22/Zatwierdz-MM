@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -33,22 +34,104 @@ namespace Zatwierdz_MM.ViewModels
 
         public async Task ExecInsertToBase(string nrmmki)
         {
-            //await Application.Current.MainPage.DisplayAlert("info",$"Dodano do listy {nrmmki}", "OK");
-
-//            --declare @nrdok as varchar(13)  , @rok varchar(4),@seria varchar(4), @string as varchar(33)
-//             --set @string = ''{ nrmmki}
-//            ''
-//--set @string = substring(@string, patindex('' %[/ 0] % '', @string) + 1, 30)
-//--set @string = substring(@string, patindex('' %[^0] % '', @string), 30)
-//--set @rok = right(@string, 4)
-//--set @nrdok = substring(@string, 1, patindex('' %[/] % '', @string) - 1)
-//--set @seria = replace(REPLACE(REPLACE(@string, @nrdok, ''''), @rok, ''''), '' / '', '''')
-
-
+ 
+             
             try
             {
 
-                var select = $@"cdn.PC_WykonajSelect N' 
+                if (nrmmki.IndexOf("/") > 0)
+                {
+                    var select = GetDataMMString(nrmmki);
+                     
+
+                    var mmka = await App.TodoManager.GetDataFromWeb(select);
+                    if (mmka.Trn_NrDokumentu != "not" && !string.IsNullOrEmpty(mmka.Trn_NrDokumentu) && mmka.Trn_NrDokumentu != "zatwierdzona")
+                        DependencyService.Get<Services.IWebService>().ShowLong($"Dodano do listy {mmka.Trn_NrDokumentu}");
+                    else if (string.IsNullOrEmpty(mmka.Trn_NrDokumentu))
+                        await Application.Current.MainPage.DisplayAlert("info", $"Brak dokumentu", "OK");
+                    else if (mmka.Trn_NrDokumentu == "zatwierdzona")
+                        await Application.Current.MainPage.DisplayAlert("info", $"Dokument jest już zatwierdzony", "OK");
+                    else
+                        await Application.Current.MainPage.DisplayAlert("info", $"Nie udał się dodać pozycji- paczka już zeskanowana?", "OK");
+
+
+                
+                }
+                else
+                {
+                    var IsScanBeforeSql = $@"cdn.PC_WykonajSelect N' 
+                     select * from cdn.PC_ZatwierdzoneMM
+                     where Fmm_NrlistuPaczka=''{nrmmki}''  '";
+
+                    var IsScanBefore = await App.TodoManager.PobierzDaneZWeb<DaneMM>(IsScanBeforeSql);
+
+                    if (IsScanBefore.Count == 0)
+                    {
+                        string query = $@"cdn.PC_WykonajSelect N' select * from cdn.PC_FedexMM
+					    where Fmm_NrPaczki=''{nrmmki}'' order by Fmm_NazwaPaczki'";
+
+                        var fedex = await App.TodoManager.PobierzDaneZWeb<FedexPaczka>(query);
+
+                        if (fedex.Count > 0)
+                        {
+
+                            var mmki = new List<string>();
+
+                            foreach (var i in fedex)
+                            {
+                                var select = GetDataMMString(i.Fmm_NazwaPaczki, i.Fmm_NrListu, i.Fmm_NrPaczki);
+
+                                mmki.Add(i.Fmm_NazwaPaczki);
+                                mmki.Sort((s1, s2) => s1.CompareTo(s2));
+
+                                var mmka = await App.TodoManager.GetDataFromWeb(select);
+                                if (mmka.Trn_NrDokumentu != "not" && !string.IsNullOrEmpty(mmka.Trn_NrDokumentu) && mmka.Trn_NrDokumentu != "zatwierdzona")
+                                    DependencyService.Get<Services.IWebService>().ShowLong($"Dodano do listy {mmka.Trn_NrDokumentu}");
+                                else if (string.IsNullOrEmpty(mmka.Trn_NrDokumentu))
+                                    await Application.Current.MainPage.DisplayAlert("info", $"Brak dokumentu", "OK");
+                                else if (mmka.Trn_NrDokumentu == "zatwierdzona")
+                                    await Application.Current.MainPage.DisplayAlert("info", $"Dokument jest już zatwierdzony", "OK");
+                                else
+                                    await Application.Current.MainPage.DisplayAlert("info", $"Nie udał się dodać pozycji- paczka już zeskanowana?", "OK");
+                            }
+                            if (fedex.Count > 1)
+                                await Application.Current.MainPage.DisplayActionSheet($"Mmki w paczce {fedex[0].Fmm_NrPaczki}:", "OK", null, mmki.ToArray());
+                        }
+                        else
+                        {
+                            await Application.Current.MainPage.DisplayAlert("info", $"Nie znaleziono nr fedex lub nie zawiera MM", "OK");
+                        }
+                    }
+                    else
+                    {
+                        await Application.Current.MainPage.DisplayAlert("info", $"Paczka była już skanowana", "OK");
+                    }
+                    
+                }
+
+
+                NrMMki = "";
+                //entry_MM.Focus();
+                InsertToBase = new Command<View>((view) =>
+                {
+                    view?.Focus();
+                });
+
+            }
+            catch (Exception s)
+            {
+                throw;
+               
+            }
+        }
+
+
+        string GetDataMMString(string nrmmki, string fmm_nrlist="",string fmm_nrpaczki="")
+        {
+
+            var addfedex = string.IsNullOrEmpty(fmm_nrlist) ? "" : $" ,''{fmm_nrlist}'' Fmm_NrListu, ''{fmm_nrpaczki}'' Fmm_NrlistuPaczka ";
+
+            var select = $@"cdn.PC_WykonajSelect N' 
                 declare @nrdok as int  , @rok varchar(4)  , @seria varchar(4)  
 		        	 
 			set @nrdok=PARSENAME(REPLACE(''{nrmmki}'',''/'',''.''), 3) 
@@ -65,7 +148,7 @@ namespace Zatwierdz_MM.ViewModels
 				begin
 
 				  select mmp.trn_gidnumer Trn_GidNumer,mmp.TrN_GIDTyp Trn_GidTyp,mmp.Trn_Stan  
-                    ,cdn.nazwaobiektu(mmp.trn_gidtyp, mmp.trn_gidnumer,0,2)Trn_NrDokumentu
+                    ,cdn.nazwaobiektu(mmp.trn_gidtyp, mmp.trn_gidnumer,0,2)Trn_NrDokumentu {addfedex}
                   from cdn.tranag mmw   
                   join cdn.tranag mmp on mmp.trn_zwrnumer =mmw.trn_GIDNumer   
                   where 
@@ -80,31 +163,9 @@ namespace Zatwierdz_MM.ViewModels
 				end
 				else
 					select ''błędny ciąg'' statuss'              
-        ";
+                ";
 
-                var mmka = await App.TodoManager.GetDataFromWeb(select);
-                if (mmka.Trn_NrDokumentu != "not" && !string.IsNullOrEmpty(mmka.Trn_NrDokumentu) && mmka.Trn_NrDokumentu != "zatwierdzona")
-                    DependencyService.Get<Services.IWebService>().ShowLong($"Dodano do listy {mmka.Trn_NrDokumentu}");
-                else if (string.IsNullOrEmpty(mmka.Trn_NrDokumentu))
-                    await Application.Current.MainPage.DisplayAlert("info", $"Brak dokumentu", "OK");
-                else if (mmka.Trn_NrDokumentu == "zatwierdzona")
-                    await Application.Current.MainPage.DisplayAlert("info", $"Dokument jest już zatwierdzony", "OK");
-                else
-                    await Application.Current.MainPage.DisplayAlert("info", $"Nie udał się dodać pozycji- paczka już zeskanowana?", "OK");
-
-
-                NrMMki = "";
-                //entry_MM.Focus();
-                InsertToBase = new Command<View>((view) =>
-                {
-                    view?.Focus();
-                });
-            }
-            catch (Exception s)
-            {
-                throw;
-               
-            }
+            return select;
         }
 
         async Task ExecuteLoadItemsCommand()

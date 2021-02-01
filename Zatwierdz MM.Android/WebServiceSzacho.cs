@@ -25,7 +25,7 @@ namespace Zatwierdz_MM.Droid
     public class WebServiceSzacho : IWebService
     {
         public WebSzacho.CDNOffLineSrv client;
-        private  List<DaneMM> items;
+        private List<DaneMM> items;
         DaneMM daneMM;
         string odp;
         public WebServiceSzacho()
@@ -36,7 +36,7 @@ namespace Zatwierdz_MM.Droid
 
         public void ShowLong(string message)
         {
-            Android.Widget.Toast.MakeText(Android.App.Application.Context, message, ToastLength.Long).Show();
+            Android.Widget.Toast.MakeText(Android.App.Application.Context, message, ToastLength.Short).Show();
         }
 
 
@@ -66,7 +66,7 @@ namespace Zatwierdz_MM.Droid
 
             foreach (var i in mm)
             {
-                i.Trn_DataSkan ="Data skanowania : "+ DateTimeOffset.Parse(i.Trn_DataSkan).ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
+                i.Trn_DataSkan = "Data skanowania : " + DateTimeOffset.Parse(i.Trn_DataSkan).ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
 
                 switch (i.Trn_Stan)
                 {
@@ -124,7 +124,7 @@ namespace Zatwierdz_MM.Droid
                 daneMM = new DaneMM();
 
                 var respone = client.ExecuteSQLCommand(query);
-               
+
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.LoadXml(respone);
 
@@ -138,13 +138,13 @@ namespace Zatwierdz_MM.Droid
 
                 try
                 {
-                    if (mm.Count > 0 )
+                    if (mm.Count > 0)
                     {
                         if (mm[0].Trn_GidNumer != null)
                         {
 
                             daneMM = mm[0];
-                            if(daneMM.Trn_Stan=="5")
+                            if (daneMM.Trn_Stan == "5")
                             {
                                 daneMM.Trn_NrDokumentu = "zatwierdzona";
                             }
@@ -158,9 +158,9 @@ namespace Zatwierdz_MM.Droid
                                 var InsertString = $@"cdn.PC_WykonajSelect N' 
                                 if not exists(select *  from cdn.pc_zatwierdzonemm where trn_gidnumer={daneMM.Trn_GidNumer})
                             begin                            
-                            insert into cdn.pc_zatwierdzonemm 
+                            insert into cdn.pc_zatwierdzonemm
                                                 values ({daneMM.Trn_GidNumer},
-                                                {daneMM.Trn_GidTyp},''{daneMM.Trn_NrDokumentu}'',{daneMM.Trn_Stan},''{czas.ToString("yyyy-MM-dd HH:mm:ss")}'',null,0)
+                                                {daneMM.Trn_GidTyp},''{daneMM.Trn_NrDokumentu}'',{daneMM.Trn_Stan},''{czas.ToString("yyyy-MM-dd HH:mm:ss")}'',null,0,''{daneMM.Fmm_NrListu}'',''{daneMM.Fmm_NrlistuPaczka}'')
                                                 select ''OK'' as statuss
 
                             end else
@@ -175,7 +175,7 @@ namespace Zatwierdz_MM.Droid
                                 if (respone == "not")
                                     daneMM.Trn_NrDokumentu = "not";
                             }
-                            
+
                         }
                     }
 
@@ -185,11 +185,48 @@ namespace Zatwierdz_MM.Droid
 
                     throw;
                 }
-                
+
 
 
                 return daneMM;
             });
         }
+        public async Task<IList<T>> PobierzDaneZWeb<T>(string query)
+        {
+
+            try
+            {
+                return await Task.Run(() =>
+                  {
+                      var respone = client.ExecuteSQLCommand(query);
+
+                      return DeserializeFromXml<T>(respone);
+                  });
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
+
+
+
+        public static IList<T> DeserializeFromXml<T>(string xml)
+        {
+            List<T> result;
+            //Type type = result.GetType();
+
+            XmlSerializer ser = new XmlSerializer(typeof(List<T>), new XmlRootAttribute("ROOT"));
+            using (TextReader tr = new StringReader(xml))
+            {
+                result = (List<T>)ser.Deserialize(tr);
+            }
+            return result;
+        }
+
+
     }
 }

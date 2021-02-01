@@ -26,6 +26,10 @@ namespace Zatwierdz_MM.Views
                 new HomeMenuItem {Id = MenuItemType.About, Title="Info" }
             };
 
+            var version = DependencyService.Get<Models.IAppVersionProvider>();
+            wersja.Text = $"wersja :{version.AppVersion}";
+
+
             ListViewMenu.ItemsSource = menuItems;
 
             ListViewMenu.SelectedItem = menuItems[0];

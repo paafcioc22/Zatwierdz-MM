@@ -15,6 +15,8 @@ namespace Zatwierdz_MM.Models
 		public string Trn_NrDokumentu { get; set; }
 		public string Trn_DataSkan { get; set; }
 		public string DclMagKod { get; set; }
+		public string Fmm_NrListu { get; set; }
+		public string Fmm_NrlistuPaczka { get; set; }
 	}
  
 }
