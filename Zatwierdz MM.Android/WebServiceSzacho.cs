@@ -44,7 +44,7 @@ namespace Zatwierdz_MM.Droid
         {
             items = new List<DaneMM>();
 
-            var query = $@"cdn.PC_WykonajSelect N'select mm.Trn_GidNumer,mm.Trn_GidTyp,mm.Trn_NrDokumentu,mm.Trn_DataSkan,mm.Trn_DataZatwierdz,mm.Trn_StanMM,trn.TrN_Stan Trn_Stan , mag_kod DclMagKod 
+            var query = $@"cdn.PC_WykonajSelect N'select mm.Trn_GidNumer,mm.Trn_GidTyp,mm.Trn_NrDokumentu,mm.Trn_DataSkan,mm.Trn_DataZatwierdz,mm.Trn_StanMM,trn.TrN_Stan Trn_Stan , mag_kod DclMagKod ,Fmm_NrlistuPaczka
                         from cdn.PC_ZatwierdzoneMM mm
                         join cdn.tranag trn on trn.TrN_GIDNumer=mm.Trn_GidNumer and trn.TrN_GIDTyp=mm.Trn_GidTyp
                         join cdn.Magazyny on trn.TrN_MagDNumer = MAG_GIDNumer

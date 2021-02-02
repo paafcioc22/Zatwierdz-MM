@@ -4,9 +4,15 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="Zatwierdz_MM.Views.ListaZeskanowaychPage" Title="{Binding Title}" BackgroundColor="Aqua">
+             x:Class="Zatwierdz_MM.Views.ListaZeskanowaychPage" Title="{Binding Title}" BackgroundColor="Aqua"  >
 
-
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Usuń"
+                 IconImageSource="ic_stat_delete_forever.png"
+                 Order="Primary"
+                 Priority="0" Command="{Binding DeleteFromList}"/>
+    </ContentPage.ToolbarItems>
+    
     <AbsoluteLayout>
 
 
@@ -66,7 +72,7 @@
                                         <Label Text="{Binding DclMagKod}" FontAttributes="Bold" HorizontalOptions="Start"/>
                                         <Label Text="{Binding Trn_Stan}" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
                                     </StackLayout>
-
+                                    <Label Text="{Binding Fmm_NrlistuPaczka}" TextColor="Black" FontSize="20" HorizontalTextAlignment="Center"/>
                                 </StackLayout>
 
                                 <!--<CheckBox  x:Name="checkBox1" HorizontalOptions="End" IsEnabled="False" IsChecked="{Binding IsFinish}" Scale="2" Margin="0,0,15,0"/>-->

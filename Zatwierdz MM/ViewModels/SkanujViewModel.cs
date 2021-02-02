@@ -59,6 +59,8 @@ namespace Zatwierdz_MM.ViewModels
                 }
                 else
                 {
+                    nrmmki = nrmmki.Replace("Z", "").Replace("z", "");
+
                     var IsScanBeforeSql = $@"cdn.PC_WykonajSelect N' 
                      select * from cdn.PC_ZatwierdzoneMM
                      where Fmm_NrlistuPaczka=''{nrmmki}''  '";
@@ -99,7 +101,7 @@ namespace Zatwierdz_MM.ViewModels
                         }
                         else
                         {
-                            await Application.Current.MainPage.DisplayAlert("info", $"Nie znaleziono nr fedex lub nie zawiera MM", "OK");
+                            await Application.Current.MainPage.DisplayAlert("info", $"Nie znaleziono nr {nrmmki} lub nie zawiera MM", "OK");
                         }
                     }
                     else

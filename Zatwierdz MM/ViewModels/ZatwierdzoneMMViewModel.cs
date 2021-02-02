@@ -15,6 +15,9 @@ namespace Zatwierdz_MM.ViewModels
     {
         public ObservableCollection<DaneMM> Items { get; private set; }
         public Command LoadItemsCommand { get; set; }
+        public ICommand DeleteFromList { get; }
+        public  ICommand SearchCommand => new Command(Search);
+
         private string _filter;
 
         public ZatwierdzoneMMViewModel()
@@ -22,6 +25,53 @@ namespace Zatwierdz_MM.ViewModels
             Title = "Lista Zeskanowanych";
             Items = new ObservableCollection<DaneMM>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
+            DeleteFromList = new Command(async () => await UsunZlistCommand());
+        }
+
+        private async  Task UsunZlistCommand()
+        {
+            if (IsBusy)
+                return;
+
+            IsBusy = true;
+
+            var mmki = new List<string>();
+            try
+            {
+                foreach (var item in Items)
+                {
+                    Debug.WriteLine($"Usuwam mm {item.Trn_GidNumer}");
+                    mmki.Add(item.Trn_NrDokumentu);
+                }
+                var odp =await Application.Current.MainPage.DisplayActionSheet($"Usunąć poniższe mmki z paczki {Items[0].Fmm_NrlistuPaczka}?", "OK", "Anuluj", mmki.ToArray());
+                if (odp == "OK")
+                {
+                    var czyTylkoJeden = Items.Select(x => x.Fmm_NrlistuPaczka).Distinct().Count();
+                    if (czyTylkoJeden==1)
+                    {
+                        var query = $@" cdn.PC_WykonajSelect ' delete from cdn.PC_ZatwierdzoneMM where Fmm_NrlistuPaczka=''{Items[0].Fmm_NrlistuPaczka}''' ";
+
+                        var usun = await App.TodoManager.PobierzDaneZWeb<DaneMM>(query);
+                        LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
+                    }
+                    else
+                    {
+                        await Application.Current.MainPage.DisplayAlert("info", $"Na liście znajduje się więcej niż jeden nr listu", "OK");
+                    }
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+
+
         }
 
         public string Filter
@@ -34,8 +84,6 @@ namespace Zatwierdz_MM.ViewModels
             }
         }
 
-
-        public  ICommand SearchCommand => new Command(Search);
         async public void Search()
         {
             if (string.IsNullOrWhiteSpace(_filter))
@@ -66,7 +114,7 @@ namespace Zatwierdz_MM.ViewModels
                     //var tmp = items.Where(c => c.Trn_NrDokumentu.ToString().Contains(filtr)).ToList();
                     foreach (var item in items)
                     {
-                      if(item.Trn_NrDokumentu.Contains(filtr.ToUpper()))
+                      if(item.Trn_NrDokumentu.Contains(filtr.ToUpper())|| item.Fmm_NrlistuPaczka.Contains(filtr.ToUpper()))
                         Items.Add(item);
                     }
 
