@@ -52,7 +52,8 @@ namespace Zatwierdz_MM.ViewModels
                         var query = $@" cdn.PC_WykonajSelect ' delete from cdn.PC_ZatwierdzoneMM where Fmm_NrlistuPaczka=''{Items[0].Fmm_NrlistuPaczka}''' ";
 
                         var usun = await App.TodoManager.PobierzDaneZWeb<DaneMM>(query);
-                        LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
+                        //LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
+                        await Application.Current.MainPage.DisplayAlert("info", $"Wpisy usunięte", "OK");
                     }
                     else
                     {

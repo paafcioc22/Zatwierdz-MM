@@ -9,7 +9,8 @@ namespace Zatwierdz_MM.Models
         Skanuj,
         Lista,
         About,
-        Ustawienia
+        Ustawienia,
+        PrzyjmijMM
     }
     public class HomeMenuItem
     {

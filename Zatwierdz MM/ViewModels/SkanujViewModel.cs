@@ -157,7 +157,7 @@ namespace Zatwierdz_MM.ViewModels
 				  mmw.TrN_GIDTyp = 1603 and 
 				  mmw.TrN_TrNNumer=@nrdok and 
 				  mmw.TrN_TrNSeria=@seria and
-				  mmw.TrN_TrNRok=@rok
+				  mmw.TrN_TrNRok=@rok and mmw.trn_magdnumer in(9,141)
 				  if @@ROWCOUNT=0 
 					begin 
 						select ''brak dokumnetu'' statuss
