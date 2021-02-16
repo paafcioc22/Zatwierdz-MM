@@ -22,9 +22,9 @@ namespace Zatwierdz_MM.Views
     public partial class SkanujPage : ContentPage
     {
         SkanujViewModel viewModel;
-        ZXingDefaultOverlay overlay;
+        //ZXingDefaultOverlay overlay;
         ZXingScannerPage scanPage;
-        string EANKodMM;
+        //string EANKodMM;
         ZXingScannerView zxing;
         MobileBarcodeScanningOptions opts;
 

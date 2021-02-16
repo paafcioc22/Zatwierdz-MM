@@ -20,7 +20,7 @@ namespace Zatwierdz_MM.ViewModels
        // public ICommand SearchCommand => new Command(Search);
         public ObservableCollection<DaneMMElem> Items { get; private set; }
         DaneMM dane;
-        private string _filter;
+         
 
 
 

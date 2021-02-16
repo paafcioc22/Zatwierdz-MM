@@ -29,6 +29,7 @@ namespace Zatwierdz_MM.Droid
             }
         }
 
+        [Obsolete]
         public int BuildVersion
         {
             get

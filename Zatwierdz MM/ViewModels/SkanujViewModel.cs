@@ -120,7 +120,7 @@ namespace Zatwierdz_MM.ViewModels
                 });
 
             }
-            catch (Exception s)
+            catch (Exception )
             {
                 throw;
                
