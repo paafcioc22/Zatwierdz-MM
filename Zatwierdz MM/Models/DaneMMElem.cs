@@ -9,14 +9,16 @@ namespace Zatwierdz_MM.Models
     [XmlType("Table")]
     public class DaneMMElem
     {
-        [PrimaryKey, AutoIncrement]
-        public int Lp { get; set; }
-        [Indexed]
+        //[PrimaryKey, AutoIncrement]
+        //public int Lp { get; set; }
+        //[Indexed]
         public int  Trn_Gidnumer{ get; set; } 
+        public int  Twr_Gidnumer{ get; set; } 
         public string TrN_DokumentObcy { get; set; }
         public string TrE_GIDLp { get; set; }
         public string Twr_Kod { get; set; }
         public string Twr_Nazwa { get; set; }
+        public string Twr_Symbol { get; set; }
         public string Mag_Kod { get; set; }
         public string Opis { get; set; }
         public string Cena { get; set; }

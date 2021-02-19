@@ -2,68 +2,76 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Zatwierdz_MM.Views.PrzyjmijMMSkanowanie" Title="{Binding Title}">
-  <ListView x:Name="MyListView"
+
+
+
+    <AbsoluteLayout>
+
+
+        <ListView x:Name="MyListView" 
             ItemsSource="{Binding Items}"
             ItemTapped="Handle_ItemTapped"
-            CachingStrategy="RecycleElement">
- 
-    <ListView.ItemTemplate>
-      <DataTemplate>
-        <ViewCell>
-                    <AbsoluteLayout     >
+            CachingStrategy="RecycleElement" HasUnevenRows="True"
+            AbsoluteLayout.LayoutBounds="0,0,1,.84"
+            AbsoluteLayout.LayoutFlags="All">
 
-                        <Label Text="{Binding Twr_Kod }" TextColor="Black" FontSize="18"
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <AbsoluteLayout     >
+
+                            <Label Text="{Binding Twr_Kod }" TextColor="Black" FontSize="18"
                                        AbsoluteLayout.LayoutBounds="0.02,0.01,.5,.3"
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="Start"
                                        />
-                        <Label Text="{Binding Twr_Nazwa }" 
+                            <Label Text="{Binding Twr_Nazwa }" 
                                        TextColor="Black"  
                                        FontSize="12"  
                                        AbsoluteLayout.LayoutBounds="0.1,0.65,.5,.6"
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="Start"
                                             />
-                        <!--<Label Text="{Binding Mag_Kod}" FontSize="12"  
+                            <!--<Label Text="{Binding Mag_Kod}" FontSize="12"  
                                        TextColor="Black" 
                                        AbsoluteLayout.LayoutBounds="0.05,1,.5,.3"
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="Start"
                                        />-->
-                        <Label Text="{Binding Ilosc}" FontSize="20" 
+                            <Label Text="{Binding MsI_TwrIloscSkan}" FontSize="20" 
                                        TextColor="Black" 
                                        AbsoluteLayout.LayoutBounds="0.25,.6,.2,.3"
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="End"
                                        />
 
-                        <Label HorizontalTextAlignment="End"  
+                            <!--<Label HorizontalTextAlignment="End"  
                                    VerticalTextAlignment="Start"
                                    AbsoluteLayout.LayoutBounds="0.65,0.1,.25,.5"
                                    AbsoluteLayout.LayoutFlags="All" 
                                    Text="{Binding TrE_GIDLp}"
                                    >
 
-                        </Label>
+                            </Label>-->
 
 
-                        <!--</StackLayout>-->
-                        <Label Text="{Binding Cena, StringFormat='{0}zł'}" TextColor="Black" FontSize="16" 
+                            <!--</StackLayout>-->
+                            <Label Text="{Binding Cena, StringFormat='{0}zł'}" TextColor="Black" FontSize="16" 
                                        AbsoluteLayout.LayoutBounds="0.7,0.8,.25,.5"
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="Center" 
                                        VerticalTextAlignment="End"
                                        />
-                        <!--</StackLayout>-->
+                            <!--</StackLayout>-->
 
 
 
-                        <Image  Source="{Binding Url}" 
+                            <Image  Source="{Binding Url}" 
                                        AbsoluteLayout.LayoutBounds="1,0.05,.25,0.95"
                                        AbsoluteLayout.LayoutFlags="All"
                                        Aspect="AspectFill"
                                         />
-                        <!--<ffimageloading:CachedImage 
+                            <!--<ffimageloading:CachedImage 
                                 Source="{Binding TwrUrl}"
                                 CacheDuration= "50"
                                 RetryCount="2"
@@ -74,16 +82,33 @@
                             Aspect="AspectFill"
                             />-->
 
-                        <!--</DownsampleToViewSize = "true"
+                            <!--</DownsampleToViewSize = "true"
                             CacheDuration= "50"
                             LoadingPlaceholder= "LoaderImage"
                                 ErrorPlaceholder= "ErrorImage"
                             >-->
 
-                    </AbsoluteLayout>
-                </ViewCell>
-      </DataTemplate>
-    </ListView.ItemTemplate>
-    
-  </ListView>
+                        </AbsoluteLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+        <!--<Button Text=" skanuj" Clicked="Button_Clicked"
+                AbsoluteLayout.LayoutBounds="1,1,1,.15"
+                AbsoluteLayout.LayoutFlags="All" />-->
+        <Frame VerticalOptions="CenterAndExpand" CornerRadius="10" BorderColor="Gray" BackgroundColor="CornflowerBlue"
+               AbsoluteLayout.LayoutBounds="0.5,1,.95,.15"
+               AbsoluteLayout.LayoutFlags="All">
+            <Entry Placeholder="Skanuj lub wprowadź"  FontSize="20" x:Name="entry_MM" 
+               HorizontalTextAlignment="Center" VerticalOptions="CenterAndExpand"
+               HorizontalOptions="CenterAndExpand"  WidthRequest="400" HeightRequest="70"
+               Keyboard="Default" Text="{Binding NrMMki}"  
+                   ReturnCommand="{Binding InsertToBase}" 
+                   ReturnCommandParameter="{Binding Source={x:Reference entry_MM}, Path=Text}"
+                   
+                   >
+            </Entry>
+        </Frame>
+    </AbsoluteLayout>
 </ContentPage>

@@ -24,13 +24,13 @@ namespace Zatwierdz_MM.Views
         private Entry entry_kodean;
         private Entry entry_ilosc;
         private Image img_foto;
-        private Button btn_Skanuj;
+   
         private Button btn_AddEanPrefix;
         private Button btn_Zapisz;
-        private Int32 _gidnumer;
-        private SQLiteAsyncConnection _connection;
-        private DaneMMElem _MMElement;
-        private Model.AkcjeNagElem _akcja;
+     
+    
+      
+    
         string skanean;
         ZXingDefaultOverlay overlay;
         ZXing.Mobile.MobileBarcodeScanningOptions opts;
@@ -70,7 +70,7 @@ namespace Zatwierdz_MM.Views
             var scrollView = new ScrollView();
 
             _gidnumer = gidnumer;
-            _connection = DependencyService.Get<ISQLiteDb>().GetConnection();
+           
 
             NavigationPage.SetHasNavigationBar(this, false);
 
@@ -219,8 +219,7 @@ namespace Zatwierdz_MM.Views
             var scrollView = new ScrollView();
 
             _gidnumer = gidnumer;
-            _connection = DependencyService.Get<ISQLiteDb>().GetConnection();
-
+           
             NavigationPage.SetHasNavigationBar(this, false);
 
 
@@ -482,9 +481,8 @@ namespace Zatwierdz_MM.Views
         {
             this.Title = "Dodaj MM";
 
-            _akcja = akcje;
+             
 
-            ile = _akcja.TwrSkan > 0 ? _akcja.TwrSkan : ile;
 
             NavigationPage.SetHasNavigationBar(this, false);
 
@@ -635,17 +633,19 @@ namespace Zatwierdz_MM.Views
 
 
         int ile = 0;
+        private int _gidnumer;
+
         private void Open_url_Clicked(object sender, EventArgs e)
         {
             //Device.OpenUri(new Uri(_MMElement.url.Replace("Miniatury/", "")));
-            _akcja.TwrSkan = Convert.ToInt32(entry_kodean.Text);
+            //_akcja.TwrSkan = Convert.ToInt32(entry_kodean.Text);
             Navigation.PopModalAsync();
         }
 
         protected override bool OnBackButtonPressed()
         {
-            if (ile > 0)
-                _akcja.TwrSkan = ile;
+            //if (ile > 0)
+            //    _akcja.TwrSkan = ile;
 
             return base.OnBackButtonPressed();
         }
@@ -660,28 +660,28 @@ namespace Zatwierdz_MM.Views
 
         private void Btn_Update_Clicked(object sender, EventArgs e)
         {
-            if (entry_ilosc.Text != null && entry_kodean.Text != null)
-            {
-                if (Int32.Parse(entry_ilosc.Text) > Int32.Parse(stan_szt))
-                {
-                    DisplayAlert(null, "Wpisana ilość przekracza stan {}", "OK");
-                }
-                else
-                {
-                    Model.DokMM dokMM = new Model.DokMM();
-                    dokMM.gidnumer = _gidnumer;
-                    dokMM.twrkod = entry_kodean.Text;
-                    dokMM.szt = Convert.ToInt32(entry_ilosc.Text);
-                    dokMM.UpdateElement(dokMM);
-                    //Model.DokMM.dokElementy.GetEnumerator();// (usunMM);
-                    dokMM.getElementy(_gidnumer);
-                    Navigation.PopModalAsync();
-                }
-            }
-            else
-            {
-                DisplayAlert("Uwaga", "Nie uzupełniono wszystkich pól!", "OK");
-            }
+            //if (entry_ilosc.Text != null && entry_kodean.Text != null)
+            //{
+            //    if (Int32.Parse(entry_ilosc.Text) > Int32.Parse(stan_szt))
+            //    {
+            //        DisplayAlert(null, "Wpisana ilość przekracza stan {}", "OK");
+            //    }
+            //    else
+            //    {
+            //        Model.DokMM dokMM = new Model.DokMM();
+            //        dokMM.gidnumer = _gidnumer;
+            //        dokMM.twrkod = entry_kodean.Text;
+            //        dokMM.szt = Convert.ToInt32(entry_ilosc.Text);
+            //        dokMM.UpdateElement(dokMM);
+            //        //Model.DokMM.dokElementy.GetEnumerator();// (usunMM);
+            //        dokMM.getElementy(_gidnumer);
+            //        Navigation.PopModalAsync();
+            //    }
+            //}
+            //else
+            //{
+            //    DisplayAlert("Uwaga", "Nie uzupełniono wszystkich pól!", "OK");
+            //}
         }
 
 
@@ -701,92 +701,7 @@ namespace Zatwierdz_MM.Views
         public async void Zapisz()
         {
 
-            if (entry_ilosc.Text != null && entry_kodean.Text != null)
-            {
-
-                try
-                {
-                    Model.RaportListaMM dokMM = new Model.RaportListaMM();
-                    var listaZMM = Model.PrzyjmijMMLista.przyjmijMMListas.Where(n => n.GIDdokumentuMM == _gidnumer).ToList();
-                    dokMM.twrkod = entry_kodean.Text;
-                    dokMM.ilosc_OK = Convert.ToInt16(entry_ilosc.Text);
-                    dokMM.nazwa = lbl_nazwa.Text;
-                    int maxid = await _connection.ExecuteScalarAsync<int>("select ifnull(max(IdElement),0) maxid from RaportListaMM where GIDdokumentuMM =?", _gidnumer);
-
-
-                    var wynik = await _connection.QueryAsync<Model.RaportListaMM>("select * from RaportListaMM where GIDdokumentuMM = ? and twrkod=?", _gidnumer, entry_kodean.Text);
-                    if (wynik.Count > 0)
-                    {
-                        var wpis = wynik[0];
-
-                        int suma = wynik[0].ilosc_OK + Convert.ToInt16(entry_ilosc.Text);
-
-                        await DisplayAlert("Uwaga", String.Format("Kod {0} już jest na liście : {1} szt - pozycja zostanie zaktualizowana, razem : {2}", dokMM.twrkod, wpis.ilosc_OK, suma), "OK");
-                        wpis.ilosc_OK = suma;
-                        await _connection.UpdateAsync(wpis);
-                    }
-                    else
-                    {
-                        dokMM.IdElement = (maxid) + 1;
-                        dokMM.GIDdokumentuMM = _gidnumer;
-                        dokMM.DatadokumentuMM = listaZMM[0].DatadokumentuMM;
-                        dokMM.nrdokumentuMM = listaZMM[0].nrdokumentuMM;
-                        dokMM.XLGIDMM = listaZMM[0].XLGIDMM;
-                        //dokMM.nazwa = 
-                        // dokMM.RaportListaMMs.Add(dokMM);
-                        Model.RaportListaMM.RaportListaMMs.Add(dokMM);
-                        await _connection.InsertAsync(dokMM);
-                    }
-
-                }
-                catch (Exception ex)
-                {
-                    await DisplayAlert(null, ex.Message, "OK");
-                }
-
-
-                #region MyRegion
-                // await Navigation.PushModalAsync(new RaportListaElementow(dokMM));  
-                // int IleIstnieje = dokMM.SaveElement(dokMM);
-
-                //if (IleIstnieje > 0)
-                //{
-                //    var odp = await DisplayAlert("UWAGA!", "Dodawany kod już znajduje się na liście. Chcesz zsumować ilości?", "TAK", "NIE");
-                //    if (odp)
-                //    {
-                //        int suma = Int32.Parse(entry_ilosc.Text) + IleIstnieje;
-                //        if (suma > Int32.Parse(stan_szt))
-                //        {
-                //            await DisplayAlert(null, "Łączna ilość przekracza stan ", "OK");
-                //            return;
-                //        }
-                //        else
-                //        {
-                //            //Model.DokMM dokMM = new Model.DokMM();
-
-                //            dokMM.twrkod = entry_kodean.Text;
-                //            dokMM.szt = suma;// Convert.ToInt32(ilosc.Text);
-                //            dokMM.UpdateElement(dokMM);
-                //            dokMM.getElementy(_gidnumer);
-                //        }
-                //    }
-                //    else
-                //    {
-
-                //        await DisplayAlert("Uwaga", "Dodanie towaru odrzucone", "OK");
-                //    }
-                //} 
-                #endregion
-
-
-                // OnDoPush(); 
-                await Navigation.PopModalAsync();
-                // SkanowanieEan();  
-            }
-            else
-            {
-                await DisplayAlert("Uwaga", "Nie uzupełniono wszystkich pól!", "OK");
-            }
+             
         }
         private void Btn_Zapisz_Clicked(object sender, EventArgs e)
         {
@@ -945,18 +860,16 @@ namespace Zatwierdz_MM.Views
                 {
 
 
-                    var Webquery = $"Select Twr_Kod, Twr_Nazwa, Twr_NumerKat twr_symbol, cast(twc_wartosc as decimal(5,2))Cena " +
-                        ",cast(sum(TwZ_Ilosc) as int)Ilosc, case when len(twr_kod) > 5 and len(twr_url)> 5 then " +
-                            "replace(twr_url, substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4), " +
-                        " substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4) + 'Miniatury/') else twr_kod end as Url ,Ean " +
-                        "from cdn.towary " +
-                        "join cdn.TwrCeny on Twr_twrid = TwC_Twrid and TwC_TwrLp = 2 " +
-                        "left join cdn.TwrZasoby on Twr_twrid = TwZ_TwrId " +
-                        "where twr_ean='" + _ean + "' or twr_kod='" + _ean + "'" +
-                        "group by twr_kod, twr_nazwa, Twr_NumerKat,twc_wartosc, twr_url,twr_ean";
+                    var Webquery = $@"cdn.PC_WykonajSelect N'Select Twr_Kod, Twr_Nazwa, Twr_Katalog Twr_Symbol, cast(twc_wartosc as decimal(5,2))Cena ,cast(sum(TwZ_Ilosc) as int)Ilosc, case when len(twr_kod) > 5 and len(twr_url)> 5 
+		                then replace(twr_url, substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4),  substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4) + ''Miniatury/'') 
+		                else twr_kod end as Url ,Twr_Ean Ean 
+		                from cdn.TwrKarty 
+		                join cdn.TwrCeny on Twr_GIDNumer = TwC_TwrNumer and TwC_TwrLp = 2 
+		                left join cdn.TwrZasoby on Twr_GIDNumer = TwZ_TwrNumer where twr_ean=''{_ean}'' or twr_kod=''{_ean}''
+		                group by twr_kod, twr_nazwa, Twr_Katalog,twc_wartosc, twr_url,twr_ean'";
 
 
-                    //string Webquery = "cdn.pc_pobierztwr '" + _ean + "'";
+                    
                     var dane = await App.TodoManager.PobierzDaneZWeb<DaneMMElem>(Webquery);
                     if (dane.Count > 0)
                     {

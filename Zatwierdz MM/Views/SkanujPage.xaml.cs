@@ -42,7 +42,7 @@ namespace Zatwierdz_MM.Views
             try
             {
                 entry_MM.Unfocus();
-                await Task.Delay(5000);
+                await Task.Delay(300);
                 entry_MM.Focus();
             }
             catch (Exception s)
