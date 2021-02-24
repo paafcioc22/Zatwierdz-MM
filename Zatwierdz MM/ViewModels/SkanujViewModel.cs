@@ -67,7 +67,7 @@ namespace Zatwierdz_MM.ViewModels
 
                     var IsScanBefore = await App.TodoManager.PobierzDaneZWeb<DaneMM>(IsScanBeforeSql);
 
-                    if (IsScanBefore.Count == 0)
+                    if (IsScanBefore.Count != 0)//zmien
                     {
                         string query = $@"cdn.PC_WykonajSelect N' select * from cdn.PC_FedexMM
 					    where Fmm_NrPaczki=''{nrmmki}'' order by Fmm_NazwaPaczki'";
@@ -149,7 +149,7 @@ namespace Zatwierdz_MM.ViewModels
 				  if (ISNUMERIC(@nrdok)=1 and ISNUMERIC(@rok)=1	 )
 				begin
 
-				  select mmp.trn_gidnumer Trn_GidNumer,mmp.TrN_GIDTyp Trn_GidTyp,mmp.Trn_Stan  
+				  select top 1 mmp.trn_gidnumer Trn_GidNumer,mmp.TrN_GIDTyp Trn_GidTyp,mmp.Trn_Stan  
                     ,cdn.nazwaobiektu(mmp.trn_gidtyp, mmp.trn_gidnumer,0,2)Trn_NrDokumentu {addfedex}
                   from cdn.tranag mmw   
                   join cdn.tranag mmp on mmp.trn_zwrnumer =mmw.trn_GIDNumer   
