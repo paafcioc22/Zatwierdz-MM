@@ -38,8 +38,15 @@ namespace Zatwierdz_MM.ViewModels
         private async Task ExecInsertToBase(string ean)
         {
             var twrkarta = await Pobierztwrkod(ean);
-
+            int ilosZmm = 0;
             var quantityFromMM = daneMMElem.Where(x => x.Twr_Gidnumer == twrkarta.Twr_Gidnumer).SingleOrDefault();
+
+            if(quantityFromMM != null)
+            {
+                ilosZmm = quantityFromMM.Ilosc;
+            }
+
+
 
             if (twrkarta.Twr_Gidnumer!=0)
             {
@@ -51,7 +58,7 @@ namespace Zatwierdz_MM.ViewModels
                         
                         if @@ROWCOUNT =0
                         begin
-                             Insert into cdn.PC_MsInwentory values (1604,{Trn_Gidnumer},{twrkarta.Twr_Gidnumer},{quantityFromMM.Ilosc},1,''{data}'',11)
+                             Insert into cdn.PC_MsInwentory values (1604,{Trn_Gidnumer},{twrkarta.Twr_Gidnumer},{ilosZmm},1,''{data}'',{this.daneMMElem[0].Mag_GidNumer})
                         end'";
                 //todo : popraw ilosc 
 
@@ -131,11 +138,49 @@ namespace Zatwierdz_MM.ViewModels
 
         }
 
-        public async Task<IList<Place>> IsPlaceExists(int TrnGidnumer, int TwrGidnumer)
+        internal async Task<bool> AddTowarToPlace(PC_MsInwentory msi, string placeName)
+        {
+            try
+            {
+                bool IsAddRow = true;
+                var IsAddedRow = await IsPlaceExists(msi.MsI_TwrNumer, msi.MsI_TrnNumer, placeName);
+
+                // $@"cdn.PC_WykonajSelect N'Select * from cdn.PC_MsPolozenie where  PlaceTwrNumer={msi.Twr_Gidnumer} and  PlaceTrnNumer= {msi.MsI_TrnNumer}'";
+
+                if (IsAddedRow.Count != 0)
+                {
+                    IsAddRow = false;
+                }
+                else
+                {
+                    var data = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                    var sqlInsert = $@"cdn.PC_WykonajSelect N'insert into cdn.PC_MsPolozenie values (''{placeName}'','''',{msi.MsI_TwrNumer},{msi.MsI_TrnNumer},{msi.MsI_MagNumer},{msi.MsI_TwrIloscSkan},''{data}'') '";
+
+                    await App.TodoManager.PobierzDaneZWeb<Place>(sqlInsert);
+                }
+
+                //var Webquery = $@"cdn.PC_WykonajSelect N'Select * from cdn.PC_MsPolozenie where  PlaceTwrNumer={msi.Twr_Gidnumer}  '";
+
+                //var dane = await App.TodoManager.PobierzDaneZWeb<Place>(Webquery);
+
+                return IsAddRow;
+            }
+            catch (Exception ) 
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<IList<Place>> IsPlaceExists( int TwrGidnumer, int TrnGidnumer,string placname="")
         {
             //Place polozenie= new Place();  
 
-            var Webquery = $@"cdn.PC_WykonajSelect N'Select * from cdn.PC_MsPolozenie where PlaceTrnNumer={TrnGidnumer}  and PlaceTwrNumer={TwrGidnumer}'";
+            var filtr = TrnGidnumer == 0?"":$" and PlaceTrnNumer ={ TrnGidnumer}";
+            var filtrPlace = string.IsNullOrEmpty(placname) ?"":$" and PlaceName =''{ placname}''";
+
+
+            var Webquery = $@"cdn.PC_WykonajSelect N'Select * from cdn.PC_MsPolozenie where  PlaceTwrNumer={TwrGidnumer} {filtr} {filtrPlace} '";
             var dane = await App.TodoManager.PobierzDaneZWeb<Place>(Webquery);
 
             return dane;

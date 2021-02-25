@@ -47,14 +47,14 @@ namespace Zatwierdz_MM.Views
             if (e.Item == null)
                 return;
 
-            List<string> kolory = new List<string> {"Odłóż na miejsce odkładcze", "Edytuj"};
+            List<string> opcje = new List<string> {"Odłóż na miejsce odkładcze", "Edytuj"};
 
             var towar = e.Item as PC_MsInwentory;
 
-            var odp =await  DisplayActionSheet($"Wybierz :", "OK", "Anuluj", kolory.ToArray());
+            var odp =await  DisplayActionSheet($"Wybierz :", "OK", "Anuluj", opcje.ToArray());
             if (odp == "Odłóż na miejsce odkładcze")
             {
-               var isExists= await  IsPlaceExists(towar.MsI_TrnNumer, towar.MsI_TwrNumer);
+               var isExists= await  IsPlaceExists(towar.MsI_TwrNumer); // czy w ogóle kod dodany
 
 
                 if (isExists.Count == 0)
@@ -63,17 +63,64 @@ namespace Zatwierdz_MM.Views
 
                     if(odp2== "Utwórz nowe")
                     {
+                        //isExists = await IsPlaceExists( towar.MsI_TwrNumer, towar.MsI_TrnNumer); // czy istniej wpis z tej mmki 
 
+                        string placeName = await DisplayPromptAsync("Tworzenie nowego wpisu","Podaj pozycję np. A10..", "OK", "Anuluj", "", 3, keyboard: Keyboard.Create(KeyboardFlags.CapitalizeCharacter), "");
+
+                        if(await AddTowarToPlace(towar, placeName))
+                            await DisplayAlert("info", "dodano", "OK");
+                        else
+                            await DisplayAlert("info", "Istnije wpis", "OK");
+                    }else if (odp2 == "Anuluj")
+                    {
+                        return;
                     }
                 }
+                else
+                {
+                    var places = isExists.Select(s => s.PlaceName).Distinct().ToArray();
+                      
+                    odp = await DisplayActionSheet($"Dodaj do istniejącego :", "Dodaj nowe położenie", "Anuluj", places);
+                    if(odp!= "Dodaj nowe położenie" && odp !="Anuluj")
+                    {
+                        if(await AddTowarToPlace(towar, odp))
+                              await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {odp}", "OK");
+                        else
+                            await DisplayAlert("info", "Istnije wpis", "OK");
+
+                    }
+                    else if (odp == "Anuluj")
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        string placeName = await DisplayPromptAsync("Tworzenie nowego wpisu", "Podaj pozycję np. A10..", 
+                            "OK", "Anuluj", "", 3, keyboard: Keyboard.Create(KeyboardFlags.CapitalizeCharacter), "");
+
+                        if(await AddTowarToPlace(towar, placeName))
+                            await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {placeName}", "OK");
+                        else
+                            await DisplayAlert("info", "Istnije wpis", "OK");
+                    }
+
+                }
+            }else if (odp == "Anuluj")
+            {
+                return;
             }
             //Deselect Item
             ((ListView)sender).SelectedItem = null;
         }
 
-        private async Task<List<Place>> IsPlaceExists(int trn_Gidnumer, int twr_Gidnumer)
+        private async Task<bool> AddTowarToPlace(PC_MsInwentory pC_MsInwentory, string placeName)
         {
-            var odp= await viewModel.IsPlaceExists(trn_Gidnumer, twr_Gidnumer) ;
+            return  await viewModel.AddTowarToPlace(pC_MsInwentory, placeName);
+        }
+
+        private async Task<List<Place>> IsPlaceExists( int twr_Gidnumer, int trn_Gidnumer=0)
+        {
+            var odp= await viewModel.IsPlaceExists(twr_Gidnumer, trn_Gidnumer) ;
             return odp.ToList();
         }
 

@@ -14,6 +14,7 @@ namespace Zatwierdz_MM.Models
         //[Indexed]
         public int  Trn_Gidnumer{ get; set; } 
         public int  Twr_Gidnumer{ get; set; } 
+        public int  Mag_GidNumer { get; set; } 
         public string TrN_DokumentObcy { get; set; }
         public string TrE_GIDLp { get; set; }
         public string Twr_Kod { get; set; }
