@@ -47,7 +47,7 @@ namespace Zatwierdz_MM.ViewModels
                 Items.Clear();
 
 
-                var sqlPobierzMMki = $@"cdn.PC_WykonajSelect N'select  TrN_DokumentObcy,TrE_GIDLp,   Trn_Gidnumer,
+                var sqlPobierzMMki = $@"cdn.PC_WykonajSelect N'select  TrN_DokumentObcy,TrE_GIDLp,   Trn_Gidnumer, Twr_Gidnumer,
 Twr_Kod,Twr_Nazwa,  Mag_Kod,
 replace(tno_opis,char(10),'''')as Opis
 ,cast(TwC_Wartosc as float)Cena,cast(tre_ilosc as int)Ilosc,

@@ -32,12 +32,12 @@
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="Start"
                                             />
-                            <!--<Label Text="{Binding Mag_Kod}" FontSize="12"  
+                            <Label Text="{Binding MsI_TwrIloscMM}" FontSize="16"  
                                        TextColor="Black" 
                                        AbsoluteLayout.LayoutBounds="0.05,1,.5,.3"
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="Start"
-                                       />-->
+                                       />
                             <Label Text="{Binding MsI_TwrIloscSkan}" FontSize="20" 
                                        TextColor="Black" 
                                        AbsoluteLayout.LayoutBounds="0.25,.6,.2,.3"

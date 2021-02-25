@@ -49,7 +49,7 @@ namespace Zatwierdz_MM.Views
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new PrzyjmijMMSkanowanie(new PrzyjmijMMSkanowanieViewModel(viewModel.Items[0])));
+            await Navigation.PushAsync(new PrzyjmijMMSkanowanie(new PrzyjmijMMSkanowanieViewModel(viewModel.Items.ToList())));
         }
     }
 }

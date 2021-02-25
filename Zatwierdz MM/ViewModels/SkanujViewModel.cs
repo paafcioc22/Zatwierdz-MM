@@ -67,7 +67,7 @@ namespace Zatwierdz_MM.ViewModels
 
                     var IsScanBefore = await App.TodoManager.PobierzDaneZWeb<DaneMM>(IsScanBeforeSql);
 
-                    if (IsScanBefore.Count != 0)//zmien
+                    if (IsScanBefore.Count == 0)//zmien
                     {
                         string query = $@"cdn.PC_WykonajSelect N' select * from cdn.PC_FedexMM
 					    where Fmm_NrPaczki=''{nrmmki}'' order by Fmm_NazwaPaczki'";

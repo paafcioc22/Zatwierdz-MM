@@ -1,5 +1,6 @@
 ﻿using SQLite;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Zatwierdz_MM.Models;
 using Zatwierdz_MM.Services;
 using Zatwierdz_MM.ViewModels;
 
@@ -45,10 +47,34 @@ namespace Zatwierdz_MM.Views
             if (e.Item == null)
                 return;
 
-            await DisplayAlert("Item Tapped", "An item was tapped.", "OK");
+            List<string> kolory = new List<string> {"Odłóż na miejsce odkładcze", "Edytuj"};
 
+            var towar = e.Item as PC_MsInwentory;
+
+            var odp =await  DisplayActionSheet($"Wybierz :", "OK", "Anuluj", kolory.ToArray());
+            if (odp == "Odłóż na miejsce odkładcze")
+            {
+               var isExists= await  IsPlaceExists(towar.MsI_TrnNumer, towar.MsI_TwrNumer);
+
+
+                if (isExists.Count == 0)
+                {
+                    var odp2=await DisplayActionSheet($"Nie przypisano do miejsca :", "Utwórz nowe", "Anuluj", "");
+
+                    if(odp2== "Utwórz nowe")
+                    {
+
+                    }
+                }
+            }
             //Deselect Item
             ((ListView)sender).SelectedItem = null;
+        }
+
+        private async Task<List<Place>> IsPlaceExists(int trn_Gidnumer, int twr_Gidnumer)
+        {
+            var odp= await viewModel.IsPlaceExists(trn_Gidnumer, twr_Gidnumer) ;
+            return odp.ToList();
         }
 
         protected override void OnAppearing()

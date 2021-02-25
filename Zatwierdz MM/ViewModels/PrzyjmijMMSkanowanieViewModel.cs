@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -19,15 +20,16 @@ namespace Zatwierdz_MM.ViewModels
         public ICommand InsertToBase { get; set; }
         public int Trn_Gidnumer { get; set; }
 
-        private DaneMMElem daneMMElem;
+        
         SQLiteAsyncConnection _connection;
         public ObservableCollection<PC_MsInwentory> Items { get; private set; }
+        List<DaneMMElem> daneMMElem;
 
-        public PrzyjmijMMSkanowanieViewModel(DaneMMElem daneMMElem)
+        public PrzyjmijMMSkanowanieViewModel(List<DaneMMElem> daneMMElem)
         {
-            Title = daneMMElem.TrN_DokumentObcy;
+            Title = daneMMElem[0].TrN_DokumentObcy;
             Items = new ObservableCollection<PC_MsInwentory>();
-            Trn_Gidnumer = daneMMElem.Trn_Gidnumer;
+            Trn_Gidnumer = daneMMElem[0].Trn_Gidnumer;
             this.daneMMElem = daneMMElem;
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
             InsertToBase = new Command<string>(async (string ean) => await ExecInsertToBase(ean));
@@ -36,20 +38,30 @@ namespace Zatwierdz_MM.ViewModels
         private async Task ExecInsertToBase(string ean)
         {
             var twrkarta = await Pobierztwrkod(ean);
-            var data = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-            var sqlInsert = $@"cdn.PC_WykonajSelect N' 
+            var quantityFromMM = daneMMElem.Where(x => x.Twr_Gidnumer == twrkarta.Twr_Gidnumer).SingleOrDefault();
+
+            if (twrkarta.Twr_Gidnumer!=0)
+            {
+                var data = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+                var sqlInsert = $@"cdn.PC_WykonajSelect N' 
                          update   cdn.PC_MsInwentory
 						 set MsI_TwrIloscSkan+=1 where  MsI_TrnNumer={Trn_Gidnumer}  and MsI_TwrNumer={twrkarta.Twr_Gidnumer}
                         
                         if @@ROWCOUNT =0
                         begin
-                             Insert into cdn.PC_MsInwentory values (1604,{Trn_Gidnumer},{twrkarta.Twr_Gidnumer},{daneMMElem.Ilosc},1,''{data}'',11)
+                             Insert into cdn.PC_MsInwentory values (1604,{Trn_Gidnumer},{twrkarta.Twr_Gidnumer},{quantityFromMM.Ilosc},1,''{data}'',11)
                         end'";
-           //todo : popraw ilosc 
+                //todo : popraw ilosc 
 
 
-            var items = await App.TodoManager.PobierzDaneZWeb<PC_MsInwentory>(sqlInsert);
+                var items = await App.TodoManager.PobierzDaneZWeb<PC_MsInwentory>(sqlInsert);
+            }
+            else
+            {
+                await Application.Current.MainPage.DisplayAlert("info", $"Nie znaleziono towaru..", "OK");
+            }
 
             NrMMki = "";
             //entry_MM.Focus();
@@ -80,7 +92,7 @@ namespace Zatwierdz_MM.ViewModels
                         from cdn.PC_MsInwentory msi
                         join cdn.twrkarty  on twr_gidnumer=msi_twrnumer
                         join cdn.TwrCeny on Twr_GIDNumer = TwC_TwrNumer and TwC_TwrLp = 2 
-                        where msi_trnnumer={daneMMElem.Trn_Gidnumer} order by Msi_DataSkan'";
+                        where msi_trnnumer={daneMMElem[0].Trn_Gidnumer} order by Msi_DataSkan'";
 
 
                 var items = await App.TodoManager.PobierzDaneZWeb<PC_MsInwentory>(sqlPobierzMMki);
@@ -89,7 +101,7 @@ namespace Zatwierdz_MM.ViewModels
 
                     foreach (var item in items)
                     {
-                        var karta = await Pobierztwrkod(daneMMElem.Twr_Gidnumer);
+                        var karta = await Pobierztwrkod(daneMMElem[0].Twr_Gidnumer);
                         //item.DaneMMElem = karta;
                         Items.Add(item);
                         
@@ -119,7 +131,16 @@ namespace Zatwierdz_MM.ViewModels
 
         }
 
+        public async Task<IList<Place>> IsPlaceExists(int TrnGidnumer, int TwrGidnumer)
+        {
+            //Place polozenie= new Place();  
 
+            var Webquery = $@"cdn.PC_WykonajSelect N'Select * from cdn.PC_MsPolozenie where PlaceTrnNumer={TrnGidnumer}  and PlaceTwrNumer={TwrGidnumer}'";
+            var dane = await App.TodoManager.PobierzDaneZWeb<Place>(Webquery);
+
+            return dane;
+
+        }
 
         public async Task<DaneMMElem> Pobierztwrkod(string _ean)
         {
