@@ -100,7 +100,7 @@
             </ListView.ItemTemplate>
 
         </ListView>
-        <Button Text="Rozpocznij skanowanie" Clicked="Button_Clicked"/>
+        <Button Text="Rozpocznij skanowanie" Clicked="Button_Clicked" HeightRequest="80"/>
     </StackLayout>
 
 </ContentPage>

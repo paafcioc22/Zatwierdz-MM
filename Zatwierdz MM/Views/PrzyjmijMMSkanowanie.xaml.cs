@@ -51,7 +51,7 @@ namespace Zatwierdz_MM.Views
 
             var towar = e.Item as PC_MsInwentory;
 
-            var odp =await  DisplayActionSheet($"Wybierz :", "OK", "Anuluj", opcje.ToArray());
+            var odp =await  DisplayActionSheet($"Wybierz :", null, "Anuluj", opcje.ToArray());
             if (odp == "Odłóż na miejsce odkładcze")
             {
                var isExists= await  IsPlaceExists(towar.MsI_TwrNumer); // czy w ogóle kod dodany
@@ -79,14 +79,22 @@ namespace Zatwierdz_MM.Views
                 else
                 {
                     var places = isExists.Select(s => s.PlaceName).Distinct().ToArray();
-                      
+                    //var quantSum = from aa in isExists
+                    //               group aa by aa.PlaceTwrNumer into g
+                    //               select new Place
+                    //               {
+                    //                   PlaceQuantity = g.Sum(s => s.PlaceQuantity)
+                    //               };
+
+
+
                     odp = await DisplayActionSheet($"Dodaj do istniejącego :", "Dodaj nowe położenie", "Anuluj", places);
                     if(odp!= "Dodaj nowe położenie" && odp !="Anuluj")
                     {
                         if(await AddTowarToPlace(towar, odp))
                               await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {odp}", "OK");
                         else
-                            await DisplayAlert("info", "Istnije wpis", "OK");
+                            await DisplayAlert("info", "Pozycja z tej MM została już dodana", "OK");
 
                     }
                     else if (odp == "Anuluj")
@@ -101,7 +109,7 @@ namespace Zatwierdz_MM.Views
                         if(await AddTowarToPlace(towar, placeName))
                             await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {placeName}", "OK");
                         else
-                            await DisplayAlert("info", "Istnije wpis", "OK");
+                            await DisplayAlert("info", "Pozycja z tej MM została już dodana", "OK");
                     }
 
                 }

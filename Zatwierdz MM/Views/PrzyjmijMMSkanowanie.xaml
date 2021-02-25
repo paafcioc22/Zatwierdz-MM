@@ -32,7 +32,7 @@
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="Start"
                                             />
-                            <Label Text="{Binding MsI_TwrIloscMM}" FontSize="16"  
+                            <Label Text="{Binding MsI_TwrIloscMM, StringFormat='szt z MM: {0}'}" FontSize="16"  
                                        TextColor="Black" 
                                        AbsoluteLayout.LayoutBounds="0.05,1,.5,.3"
                                        AbsoluteLayout.LayoutFlags="All"
