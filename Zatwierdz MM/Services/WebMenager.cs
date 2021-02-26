@@ -29,7 +29,7 @@ namespace Zatwierdz_MM.Services
 
         public Task<IEnumerable<DaneMM>> GetItemsAsync(string filtr="")
         {
-            return soapService.GetItemsAsync();
+            return soapService.GetItemsAsync(filtr);
         }
 
         public Task<IList<T>> PobierzDaneZWeb<T>(string query)

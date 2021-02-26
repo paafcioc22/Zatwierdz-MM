@@ -81,6 +81,7 @@ namespace Zatwierdz_MM.ViewModels
             set
             {
                 SetProperty(ref _filter, value);
+                if(string.IsNullOrEmpty(_filter))
                 Search();
             }
         }
@@ -90,33 +91,53 @@ namespace Zatwierdz_MM.ViewModels
             if (string.IsNullOrWhiteSpace(_filter))
             {
                  await ExecuteLoadItemsCommand();
+                    
+
                 //OrderList = GetOrders;// ItemData.Items;
             }
             else
             {
+                
+                //var nowa = daneMMs.Where(s => s.Trn_NrDokumentu.Contains(_filter.ToUpper()) || s.Fmm_NrlistuPaczka.Contains(_filter.ToUpper())).ToList();
+
+                //Filtruj(nowa);
+                
+                //item.Trn_NrDokumentu.Contains(filtr.ToUpper()) || item.Fmm_NrlistuPaczka.Contains(filtr.ToUpper()
                 await ExecuteLoadItemsCommand(_filter);
             }
 
         }
 
+        private void Filtruj(IEnumerable<DaneMM> nowa)
+        {
+            Items.Clear();
+            foreach (var i in nowa)
+            {
+                Items.Add(i);
+            }
+        }
+
+        static ObservableCollection<DaneMM> daneMMs = new ObservableCollection<DaneMM>();
+
         async Task ExecuteLoadItemsCommand(string filtr ="")
         {
             if (IsBusy)
                 return;
-
             IsBusy = true;
 
+           // var daneMMs = await App.TodoManager.GetItemsAsync();
             try
             {
                 Items.Clear();
-                var items = await App.TodoManager.GetItemsAsync();
+             
+                var items = await App.TodoManager.GetItemsAsync(filtr);
                 if(!string.IsNullOrWhiteSpace(filtr))
                 {
-                    //var tmp = items.Where(c => c.Trn_NrDokumentu.ToString().Contains(filtr)).ToList();
+
                     foreach (var item in items)
                     {
-                      if(item.Trn_NrDokumentu.Contains(filtr.ToUpper())|| item.Fmm_NrlistuPaczka.Contains(filtr.ToUpper()))
-                        Items.Add(item);
+                        if (item.Trn_NrDokumentu.Contains(filtr.ToUpper()) || item.Fmm_NrlistuPaczka.Contains(filtr.ToUpper()))
+                            Items.Add(item);
                     }
 
                 }
@@ -137,6 +158,7 @@ namespace Zatwierdz_MM.ViewModels
             {
                 IsBusy = false;
             }
+            daneMMs = Items;
         }
 
 

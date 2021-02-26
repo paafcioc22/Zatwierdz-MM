@@ -138,6 +138,46 @@ namespace Zatwierdz_MM.ViewModels
 
         }
 
+        internal async Task<bool> UpdateModelInPlace(PC_MsInwentory towar, string place)
+        {
+
+
+            // $@"cdn.PC_WykonajSelect N'Select * from cdn.PC_MsPolozenie where  PlaceTwrNumer={msi.Twr_Gidnumer} and  PlaceTrnNumer= {msi.MsI_TrnNumer}'";
+            bool done = false;
+
+                try
+                {
+                    var data = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                    var sqlInsert = $@"cdn.PC_WykonajSelect N'Update cdn.PC_MsPolozenie set PlaceQuantity= {towar.MsI_TwrIloscSkan}, PlaceTime=''{data}''
+                                                           where PlaceTrnNumer={towar.MsI_TrnNumer} and PlaceTwrNumer={towar.MsI_TwrNumer} and PlaceName= ''{place} ''
+                            '";
+
+                    await App.TodoManager.PobierzDaneZWeb<Place>(sqlInsert);
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+                finally
+                {
+                    done= true;
+                }
+
+
+            //var Webquery = $@"cdn.PC_WykonajSelect N'Select * from cdn.PC_MsPolozenie where  PlaceTwrNumer={msi.Twr_Gidnumer}  '";
+
+            //var dane = await App.TodoManager.PobierzDaneZWeb<Place>(Webquery);
+
+            //return IsAddRow;
+            return done;
+             
+        }
+
+//        select(placeName+' - '+  cdn.NazwaObiektu(1604, placetrnnumer,0,2) +' - ' + placeQuantity +'szt')as sss
+//from  cdn.pc_mspolozenie
+//where placetwrnumer=65839
+
         internal async Task<bool> AddTowarToPlace(PC_MsInwentory msi, string placeName)
         {
             try
@@ -171,6 +211,9 @@ namespace Zatwierdz_MM.ViewModels
                 throw;
             }
         }
+
+
+
 
         public async Task<IList<Place>> IsPlaceExists( int TwrGidnumer, int TrnGidnumer,string placname="")
         {

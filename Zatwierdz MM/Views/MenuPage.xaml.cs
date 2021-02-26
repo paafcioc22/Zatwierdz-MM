@@ -17,6 +17,7 @@ namespace Zatwierdz_MM.Views
         public MenuPage()
         {
             InitializeComponent();
+            BindingContext = this;
 
             menuItems = new List<HomeMenuItem>
             {
@@ -40,7 +41,13 @@ namespace Zatwierdz_MM.Views
                     return;
 
                 var id = (int)((HomeMenuItem)e.SelectedItem).Id;
+
+                if (IsBusy)
+                    return;
+
+                IsBusy = true;
                 await RootPage.NavigateFromMenu(id);
+                IsBusy = false;
             };
         }
     }

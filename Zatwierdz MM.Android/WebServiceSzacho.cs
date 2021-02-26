@@ -44,17 +44,18 @@ namespace Zatwierdz_MM.Droid
         {
             items = new List<DaneMM>();
 
-            var query = $@"cdn.PC_WykonajSelect N'select  mm.Trn_GidNumer,mm.Trn_GidTyp,mm.Trn_NrDokumentu,mm.Trn_DataSkan,mm.Trn_DataZatwierdz,mm.Trn_StanMM,trn.TrN_Stan Trn_Stan , mag_kod DclMagKod ,Fmm_NrlistuPaczka
+            var ff =string.IsNullOrEmpty(filtr)?"": $"and(Trn_NrDokumentu like''%{filtr}%'' or Fmm_NrlistuPaczka like''%{filtr}%'')";
+            var top =string.IsNullOrEmpty(filtr)?" top 200 ": "top 30";
+
+
+            var query = $@"cdn.PC_WykonajSelect N'select {top} mm.Trn_GidNumer,mm.Trn_GidTyp,mm.Trn_NrDokumentu,mm.Trn_DataSkan,mm.Trn_DataZatwierdz,mm.Trn_StanMM,trn.TrN_Stan Trn_Stan , mag_kod DclMagKod ,Fmm_NrlistuPaczka
                         from cdn.PC_ZatwierdzoneMM mm
                         join cdn.tranag trn on trn.TrN_GIDNumer=mm.Trn_GidNumer and trn.TrN_GIDTyp=mm.Trn_GidTyp
                         join cdn.Magazyny on trn.TrN_MagDNumer = MAG_GIDNumer
-                        where mm.Trn_DataSkan>=getdate()-10
+                        where mm.Trn_DataSkan>=getdate()-10 {ff}
                         order by mm.Trn_DataSkan desc '";
-
+            //Trn_NrDokumentu.Contains(filtr.ToUpper())|| item.Fmm_NrlistuPaczka.Contains(filtr.ToUpper()
             var respone = client.ExecuteSQLCommand(query);
-
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(respone);
 
             TextReader reader = new StringReader(respone);
 
@@ -126,9 +127,7 @@ namespace Zatwierdz_MM.Droid
 
                 var respone = client.ExecuteSQLCommand(query);
 
-                XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.LoadXml(respone);
-
+   
                 TextReader reader = new StringReader(respone);
 
                 //typeof(ObservableCollection<Allegro>), new XmlRootAttribute("ROOT")

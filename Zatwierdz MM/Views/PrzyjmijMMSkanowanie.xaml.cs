@@ -47,7 +47,7 @@ namespace Zatwierdz_MM.Views
             if (e.Item == null)
                 return;
 
-            List<string> opcje = new List<string> {"Odłóż na miejsce odkładcze", "Edytuj"};
+            List<string> opcje = new List<string> {"Odłóż na miejsce odkładcze", "Edytuj", "Pokaż wszystkie wpisy dla modelu"};
 
             var towar = e.Item as PC_MsInwentory;
 
@@ -68,11 +68,12 @@ namespace Zatwierdz_MM.Views
                         string placeName = await DisplayPromptAsync("Tworzenie nowego wpisu","Podaj pozycję np. A10..", "OK", "Anuluj", "", 3, keyboard: Keyboard.Create(KeyboardFlags.CapitalizeCharacter), "");
 
                         if(await AddTowarToPlace(towar, placeName))
-                            await DisplayAlert("info", "dodano", "OK");
+                            await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {placeName}", "OK");
                         else
                             await DisplayAlert("info", "Istnije wpis", "OK");
                     }else if (odp2 == "Anuluj")
                     {
+                        ((ListView)sender).SelectedItem = null;
                         return;
                     }
                 }
@@ -94,11 +95,16 @@ namespace Zatwierdz_MM.Views
                         if(await AddTowarToPlace(towar, odp))
                               await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {odp}", "OK");
                         else
-                            await DisplayAlert("info", "Pozycja z tej MM została już dodana", "OK");
-
+                             
+                        if (await DisplayAlert("info", $"{towar.Twr_Kod} z tej MM został już dodany\n Chcesz zaktualizować wpis?", "Tak", "Nie"))
+                        {
+                            if(await viewModel.UpdateModelInPlace(towar, odp))
+                                await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {odp}", "OK");
+                        }
                     }
                     else if (odp == "Anuluj")
                     {
+                        ((ListView)sender).SelectedItem = null;
                         return;
                     }
                     else
@@ -115,7 +121,19 @@ namespace Zatwierdz_MM.Views
                 }
             }else if (odp == "Anuluj")
             {
+                ((ListView)sender).SelectedItem = null;
                 return;
+            }else if (odp== "Pokaż wszystkie wpisy dla modelu")
+            {
+
+                var sql = $@"cdn.PC_WykonajSelect N'select(placeName+'' - ''+  cdn.NazwaObiektu(1604, placetrnnumer,0,2) +'' - '' + placeQuantity +''szt'')as PlaceOpis
+                            from  cdn.pc_mspolozenie
+                            where placetwrnumer={towar.MsI_TwrNumer}'";
+
+                var listaplace=await App.TodoManager.PobierzDaneZWeb<Place>(sql);
+                ;
+                await DisplayActionSheet($"Lista wpisów dla \n{towar.Twr_Kod} :", "", "Anuluj", listaplace.Select(s => s.PlaceOpis).ToArray());
+
             }
             //Deselect Item
             ((ListView)sender).SelectedItem = null;
