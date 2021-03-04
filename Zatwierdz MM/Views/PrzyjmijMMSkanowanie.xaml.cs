@@ -67,10 +67,29 @@ namespace Zatwierdz_MM.Views
 
                         string placeName = await DisplayPromptAsync("Tworzenie nowego wpisu","Podaj pozycję np. A10..", "OK", "Anuluj", "", 3, keyboard: Keyboard.Create(KeyboardFlags.CapitalizeCharacter), "");
 
-                        if(await AddTowarToPlace(towar, placeName))
-                            await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {placeName}", "OK");
+
+                        if(  await viewModel.IsPlaceEmpty(towar.MsI_TwrNumer,0,placeName))
+                        {
+                            if (await AddTowarToPlace(towar, placeName))
+                            {
+                                await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {placeName}", "OK");
+                                foreach (var item in viewModel.Items)
+                                {
+                                    if (item.MsI_TwrNumer == towar.MsI_TwrNumer)
+                                    {
+                                        towar.Msi_IsPut = true;
+
+                                    }
+                                }
+                            }
+                            else
+                                await DisplayAlert("info", "Istnije wpis", "OK");
+                        }
                         else
-                            await DisplayAlert("info", "Istnije wpis", "OK");
+                        {
+                            await DisplayAlert("info", "To miejsce jest już zajęte", "OK");
+                        }
+                        
                     }else if (odp2 == "Anuluj")
                     {
                         ((ListView)sender).SelectedItem = null;

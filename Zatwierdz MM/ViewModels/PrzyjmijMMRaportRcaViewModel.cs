@@ -60,7 +60,16 @@ namespace Zatwierdz_MM.ViewModels
 
             foreach (var s in items)
             {
-                //s.Url= viewModel.Items.GetEnumerator().Current
+                //s.Url= viewModel.Items.
+                foreach (var x in viewModel.Items)
+                {
+                    if (s.Twr_Kod.Equals(x.Twr_Kod))
+                    {
+                        s.Url = x.Url;
+                    }
+                }
+
+                    
                 Items.Add(s);
             }
         }

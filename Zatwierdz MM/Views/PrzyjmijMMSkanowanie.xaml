@@ -25,7 +25,7 @@
                     <ViewCell>
                         <AbsoluteLayout     >
 
-                            <Label Text="{Binding Twr_Kod }" TextColor="Black" FontSize="18"
+                            <Label Text="{Binding Twr_Kod }" TextColor="Black" FontSize="18" 
                                        AbsoluteLayout.LayoutBounds="0.02,0.01,.5,.3"
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="Start"
@@ -43,7 +43,7 @@
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="Start"
                                        />
-                            <Label Text="{Binding MsI_TwrIloscSkan}" FontSize="20" 
+                            <Label Text="{Binding MsI_TwrIloscSkan}" FontSize="20" FontAttributes="Bold"
                                        TextColor="Black" 
                                        AbsoluteLayout.LayoutBounds="0.25,.6,.2,.3"
                                        AbsoluteLayout.LayoutFlags="All"
@@ -55,14 +55,16 @@
                                    AbsoluteLayout.LayoutBounds="0.65,0.1,.25,.5"
                                    AbsoluteLayout.LayoutFlags="All" 
                                    Text="{Binding TrE_GIDLp}"
-                                   >
-
+                                   > 
                             </Label>-->
-
+                            <BoxView BackgroundColor="Green" IsVisible="{Binding Msi_IsPut, Mode=TwoWay}"
+                                     AbsoluteLayout.LayoutBounds=".7,0.05,20,20"
+                                       AbsoluteLayout.LayoutFlags="PositionProportional"
+                                     />
 
                             <!--</StackLayout>-->
                             <Label Text="{Binding Cena, StringFormat='{0}zł'}" TextColor="Black" FontSize="16" 
-                                       AbsoluteLayout.LayoutBounds="0.7,0.8,.25,.5"
+                                       AbsoluteLayout.LayoutBounds="0.7,0.6,.25,.5"
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="Center" 
                                        VerticalTextAlignment="End"
@@ -72,8 +74,8 @@
 
 
                             <Image  Source="{Binding Url}" 
-                                       AbsoluteLayout.LayoutBounds="1,0.05,.25,0.95"
-                                       AbsoluteLayout.LayoutFlags="All"
+                                       AbsoluteLayout.LayoutBounds=".98,0.05,100,120"
+                                       AbsoluteLayout.LayoutFlags="PositionProportional"
                                        Aspect="AspectFill"
                                         />
                             <!--<ffimageloading:CachedImage 

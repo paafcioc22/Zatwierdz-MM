@@ -26,7 +26,7 @@
                     <ViewCell>
                         <AbsoluteLayout     >
 
-                            <Label Text="{Binding Twr_Kod }" TextColor="Black" FontSize="18"
+                            <Label Text="{Binding Twr_Kod }" TextColor="Black" FontSize="18" 
                                        AbsoluteLayout.LayoutBounds="0.02,0.01,.5,.3"
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="Start"

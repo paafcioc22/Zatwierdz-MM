@@ -132,7 +132,8 @@ namespace Zatwierdz_MM.ViewModels
                 var sqlPobierzMMki = $@"cdn.PC_WykonajSelect N'select  msi.*,Twr_Gidnumer, Twr_Kod, Twr_Nazwa, Twr_Katalog Twr_Symbol, cast(twc_wartosc as decimal(5,2))Cena 
                 , case when len(twr_kod) > 5 and len(twr_url)> 5 
 		                then replace(twr_url, substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4),  substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4) + ''Miniatury/'') 
-		                else twr_kod end as Url ,Twr_Ean Ean 
+		                else twr_kod end as Url ,Twr_Ean Ean ,
+(case when (select count(*) from cdn.pc_mspolozenie where placetwrnumer=Twr_GIDNumer and placetrnnumer={daneMMElem[0].Trn_Gidnumer} )>=1 then 1 else 0 end)Msi_IsPut
                         from cdn.PC_MsInwentory msi
                         join cdn.twrkarty  on twr_gidnumer=msi_twrnumer
                         join cdn.TwrCeny on Twr_GIDNumer = TwC_TwrNumer and TwC_TwrLp = 2 
@@ -249,7 +250,21 @@ namespace Zatwierdz_MM.ViewModels
             }
         }
 
+        public async Task<bool> IsPlaceEmpty(int TwrGidnumer, int TrnGidnumer, string placname = "")
+        {
+            //Place polozenie= new Place();  
+            bool rt=true;
+           
+            var filtrPlace = string.IsNullOrEmpty(placname) ? "" : $" and PlaceName =''{ placname}''";
 
+
+            var Webquery = $@"cdn.PC_WykonajSelect N'Select * from cdn.PC_MsPolozenie where  PlaceTwrNumer<>{TwrGidnumer}  {filtrPlace} '";
+            var dane = await App.TodoManager.PobierzDaneZWeb<Place>(Webquery);
+            if (dane.Count > 0)
+                rt = false;
+            return rt;
+
+        }
 
 
         public async Task<IList<Place>> IsPlaceExists( int TwrGidnumer, int TrnGidnumer,string placname="")
@@ -315,7 +330,8 @@ namespace Zatwierdz_MM.ViewModels
                 {
 
 
-                    var Webquery = $@"cdn.PC_WykonajSelect N'Select Twr_Gidnumer, Twr_Kod, Twr_Nazwa, Twr_Katalog Twr_Symbol, cast(twc_wartosc as decimal(5,2))Cena ,cast(sum(TwZ_Ilosc) as int)Ilosc, case when len(twr_kod) > 5 and len(twr_url)> 5 
+                    var Webquery = $@"cdn.PC_WykonajSelect N'Select Twr_Gidnumer, Twr_Kod, Twr_Nazwa, Twr_Katalog Twr_Symbol, cast(twc_wartosc as decimal(5,2))Cena ,
+                        cast(sum(TwZ_Ilosc) as int)Ilosc, case when len(twr_kod) > 5 and len(twr_url)> 5 
 		                then replace(twr_url, substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4),  substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4) + ''Miniatury/'') 
 		                else twr_kod end as Url ,Twr_Ean Ean 
 		                from cdn.TwrKarty 

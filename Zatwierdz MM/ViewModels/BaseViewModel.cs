@@ -16,10 +16,18 @@ namespace Zatwierdz_MM.ViewModels
         public IWebService DataStore => DependencyService.Get<IWebService>();
 
         bool isBusy = false;
+        private bool isPut;
+
         public bool IsBusy
         {
             get { return isBusy; }
             set { SetProperty(ref isBusy, value); }
+        }
+
+        public bool IsPut
+        {
+            get { return isPut; }
+            set { SetProperty(ref isPut, value); }
         }
 
         string title = string.Empty;
@@ -30,6 +38,8 @@ namespace Zatwierdz_MM.ViewModels
         }
 
         string nrMMki = string.Empty;
+       
+
         public string NrMMki
         {
             get { return nrMMki; }
