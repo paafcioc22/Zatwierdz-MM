@@ -47,19 +47,21 @@ namespace Zatwierdz_MM.ViewModels
                 Items.Clear();
 
 
-                var sqlPobierzMMki = $@"cdn.PC_WykonajSelect N'select  TrN_DokumentObcy,TrE_GIDLp,   Trn_Gidnumer, Twr_Gidnumer,Mag_GidNumer,
-Twr_Kod,Twr_Nazwa,  Mag_Kod,
-replace(tno_opis,char(10),'''')as Opis
-,cast(TwC_Wartosc as float)Cena,cast(tre_ilosc as int)Ilosc,
+                var sqlPobierzMMki = $@"cdn.PC_WykonajSelect N'
+   select  TrN_DokumentObcy,TrE_GIDLp,   Trn_Gidnumer, Twr_Gidnumer,Mag_GidNumer,
+Twr_Kod,Twr_Nazwa,  Mag_Kod
+,cast(max(TwC_Wartosc) as float)Cena,cast(sum(tre_ilosc) as int)Ilosc,
   replace(twr_url, substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4),
-                        substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4) + ''Miniatury/'') Url
+ substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4) + ''Miniatury/'') Url, cast(sum(twz_ilosc)as int) StanMS
 from cdn.tranag
 join cdn.traelem on tre_gidnumer=trn_gidnumer and trn_gidtyp=TrN_GIDTyp
 JOIN cdn.twrkarty on twr_gidnumer=tre_twrnumer
 left join cdn.TwrCeny on Twr_GIDNumer=twc_twrnumer and TwC_TwrLp=2
 join cdn.magazyny on trn_magznumer=Mag_GIDNumer
-left join cdn.TrNOpisy on TrN_GIDTyp=TnO_TrnTyp AND TrN_GIDNumer=TnO_TrnNumer
-where TrN_gidnumer={dane.Trn_GidNumer} '";
+left join cdn.TwrZasoby on TwZ_TwrNumer=Twr_GIDNumer and TwZ_MagNumer=141
+where TrN_gidnumer={dane.Trn_GidNumer}
+group by TrN_DokumentObcy,TrE_GIDLp,   Trn_Gidnumer, Twr_Gidnumer,Mag_GidNumer,
+Twr_Kod,Twr_Nazwa,  Mag_Kod,twr_url'";
 
 
                 var items = await App.TodoManager.PobierzDaneZWeb<DaneMMElem>(sqlPobierzMMki);

@@ -52,7 +52,7 @@ namespace Zatwierdz_MM.Droid
                         from cdn.PC_ZatwierdzoneMM mm
                         join cdn.tranag trn on trn.TrN_GIDNumer=mm.Trn_GidNumer and trn.TrN_GIDTyp=mm.Trn_GidTyp
                         join cdn.Magazyny on trn.TrN_MagDNumer = MAG_GIDNumer
-                        where mm.Trn_DataSkan>=getdate()-10 {ff}
+                        where mm.Trn_DataSkan>=getdate()-20 {ff}
                         order by mm.Trn_DataSkan desc '";
             //Trn_NrDokumentu.Contains(filtr.ToUpper())|| item.Fmm_NrlistuPaczka.Contains(filtr.ToUpper()
             var respone = client.ExecuteSQLCommand(query);

@@ -1,15 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Zatwierdz_MM.Views.PrzyjmijMMSkanowanie" Title="{Binding Title}">
+             x:Class="Zatwierdz_MM.Views.PrzyjmijMMRaportRoznic">
 
-                  <!--IconImageSource="ic_stat_delete_forever.png"-->
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Raport"
-                 Order="Primary"                 
-                 Priority="0"  Clicked="ToolbarItem_Clicked"  />
-    </ContentPage.ToolbarItems>
-    <!--CommandParameter="{Binding Items}" Command="{Binding LoadRaport}"-->
     <AbsoluteLayout>
 
 
@@ -37,13 +30,8 @@
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="Start"
                                             />
-                            <Label Text="{Binding MsI_TwrIloscMM, StringFormat='szt z MM: {0}'}" FontSize="16"  
-                                       TextColor="Black" 
-                                       AbsoluteLayout.LayoutBounds="0.05,1,.5,.3"
-                                       AbsoluteLayout.LayoutFlags="All"
-                                       HorizontalTextAlignment="Start"
-                                       />
-                            <Label Text="{Binding MsI_TwrIloscSkan}" FontSize="20" 
+                       
+                            <Label Text="{Binding MsI_Rca}" FontSize="20" 
                                        TextColor="Black" 
                                        AbsoluteLayout.LayoutBounds="0.25,.6,.2,.3"
                                        AbsoluteLayout.LayoutFlags="All"
@@ -61,12 +49,12 @@
 
 
                             <!--</StackLayout>-->
-                            <Label Text="{Binding Cena, StringFormat='{0}zł'}" TextColor="Black" FontSize="16" 
+                            <!--<Label Text="{Binding Cena, StringFormat='{0}zł'}" TextColor="Black" FontSize="16" 
                                        AbsoluteLayout.LayoutBounds="0.7,0.8,.25,.5"
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="Center" 
                                        VerticalTextAlignment="End"
-                                       />
+                                       />-->
                             <!--</StackLayout>-->
 
 
@@ -99,21 +87,6 @@
             </ListView.ItemTemplate>
 
         </ListView>
-        <!--<Button Text=" skanuj" Clicked="Button_Clicked"
-                AbsoluteLayout.LayoutBounds="1,1,1,.15"
-                AbsoluteLayout.LayoutFlags="All" />-->
-        <Frame VerticalOptions="CenterAndExpand" CornerRadius="10" BorderColor="Gray" BackgroundColor="CornflowerBlue"
-               AbsoluteLayout.LayoutBounds="0.5,1,.95,.15"
-               AbsoluteLayout.LayoutFlags="All">
-            <Entry Placeholder="Skanuj lub wprowadź"  FontSize="20" x:Name="entry_MM" 
-               HorizontalTextAlignment="Center" VerticalOptions="CenterAndExpand"
-               HorizontalOptions="CenterAndExpand"  WidthRequest="400" HeightRequest="70"
-               Keyboard="Default" Text="{Binding NrMMki}"  
-                   ReturnCommand="{Binding InsertToBase}" 
-                   ReturnCommandParameter="{Binding Source={x:Reference entry_MM}, Path=Text}"
-                   
-                   >
-            </Entry>
-        </Frame>
+       
     </AbsoluteLayout>
 </ContentPage>

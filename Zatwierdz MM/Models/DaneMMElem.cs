@@ -26,8 +26,9 @@ namespace Zatwierdz_MM.Models
         public string Url { get; set; }
         public string Ean { get; set; }
         public int  Ilosc{ get; set; } 
-        public int  Ilosc_Skan{ get; set; } 
- 
+        public int  Ilosc_Skan{ get; set; }
+        public int StanMS { get; set; }
+
     }
 
  

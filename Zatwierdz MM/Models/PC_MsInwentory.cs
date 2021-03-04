@@ -11,10 +11,14 @@ namespace Zatwierdz_MM.Models
 		public short MsI_TrnTyp { get; set; }
 		public int MsI_TrnNumer { get; set; }
 		public int MsI_TwrNumer { get; set; }
+	
 		public short MsI_TwrIloscMM { get; set; }
 		public short MsI_TwrIloscSkan { get; set; }
+		public short MsI_Rca { get; set; }
 		public DateTime Msi_DataSkan { get; set; }
 		public short MsI_MagNumer { get; set; }
+		 
+
 		//public DaneMMElem DaneMMElem { get; set; }
 	}
 }

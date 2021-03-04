@@ -16,6 +16,7 @@ namespace Zatwierdz_MM.ViewModels
     public class PrzyjmijMMSkanowanieViewModel : BaseViewModel
     {
 
+        public ICommand LoadRaport { get; set; }
         public Command LoadItemsCommand { get; set; }
         public ICommand InsertToBase { get; set; }
         public int Trn_Gidnumer { get; set; }
@@ -33,6 +34,42 @@ namespace Zatwierdz_MM.ViewModels
             this.daneMMElem = daneMMElem;
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
             InsertToBase = new Command<string>(async (string ean) => await ExecInsertToBase(ean));
+            LoadRaport = new Command(async () => await ExecuteLoadItems());
+        }
+
+        private async Task ExecuteLoadItems( )
+        {
+            
+             
+            var sqlPobierzMMki = $@"cdn.PC_WykonajSelect N'
+                         select 
+                         *,  MsI_TwrIloscSkan-MsI_TwrIloscMM as MsI_Rca
+                         from
+                         (
+                         select MsI_TrnNumer ,  MsI_MagNumer,p.MsI_TwrNumer, Twr_Kod, isnull(mm,0)MsI_TwrIloscMM, isnull(skan,0)MsI_TwrIloscSkan  
+                         from
+                         (
+	                         select typ, MsI_TwrNumer,isnull(cast(ilosc as int),0)ilosc,msi_trnnumer ,  MsI_MagNumer, twr_kod, twr_url
+	                         from(
+			                        select ''skan''typ,msi_twrnumer MsI_TwrNumer, MsI_TwrIloscSkan ilosc , MsI_TrnNumer ,  MsI_MagNumer
+			                        from cdn.PC_MsInwentory
+			                        where msi_trnnumer={daneMMElem[0].Trn_Gidnumer}
+		                          union all
+			                        select ''mm''typ, tre_twrnumer,tre_ilosc,tre_gidnumer, TrN_MagZNumer
+			                        from cdn.TraElem
+			                        join cdn.TraNag on TrE_GIDTyp=TrN_GIDTyp and TrE_GIDNumer=TrN_GIDNumer
+			                        where tre_gidnumer={daneMMElem[0].Trn_Gidnumer}
+	                          )a
+	                          join cdn.twrkarty on a.MsI_TwrNumer=Twr_GIDNumer
+                          )d
+                          pivot( sum(ilosc) for typ in ([skan],[mm]))as p
+                          )a
+                          where  MsI_TwrIloscSkan-MsI_TwrIloscMM   <>0
+                            '";
+
+            var items = await App.TodoManager.PobierzDaneZWeb<PC_MsInwentory>(sqlPobierzMMki);
+
+             
         }
 
         private async Task ExecInsertToBase(string ean)

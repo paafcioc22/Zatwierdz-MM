@@ -161,5 +161,10 @@ namespace Zatwierdz_MM.Views
         {
              await Navigation.PushModalAsync(new RaportLista_AddTwrKod(viewModel.Trn_Gidnumer));
         }
+
+        private async void ToolbarItem_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new PrzyjmijMMRaportRoznic(new PrzyjmijMMRaportRcaViewModel(viewModel)));
+        }
     }
 }
