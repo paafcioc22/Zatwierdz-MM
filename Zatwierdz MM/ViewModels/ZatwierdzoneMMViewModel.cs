@@ -125,7 +125,17 @@ namespace Zatwierdz_MM.ViewModels
                 return;
             IsBusy = true;
 
-           // var daneMMs = await App.TodoManager.GetItemsAsync();
+
+            if (filtr.Contains("MM/"))
+            {
+                filtr = filtr.Replace("MM/", "");
+
+                var tmp = filtr.Split('/');
+                int intt = Convert.ToInt32(tmp[0]);
+                filtr = $@"{intt}/{tmp[1]}/{tmp[2]}";
+            }
+
+            // var daneMMs = await App.TodoManager.GetItemsAsync();
             try
             {
                 Items.Clear();
