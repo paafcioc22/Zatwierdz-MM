@@ -49,7 +49,7 @@ namespace Zatwierdz_MM.ViewModels
                     var czyTylkoJeden = Items.Select(x => x.Fmm_NrlistuPaczka).Distinct().Count();
                     if (czyTylkoJeden==1)
                     {
-                        var query = $@" cdn.PC_WykonajSelect ' delete from cdn.PC_ZatwierdzoneMM where Fmm_NrlistuPaczka=''{Items[0].Fmm_NrlistuPaczka}''' ";
+                        var query = $@" cdn.PC_WykonajSelect ' select * from cdn.PC_ZatwierdzoneMM where Fmm_NrlistuPaczka=''{Items[0].Fmm_NrlistuPaczka}''' ";
 
                         var usun = await App.TodoManager.PobierzDaneZWeb<DaneMM>(query);
                         //LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());

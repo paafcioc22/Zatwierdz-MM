@@ -83,7 +83,7 @@ namespace Zatwierdz_MM.Views
                                 }
                             }
                             else
-                                await DisplayAlert("info", "Istnije wpis", "OK");
+                                await DisplayAlert("info", "Pozycja z tej MM została już dodana", "OK");
                         }
                         else
                         {
@@ -112,7 +112,18 @@ namespace Zatwierdz_MM.Views
                     if(odp!= "Dodaj nowe położenie" && odp !="Anuluj")
                     {
                         if(await AddTowarToPlace(towar, odp))
-                              await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {odp}", "OK");
+                        {
+                            await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {odp}", "OK");
+                            foreach (var item in viewModel.Items)
+                            {
+                                if (item.MsI_TwrNumer == towar.MsI_TwrNumer)
+                                {
+                                    towar.Msi_IsPut = true;
+
+                                }
+                            }
+                        }
+                              
                         else
                              
                         if (await DisplayAlert("info", $"{towar.Twr_Kod} z tej MM został już dodany\n Chcesz zaktualizować wpis?", "Tak", "Nie"))
@@ -131,10 +142,34 @@ namespace Zatwierdz_MM.Views
                         string placeName = await DisplayPromptAsync("Tworzenie nowego wpisu", "Podaj pozycję np. A10..", 
                             "OK", "Anuluj", "", 3, keyboard: Keyboard.Create(KeyboardFlags.CapitalizeCharacter), "");
 
-                        if(await AddTowarToPlace(towar, placeName))
-                            await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {placeName}", "OK");
+                        //if(await AddTowarToPlace(towar, placeName))
+                        //    await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {placeName}", "OK");
+                        //else
+                        //    await DisplayAlert("info", "Pozycja z tej MM została już dodana", "OK");
+
+
+                        if (await viewModel.IsPlaceEmpty(towar.MsI_TwrNumer, 0, placeName))
+                        {
+                            if (await AddTowarToPlace(towar, placeName))
+                            {
+                                await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {placeName}", "OK");
+                                foreach (var item in viewModel.Items)
+                                {
+                                    if (item.MsI_TwrNumer == towar.MsI_TwrNumer)
+                                    {
+                                        towar.Msi_IsPut = true;
+
+                                    }
+                                }
+                            }
+                            else
+                                await DisplayAlert("info", "Pozycja z tej MM została już dodana", "OK");
+                        }
                         else
-                            await DisplayAlert("info", "Pozycja z tej MM została już dodana", "OK");
+                        {
+                            await DisplayAlert("info", "To miejsce jest już zajęte", "OK");
+                        }
+
                     }
 
                 }
@@ -145,13 +180,22 @@ namespace Zatwierdz_MM.Views
             }else if (odp== "Pokaż wszystkie wpisy dla modelu")
             {
 
-                var sql = $@"cdn.PC_WykonajSelect N'select(placeName+'' - ''+  cdn.NazwaObiektu(1604, placetrnnumer,0,2) +'' - '' + placeQuantity +''szt'')as PlaceOpis
+                var sql = $@"cdn.PC_WykonajSelect N'select PlaceName, cdn.NazwaObiektu(1603, placetrnnumer,0,2) PlaceOpis, PlaceQuantity  
                             from  cdn.pc_mspolozenie
                             where placetwrnumer={towar.MsI_TwrNumer}'";
 
                 var listaplace=await App.TodoManager.PobierzDaneZWeb<Place>(sql);
+
+                string wpisy="";
+                List<string> wpisies = new List<string>();
+
+                foreach (var i in listaplace)
+                {
+                    wpisies.Add($@"{i.PlaceName} - {i.PlaceOpis} :  {i.PlaceQuantity} szt");
+                }
+
                 ;
-                await DisplayActionSheet($"Lista wpisów dla \n{towar.Twr_Kod} :", "", "Anuluj", listaplace.Select(s => s.PlaceOpis).ToArray());
+                await DisplayActionSheet($"Lista wpisów dla \n{towar.Twr_Kod} : suma {listaplace.Sum(s=>s.PlaceQuantity)} szt", "", "Anuluj", wpisies.ToArray());
 
             }
             //Deselect Item
