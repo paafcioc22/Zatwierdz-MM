@@ -46,16 +46,16 @@ namespace Zatwierdz_MM.Droid
 
            
 
-            var ff =string.IsNullOrEmpty(filtr)?"": $"and(mmw.TrN_DokumentObcy  like''%{filtr}%'' or Fmm_NrlistuPaczka like''%{filtr}%'')";
-            var top =string.IsNullOrEmpty(filtr)?" top 200 ": "top 30";
+            var ff =string.IsNullOrEmpty(filtr)?"": $"-300 and(mmw.TrN_DokumentObcy  like''%{filtr}%'' or Fmm_NrlistuPaczka like''%{filtr}%'')";
+            var top =string.IsNullOrEmpty(filtr)?" top 200 ": "top 50";
 
-
+//todo : wyświetlaj wszyskite
             var query = $@"cdn.PC_WykonajSelect N'select {top} mmw.Trn_GidNumer,mm.Trn_GidTyp,mmw.TrN_DokumentObcy Trn_NrDokumentu ,mm.Trn_DataSkan,mm.Trn_DataZatwierdz,mm.Trn_StanMM,trn.TrN_Stan Trn_Stan , mag_kod DclMagKod ,Fmm_NrlistuPaczka
                         from cdn.PC_ZatwierdzoneMM mm
                         join cdn.tranag trn on trn.TrN_GIDNumer=mm.Trn_GidNumer and trn.TrN_GIDTyp=mm.Trn_GidTyp
                         join cdn.tranag mmw on trn.trn_zwrnumer =mmw.trn_GIDNumer 
                         join cdn.Magazyny on trn.TrN_MagDNumer = MAG_GIDNumer
-                        where mm.Trn_DataSkan>=getdate()-20 {ff}
+                        where mm.Trn_DataSkan>=getdate()-20 {ff} 
                         order by mm.Trn_DataSkan desc '";
             //Trn_NrDokumentu.Contains(filtr.ToUpper())|| item.Fmm_NrlistuPaczka.Contains(filtr.ToUpper()
             var respone = client.ExecuteSQLCommand(query);

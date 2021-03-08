@@ -47,50 +47,59 @@ namespace Zatwierdz_MM.Views
             if (e.Item == null)
                 return;
 
-            List<string> opcje = new List<string> {"Odłóż na miejsce odkładcze", "Edytuj", "Pokaż wszystkie wpisy dla modelu"};
+            List<string> opcje = new List<string> { "Odłóż na miejsce odkładcze", "Edytuj", "Pokaż wszystkie wpisy dla modelu" };
 
             var towar = e.Item as PC_MsInwentory;
 
-            var odp =await  DisplayActionSheet($"Wybierz :", null, "Anuluj", opcje.ToArray());
+            var odp = await DisplayActionSheet($"Wybierz :", null, "Anuluj", opcje.ToArray());
             if (odp == "Odłóż na miejsce odkładcze")
             {
-               var isExists= await  IsPlaceExists(towar.MsI_TwrNumer); // czy w ogóle kod dodany
+                var isExists = await IsPlaceExists(towar.MsI_TwrNumer); // czy w ogóle kod dodany
 
 
                 if (isExists.Count == 0)
                 {
-                    var odp2=await DisplayActionSheet($"Nie przypisano do miejsca :", "Utwórz nowe", "Anuluj", "");
+                    var odp2 = await DisplayActionSheet($"Nie przypisano do miejsca :", "Utwórz nowe", "Anuluj", "");
 
-                    if(odp2== "Utwórz nowe")
+                    if (odp2 == "Utwórz nowe")
                     {
                         //isExists = await IsPlaceExists( towar.MsI_TwrNumer, towar.MsI_TrnNumer); // czy istniej wpis z tej mmki 
 
-                        string placeName = await DisplayPromptAsync("Tworzenie nowego wpisu","Podaj pozycję np. A10..", "OK", "Anuluj", "", 3, keyboard: Keyboard.Create(KeyboardFlags.CapitalizeCharacter), "");
+                        string placeName = await DisplayPromptAsync("Tworzenie nowego wpisu", "Podaj pozycję np. A10..", "OK", "Anuluj", "", 3, keyboard: Keyboard.Create(KeyboardFlags.CapitalizeCharacter), "");
 
 
-                        if(  await viewModel.IsPlaceEmpty(towar.MsI_TwrNumer,0,placeName))
+                        if (await viewModel.IsPlaceEmpty(towar.MsI_TwrNumer, 0, placeName))
                         {
-                            if (await AddTowarToPlace(towar, placeName))
+                            if (!string.IsNullOrEmpty(placeName))
                             {
-                                await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {placeName}", "OK");
-                                foreach (var item in viewModel.Items)
+                                if (await AddTowarToPlace(towar, placeName))
                                 {
-                                    if (item.MsI_TwrNumer == towar.MsI_TwrNumer)
+                                    await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {placeName}", "OK");
+                                    foreach (var item in viewModel.Items)
                                     {
-                                        towar.Msi_IsPut = true;
+                                        if (item.MsI_TwrNumer == towar.MsI_TwrNumer)
+                                        {
+                                            towar.Msi_IsPut = true;
 
+                                        }
                                     }
                                 }
+                                else
+                                    await DisplayAlert("info", "Pozycja z tej MM została już dodana", "OK");
                             }
                             else
-                                await DisplayAlert("info", "Pozycja z tej MM została już dodana", "OK");
+                            {
+                                await DisplayAlert("info", "Podaj lokalizacje", "OK");
+                            }
+
                         }
                         else
                         {
                             await DisplayAlert("info", "To miejsce jest już zajęte", "OK");
                         }
-                        
-                    }else if (odp2 == "Anuluj")
+
+                    }
+                    else if (odp2 == "Anuluj")
                     {
                         ((ListView)sender).SelectedItem = null;
                         return;
@@ -109,27 +118,32 @@ namespace Zatwierdz_MM.Views
 
 
                     odp = await DisplayActionSheet($"Dodaj do istniejącego :", "Dodaj nowe położenie", "Anuluj", places);
-                    if(odp!= "Dodaj nowe położenie" && odp !="Anuluj")
+                    if (odp != "Dodaj nowe położenie" && odp != "Anuluj")
                     {
-                        if(await AddTowarToPlace(towar, odp))
-                        {
-                            await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {odp}", "OK");
-                            foreach (var item in viewModel.Items)
-                            {
-                                if (item.MsI_TwrNumer == towar.MsI_TwrNumer)
-                                {
-                                    towar.Msi_IsPut = true;
 
+                        if (string.IsNullOrEmpty(odp))
+                        {
+                            if (await AddTowarToPlace(towar, odp))
+                            {
+                                await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {odp}", "OK");
+                                foreach (var item in viewModel.Items)
+                                {
+                                    if (item.MsI_TwrNumer == towar.MsI_TwrNumer)
+                                    {
+                                        towar.Msi_IsPut = true;
+
+                                    }
                                 }
                             }
+                            else  if (await DisplayAlert("info", $"{towar.Twr_Kod} z tej MM został już dodany\n Chcesz zaktualizować wpis?", "Tak", "Nie"))
+                            {
+                                if (await viewModel.UpdateModelInPlace(towar, odp))
+                                    await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {odp}", "OK");
+                            }
                         }
-                              
                         else
-                             
-                        if (await DisplayAlert("info", $"{towar.Twr_Kod} z tej MM został już dodany\n Chcesz zaktualizować wpis?", "Tak", "Nie"))
                         {
-                            if(await viewModel.UpdateModelInPlace(towar, odp))
-                                await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {odp}", "OK");
+                            await DisplayAlert("info", "Nazwa miejsca nie może być pusta", "OK");
                         }
                     }
                     else if (odp == "Anuluj")
@@ -139,7 +153,7 @@ namespace Zatwierdz_MM.Views
                     }
                     else
                     {
-                        string placeName = await DisplayPromptAsync("Tworzenie nowego wpisu", "Podaj pozycję np. A10..", 
+                        string placeName = await DisplayPromptAsync("Tworzenie nowego wpisu", "Podaj pozycję np. A10..",
                             "OK", "Anuluj", "", 3, keyboard: Keyboard.Create(KeyboardFlags.CapitalizeCharacter), "");
 
                         //if(await AddTowarToPlace(towar, placeName))
@@ -150,20 +164,27 @@ namespace Zatwierdz_MM.Views
 
                         if (await viewModel.IsPlaceEmpty(towar.MsI_TwrNumer, 0, placeName))
                         {
-                            if (await AddTowarToPlace(towar, placeName))
+                            if (!string.IsNullOrEmpty(placeName))
                             {
-                                await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {placeName}", "OK");
-                                foreach (var item in viewModel.Items)
+                                if (await AddTowarToPlace(towar, placeName))
                                 {
-                                    if (item.MsI_TwrNumer == towar.MsI_TwrNumer)
+                                    await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {placeName}", "OK");
+                                    foreach (var item in viewModel.Items)
                                     {
-                                        towar.Msi_IsPut = true;
+                                        if (item.MsI_TwrNumer == towar.MsI_TwrNumer)
+                                        {
+                                            towar.Msi_IsPut = true;
 
+                                        }
                                     }
                                 }
+                                else
+                                    await DisplayAlert("info", "Pozycja z tej MM została już dodana", "OK");
                             }
                             else
-                                await DisplayAlert("info", "Pozycja z tej MM została już dodana", "OK");
+                            {
+                                await DisplayAlert("info", "Nazwa miejsca nie może być pusta", "OK");
+                            }
                         }
                         else
                         {
@@ -173,20 +194,22 @@ namespace Zatwierdz_MM.Views
                     }
 
                 }
-            }else if (odp == "Anuluj")
+            }
+            else if (odp == "Anuluj")
             {
                 ((ListView)sender).SelectedItem = null;
                 return;
-            }else if (odp== "Pokaż wszystkie wpisy dla modelu")
+            }
+            else if (odp == "Pokaż wszystkie wpisy dla modelu")
             {
 
                 var sql = $@"cdn.PC_WykonajSelect N'select PlaceName, cdn.NazwaObiektu(1603, placetrnnumer,0,2) PlaceOpis, PlaceQuantity  
                             from  cdn.pc_mspolozenie
                             where placetwrnumer={towar.MsI_TwrNumer}'";
 
-                var listaplace=await App.TodoManager.PobierzDaneZWeb<Place>(sql);
+                var listaplace = await App.TodoManager.PobierzDaneZWeb<Place>(sql);
 
-                string wpisy="";
+                string wpisy = "";
                 List<string> wpisies = new List<string>();
 
                 foreach (var i in listaplace)
@@ -194,22 +217,44 @@ namespace Zatwierdz_MM.Views
                     wpisies.Add($@"{i.PlaceName} - {i.PlaceOpis} :  {i.PlaceQuantity} szt");
                 }
 
-                ;
-                await DisplayActionSheet($"Lista wpisów dla \n{towar.Twr_Kod} : suma {listaplace.Sum(s=>s.PlaceQuantity)} szt", "", "Anuluj", wpisies.ToArray());
+               ;
+                await DisplayActionSheet($"Lista wpisów dla \n{towar.Twr_Kod} : suma {listaplace.Sum(s => s.PlaceQuantity)} szt", "", "Anuluj", wpisies.ToArray());
 
             }
-            //Deselect Item
-            ((ListView)sender).SelectedItem = null;
+            else if (odp == "Edytuj")
+            {
+                short nowa;
+                string nowailosc = await DisplayPromptAsync("Edycja wpisu", $"Podaj nową wartość dla {towar.Twr_Kod}","OK", "Anuluj", "", 3, keyboard: Keyboard.Numeric , "");
+
+
+                if (!string.IsNullOrEmpty(nowailosc))
+                {
+                    if (short.TryParse(nowailosc, out nowa))
+                    {
+                        towar.MsI_TwrIloscSkan = nowa;
+                        await viewModel.UpdateModelInInventory(towar);
+                    }
+                    else
+                    {
+                        await DisplayAlert("uwaga", "To nie liczba", "OK");
+                    } 
+                }
+                    
+
+
+            }
+                //Deselect Item
+                ((ListView)sender).SelectedItem = null;
         }
 
         private async Task<bool> AddTowarToPlace(PC_MsInwentory pC_MsInwentory, string placeName)
         {
-            return  await viewModel.AddTowarToPlace(pC_MsInwentory, placeName);
+            return await viewModel.AddTowarToPlace(pC_MsInwentory, placeName);
         }
 
-        private async Task<List<Place>> IsPlaceExists( int twr_Gidnumer, int trn_Gidnumer=0)
+        private async Task<List<Place>> IsPlaceExists(int twr_Gidnumer, int trn_Gidnumer = 0)
         {
-            var odp= await viewModel.IsPlaceExists(twr_Gidnumer, trn_Gidnumer) ;
+            var odp = await viewModel.IsPlaceExists(twr_Gidnumer, trn_Gidnumer);
             return odp.ToList();
         }
 
@@ -222,7 +267,7 @@ namespace Zatwierdz_MM.Views
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-             await Navigation.PushModalAsync(new RaportLista_AddTwrKod(viewModel.Trn_Gidnumer));
+            await Navigation.PushModalAsync(new RaportLista_AddTwrKod(viewModel.Trn_Gidnumer));
         }
 
         private async void ToolbarItem_Clicked(object sender, EventArgs e)
