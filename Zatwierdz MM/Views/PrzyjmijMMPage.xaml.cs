@@ -3,9 +3,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Zatwierdz_MM.Models;
 using Zatwierdz_MM.ViewModels;
 
 namespace Zatwierdz_MM.Views
@@ -31,8 +32,11 @@ namespace Zatwierdz_MM.Views
             if (e.Item == null)
                 return;
 
-            await DisplayAlert("Item Tapped", "An item was tapped.", "OK");
+            var karta = e.Item as DaneMMElem;
+            //await DisplayAlert("Item Tapped", "An item was tapped.", "OK");
 
+            await Clipboard.SetTextAsync(karta.Ean);
+            DependencyService.Get<Services.IWebService> ().ShowLong("Skopiowano Ean");
             //Deselect Item
             ((ListView)sender).SelectedItem = null;
         }

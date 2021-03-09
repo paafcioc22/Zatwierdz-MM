@@ -47,7 +47,7 @@ namespace Zatwierdz_MM.Droid
            
 
             var ff =string.IsNullOrEmpty(filtr)?"": $"-300 and(mmw.TrN_DokumentObcy  like''%{filtr}%'' or Fmm_NrlistuPaczka like''%{filtr}%'')";
-            var top =string.IsNullOrEmpty(filtr)?" top 200 ": "top 50";
+            var top =string.IsNullOrEmpty(filtr)?" top 200 ": "top 500";
 
 //todo : wyświetlaj wszyskite
             var query = $@"cdn.PC_WykonajSelect N'select {top} mmw.Trn_GidNumer,mm.Trn_GidTyp,mmw.TrN_DokumentObcy Trn_NrDokumentu ,mm.Trn_DataSkan,mm.Trn_DataZatwierdz,mm.Trn_StanMM,trn.TrN_Stan Trn_Stan , mag_kod DclMagKod ,Fmm_NrlistuPaczka

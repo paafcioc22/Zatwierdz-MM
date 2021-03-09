@@ -121,7 +121,7 @@ namespace Zatwierdz_MM.Views
                     if (odp != "Dodaj nowe położenie" && odp != "Anuluj")
                     {
 
-                        if (string.IsNullOrEmpty(odp))
+                        if (!string.IsNullOrEmpty(odp))
                         {
                             if (await AddTowarToPlace(towar, odp))
                             {

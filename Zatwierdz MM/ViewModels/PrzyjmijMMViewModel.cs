@@ -48,7 +48,7 @@ namespace Zatwierdz_MM.ViewModels
 
 
                 var sqlPobierzMMki = $@"cdn.PC_WykonajSelect N'
-   select  TrN_DokumentObcy,TrE_GIDLp,   Trn_Gidnumer, Twr_Gidnumer,Mag_GidNumer,
+   select  TrN_DokumentObcy,TrE_GIDLp,   Trn_Gidnumer, Twr_Gidnumer,Mag_GidNumer,twr_ean Ean,
 Twr_Kod,Twr_Nazwa,  Mag_Kod
 ,cast(max(TwC_Wartosc) as float)Cena,cast( (tre_ilosc) as int)Ilosc,
   replace(twr_url, substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4),
@@ -60,7 +60,7 @@ left join cdn.TwrCeny on Twr_GIDNumer=twc_twrnumer and TwC_TwrLp=2
 join cdn.magazyny on trn_magznumer=Mag_GIDNumer
 left join cdn.TwrZasoby on TwZ_TwrNumer=Twr_GIDNumer and TwZ_MagNumer=141
 where TrN_gidnumer={dane.Trn_GidNumer}
-group by TrN_DokumentObcy,TrE_GIDLp,   Trn_Gidnumer, Twr_Gidnumer,Mag_GidNumer,
+group by TrN_DokumentObcy,TrE_GIDLp,   Trn_Gidnumer, Twr_Gidnumer,Mag_GidNumer,twr_ean,
 Twr_Kod,Twr_Nazwa,  Mag_Kod,twr_url,tre_ilosc'";
 
 
