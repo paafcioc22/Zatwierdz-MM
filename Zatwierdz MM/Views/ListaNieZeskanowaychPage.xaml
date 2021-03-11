@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Zatwierdz_MM.Views.ListaNieZeskanowaychPage"  Title="{Binding Title}" BackgroundColor="Aqua" >
+
+        <ContentPage.ToolbarItems>
+            <ToolbarItem Text="Tylko w buforze"
+                  
+                 Order="Primary"
+                 Priority="0" Command="{Binding FilterList}"  />
+        </ContentPage.ToolbarItems>
+    <AbsoluteLayout>
+
+        
+        <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" 
+                           AbsoluteLayout.LayoutBounds="0.5,0.5,1,.07"
+                           AbsoluteLayout.LayoutFlags="All"/>
+
+        <Frame  HasShadow="true"  BorderColor="DarkGray"   
+                                CornerRadius="10" BackgroundColor="White"
+                                OutlineColor="Gray" Padding="1" 
+                                AbsoluteLayout.LayoutBounds="0.05,0.02,1,.07"
+                                AbsoluteLayout.LayoutFlags="All">
+            <SearchBar Text="{Binding Filter, Mode=TwoWay}" SearchCommand="{Binding SearchCommand}" 
+                           Placeholder="Wyszukaj dokument MM" Keyboard="Default"   />
+        </Frame>
+
+
+
+        <ListView x:Name="MyListView"
+            ItemsSource="{Binding Items}"
+            ItemTapped="Handle_ItemTapped"
+            CachingStrategy="RecycleElement"
+            RefreshCommand="{Binding LoadItemsCommand}"
+            IsRefreshing="{Binding IsBusy, Mode=OneWay}"
+              HasUnevenRows="True"
+              IsPullToRefreshEnabled="true" 
+                   AbsoluteLayout.LayoutBounds="0.01,1,1,.9"
+                   AbsoluteLayout.LayoutFlags="All"
+              >
+
+            <!--Built in Cells-->
+
+
+            <!--Custom View Cells-->
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Frame BorderColor="DarkGray" Padding="5"  CornerRadius="10" HasShadow="True" Margin="5">
+                            <StackLayout Orientation="Horizontal"  HorizontalOptions="FillAndExpand" Padding="10" Spacing="8" BackgroundColor="WhiteSmoke" Margin="5" >
+                                <StackLayout.Triggers>
+                                    <DataTrigger TargetType="StackLayout"
+                                            Binding="{Binding Trn_Stan}"    Value="Zatwierdzona">
+                                        <Setter Property="BackgroundColor"  Value="Color.LightGreen" />
+
+                                    </DataTrigger>
+
+
+                                </StackLayout.Triggers>
+                                <StackLayout   Margin="5" HorizontalOptions="FillAndExpand"  >
+                                    <Label Text="{Binding Trn_NrDokumentu}" TextColor="Black" FontSize="20" HorizontalTextAlignment="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Trn_Stan}" Value="Bufor" >
+                                                <Setter Property="TextColor" Value="DarkOrange"/>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <Label Text="{Binding Trn_DataSkan}" />
+                                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                        <Label Text="{Binding DclMagKod}" FontAttributes="Bold" HorizontalOptions="Start"/>
+                                        <Label Text="{Binding Trn_Stan}" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
+                                    </StackLayout>
+                                   
+                                </StackLayout>
+
+                                <!--<CheckBox  x:Name="checkBox1" HorizontalOptions="End" IsEnabled="False" IsChecked="{Binding IsFinish}" Scale="2" Margin="0,0,15,0"/>-->
+
+                            </StackLayout>
+                        </Frame>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+
+    </AbsoluteLayout>
+</ContentPage>

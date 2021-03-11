@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Xamarin.Essentials;
+
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Zatwierdz_MM.Models;
@@ -12,19 +12,16 @@ using Zatwierdz_MM.ViewModels;
 namespace Zatwierdz_MM.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class PrzyjmijMMPage : ContentPage
+    public partial class PlacesPage : ContentPage
     {
-        public ObservableCollection<string> Items { get; set; }
-        PrzyjmijMMViewModel viewModel;
-       
+        private PlacesViewModel zatwierdzonevm;
 
-
-
-        public PrzyjmijMMPage(PrzyjmijMMViewModel viewModel)
+        
+        public PlacesPage()
         {
             InitializeComponent();
-            BindingContext = this.viewModel = viewModel;
-            
+
+            BindingContext = zatwierdzonevm = new PlacesViewModel();
         }
 
         async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
@@ -32,30 +29,24 @@ namespace Zatwierdz_MM.Views
             if (e.Item == null)
                 return;
 
-            var karta = e.Item as DaneMMElem; 
-
-            await Launcher.OpenAsync(new Uri(karta.Url.Replace("Miniatury/", "")));
-
-            //await Clipboard.SetTextAsync(karta.Ean);
-            //DependencyService.Get<Services.IWebService> ().ShowLong("Skopiowano Ean");
+            await DisplayAlert("Item Tapped", "An item was tapped.", "OK");
 
             //Deselect Item
             ((ListView)sender).SelectedItem = null;
         }
-
-
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
 
             //if (zatwierdzonevm.Items.Count == 0)
-            viewModel.LoadItemsCommand.Execute(null);
+            zatwierdzonevm.LoadItemsCommand.Execute(null);
         }
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new PrzyjmijMMSkanowanie(new PrzyjmijMMSkanowanieViewModel(viewModel.Items.ToList())));
+            await Navigation.PushModalAsync(new RaportLista_AddTwrKod(0));
+
         }
     }
 }

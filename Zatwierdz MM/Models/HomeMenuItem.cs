@@ -8,6 +8,8 @@ namespace Zatwierdz_MM.Models
     {
         Skanuj,
         Lista,
+        ListaNieSkanowanych,
+        Mijesca,
         About,
         Ustawienia,
         PrzyjmijMM

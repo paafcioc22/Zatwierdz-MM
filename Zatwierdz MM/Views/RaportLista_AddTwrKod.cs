@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Zatwierdz_MM.Models;
 using Zatwierdz_MM.Services;
+using Zatwierdz_MM.ViewModels;
 using ZXing.Net.Mobile.Forms;
 using static Xamarin.Forms.Button;
 using static Xamarin.Forms.Button.ButtonContentLayout;
@@ -23,14 +25,16 @@ namespace Zatwierdz_MM.Views
         private Label lbl_cena;
         private Entry entry_kodean;
         private Entry entry_ilosc;
+        private Entry entry_polozenie;
         private Image img_foto;
-   
+
         private Button btn_AddEanPrefix;
         private Button btn_Zapisz;
-     
-    
-      
-    
+
+        static PC_MsInwentory towar;
+        PrzyjmijMMSkanowanieViewModel viewModel;
+
+
         string skanean;
         ZXingDefaultOverlay overlay;
         ZXing.Mobile.MobileBarcodeScanningOptions opts;
@@ -44,8 +48,9 @@ namespace Zatwierdz_MM.Views
         string twr_symbol;
         string twr_ean;
         string twr_cena;
+        string polozenie;
 
-
+        Regex regex;
         public RaportLista_AddTwrKod(int gidnumer) : base() //dodawamoe pozycji
         {
 
@@ -58,6 +63,8 @@ namespace Zatwierdz_MM.Views
             //    WidokSkaner(gidnumer);
             //}
             WidokSkaner(gidnumer);
+            regex = new Regex(@"^[A-Z]\d{1,2}");
+            viewModel = new PrzyjmijMMSkanowanieViewModel();
 
         }
 
@@ -70,7 +77,7 @@ namespace Zatwierdz_MM.Views
             var scrollView = new ScrollView();
 
             _gidnumer = gidnumer;
-           
+
 
             NavigationPage.SetHasNavigationBar(this, false);
 
@@ -81,10 +88,10 @@ namespace Zatwierdz_MM.Views
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalTextAlignment = TextAlignment.Center,
-                Text = "Dodawanie pozycji (raport przyjęć)",
+                Text = "Dodawanie towaru do położenia",
                 FontSize = 20,
                 TextColor = Color.Bisque,
-                BackgroundColor = Color.DarkCyan
+                BackgroundColor = Color.Blue
             };
             AbsoluteLayout.SetLayoutBounds(lbl_naglowek, new Rectangle(0, 0, 1, .1));
             AbsoluteLayout.SetLayoutFlags(lbl_naglowek, AbsoluteLayoutFlags.All);
@@ -140,17 +147,32 @@ namespace Zatwierdz_MM.Views
                 HorizontalTextAlignment = TextAlignment.Center,
 
             };
-            entry_ilosc.Completed += (object sender, EventArgs e) =>
+
+
+            entry_polozenie = new Entry()
             {
-                Zapisz();
+                Placeholder = "Podaj położenie",
+                Keyboard = Keyboard.Create(KeyboardFlags.Suggestions | KeyboardFlags.CapitalizeCharacter),
+                HorizontalOptions = LayoutOptions.Center,
+                ReturnType = ReturnType.Go,
+                HorizontalTextAlignment = TextAlignment.Center,
+                ClearButtonVisibility = ClearButtonVisibility.WhileEditing,
+
             };
-            //entry_ilosc.Keyboard = Keyboard.Text;
+
+
+            //,  @"^[A-Z]\d{1,2}";
+
+
+
+
+        
 
 
 
             btn_Zapisz = new Button()
             {
-                Text = "Zapisz pozycję",
+                Text = "Dodaj do położenia",
                 ImageSource = "save48x2.png",
                 ContentLayout = new ButtonContentLayout(ImagePosition.Right, 10),
                 BorderColor = Color.DarkCyan,
@@ -171,7 +193,7 @@ namespace Zatwierdz_MM.Views
                 CornerRadius = 20,
             };
             btn_AddEanPrefix.Clicked += Btn_AddEanPrefix_Clicked;
-            AbsoluteLayout.SetLayoutBounds(btn_AddEanPrefix, new Rectangle(1, .82, .25, 50));
+            AbsoluteLayout.SetLayoutBounds(btn_AddEanPrefix, new Rectangle(1, .62, .25, 50));
             AbsoluteLayout.SetLayoutFlags(btn_AddEanPrefix, AbsoluteLayoutFlags.PositionProportional | AbsoluteLayoutFlags.WidthProportional);
 
 
@@ -180,8 +202,9 @@ namespace Zatwierdz_MM.Views
             stack_dane.Children.Add(lbl_ean);
             stack_dane.Children.Add(lbl_cena);
             stack_dane.Children.Add(lbl_symbol);
-            stack_dane.Children.Add(entry_ilosc);
             stack_dane.Children.Add(entry_kodean);
+            stack_dane.Children.Add(entry_ilosc);
+            stack_dane.Children.Add(entry_polozenie);
             AbsoluteLayout.SetLayoutBounds(stack_dane, new Rectangle(0, 1, 1, .45));
             AbsoluteLayout.SetLayoutFlags(stack_dane, AbsoluteLayoutFlags.All);
 
@@ -219,7 +242,7 @@ namespace Zatwierdz_MM.Views
             var scrollView = new ScrollView();
 
             _gidnumer = gidnumer;
-           
+
             NavigationPage.SetHasNavigationBar(this, false);
 
 
@@ -481,7 +504,7 @@ namespace Zatwierdz_MM.Views
         {
             this.Title = "Dodaj MM";
 
-             
+
 
 
             NavigationPage.SetHasNavigationBar(this, false);
@@ -698,27 +721,57 @@ namespace Zatwierdz_MM.Views
         //}
 
 
-        public async void Zapisz()
-        {
+       
 
-             
-        }
-        private void Btn_Zapisz_Clicked(object sender, EventArgs e)
+        public async void Zapisz(string placeName="")
         {
-            Zapisz();
-            Device.StartTimer(new TimeSpan(0, 0, 0, 2), () =>
+            short ilosc;
+            string odp="";
+
+            short.TryParse(entry_ilosc.Text, out ilosc);
+            towar.MsI_TwrIloscSkan = ilosc;
+
+            if (regex.IsMatch(placeName))
             {
-                //if (SettingsPage.SelectedDeviceType == 1)
+                if (!await viewModel.IsPlaceEmpty(towar.MsI_TwrNumer, 0, placeName))
                 {
-                    SkanowanieEan();
+
+                     odp = await DisplayActionSheet($"Miejsce nie jest puste, odłożyć mimo to? :", "NIE", "TAK", "");
+                     
                 }
 
 
-                return false;
-            });
+                if (odp == "TAK"||string.IsNullOrEmpty(odp))
+                {
+                    if (!string.IsNullOrEmpty(placeName))
+                    {
+                        if (await viewModel.AddTowarToPlace(towar, placeName))
+                        {
+                            await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {placeName}", "OK");
+                            //await Navigation.PopAsync();
+                        }
+                        else
+                            await DisplayAlert("info", "Pozycja z tej MM została już dodana", "OK");
+                    }
+                    else
+                    {
+                        await DisplayAlert("info", "Podaj lokalizacje", "OK");
+                    }
+
+                }
+            }
+
+            else
+                await DisplayAlert("uwaga", "nazwa połozenia zawiera błędy", "OK");
         }
 
-         
+
+
+        private void Btn_Zapisz_Clicked(object sender, EventArgs e)
+        {
+            Zapisz(entry_polozenie.Text);
+
+        }
 
         private async void SkanowanieEan()
         {
@@ -748,7 +801,7 @@ namespace Zatwierdz_MM.Views
 
             opts.TryHarder = true;
 
-       
+
 
             var torch = new Switch
             {
@@ -808,24 +861,24 @@ namespace Zatwierdz_MM.Views
                 scanPage.IsScanning = false;
                 scanPage.AutoFocus();
                 scanPage.IsTorchOn = true; //dodane
-                    scanPage.HasTorch = true; //dodane
-                    Device.BeginInvokeOnMainThread(() =>
+                scanPage.HasTorch = true; //dodane
+                Device.BeginInvokeOnMainThread(() =>
+            {
+
+                Device.StartTimer(new TimeSpan(0, 0, 0, 2), () =>
                 {
-
-                    Device.StartTimer(new TimeSpan(0, 0, 0, 2), () =>
+                    if (scanPage.IsScanning)
                     {
-                        if (scanPage.IsScanning)
-                        {
-                            scanPage.AutoFocus();
-                            scanPage.IsTorchOn = true;
-                        }
+                        scanPage.AutoFocus();
+                        scanPage.IsTorchOn = true;
+                    }
 
-                        return true;
-                    });
-                    Navigation.PopModalAsync();
-                    pobierztwrkod(result.Text);
-                    entry_ilosc.Focus();
+                    return true;
                 });
+                Navigation.PopModalAsync();
+                pobierztwrkod(result.Text);
+                entry_ilosc.Focus();
+            });
             };
             await Navigation.PushModalAsync(scanPage); /////!!!!!!!
 
@@ -854,6 +907,7 @@ namespace Zatwierdz_MM.Views
         public async void pobierztwrkod(string _ean)
         {
             var app = Application.Current as App;
+            
 
             if (!string.IsNullOrEmpty(_ean) || _ean != "2010000")
                 try
@@ -862,15 +916,26 @@ namespace Zatwierdz_MM.Views
 
                     var Webquery = $@"cdn.PC_WykonajSelect N'Select Twr_Kod, Twr_Nazwa, Twr_Katalog Twr_Symbol, cast(twc_wartosc as decimal(5,2))Cena ,cast(sum(TwZ_Ilosc) as int)Ilosc, case when len(twr_kod) > 5 and len(twr_url)> 5 
 		                then replace(twr_url, substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4),  substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4) + ''Miniatury/'') 
-		                else twr_kod end as Url ,Twr_Ean Ean 
+		                else twr_kod end as Url ,Twr_Ean Ean , Twr_Gidnumer
 		                from cdn.TwrKarty 
 		                join cdn.TwrCeny on Twr_GIDNumer = TwC_TwrNumer and TwC_TwrLp = 2 
 		                left join cdn.TwrZasoby on Twr_GIDNumer = TwZ_TwrNumer where twr_ean=''{_ean}'' or twr_kod=''{_ean}''
-		                group by twr_kod, twr_nazwa, Twr_Katalog,twc_wartosc, twr_url,twr_ean'";
+		                group by twr_kod, twr_nazwa, Twr_Katalog,twc_wartosc, twr_url,twr_ean,Twr_Gidnumer'";
 
 
-                    
+
                     var dane = await App.TodoManager.PobierzDaneZWeb<DaneMMElem>(Webquery);
+
+                    var karta = dane.FirstOrDefault(); 
+
+                    towar = new PC_MsInwentory()
+                    {
+                        Cena=karta.Cena,
+                        Ean= karta.Ean,
+                        MsI_TwrNumer= karta.Twr_Gidnumer,
+                        
+                    };
+
                     if (dane.Count > 0)
                     {
                         twrkod = dane[0].Twr_Kod;

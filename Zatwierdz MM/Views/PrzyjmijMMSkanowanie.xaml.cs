@@ -68,7 +68,11 @@ namespace Zatwierdz_MM.Views
                         string placeName = await DisplayPromptAsync("Tworzenie nowego wpisu", "Podaj pozycję np. A10..", "OK", "Anuluj", "", 3, keyboard: Keyboard.Create(KeyboardFlags.CapitalizeCharacter), "");
 
 
-                        if (await viewModel.IsPlaceEmpty(towar.MsI_TwrNumer, 0, placeName))
+                        if(!await viewModel.IsPlaceEmpty(towar.MsI_TwrNumer, 0, placeName))
+                              odp2 = await DisplayActionSheet($"Miejsce nie jest puste, odłożyć mimo to? :", "NIE", "TAK", "");
+
+
+                        if (odp2=="TAK" || string.IsNullOrEmpty(odp))
                         {
                             if (!string.IsNullOrEmpty(placeName))
                             {
@@ -93,10 +97,10 @@ namespace Zatwierdz_MM.Views
                             }
 
                         }
-                        else
-                        {
-                            await DisplayAlert("info", "To miejsce jest już zajęte", "OK");
-                        }
+                        //else
+                        //{
+                        //    await DisplayAlert("info", "To miejsce jest już zajęte", "OK");
+                        //}
 
                     }
                     else if (odp2 == "Anuluj")
@@ -156,13 +160,12 @@ namespace Zatwierdz_MM.Views
                         string placeName = await DisplayPromptAsync("Tworzenie nowego wpisu", "Podaj pozycję np. A10..",
                             "OK", "Anuluj", "", 3, keyboard: Keyboard.Create(KeyboardFlags.CapitalizeCharacter), "");
 
-                        //if(await AddTowarToPlace(towar, placeName))
-                        //    await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {placeName}", "OK");
-                        //else
-                        //    await DisplayAlert("info", "Pozycja z tej MM została już dodana", "OK");
+
+                        if (!await viewModel.IsPlaceEmpty(towar.MsI_TwrNumer, 0, placeName))
+                            odp = await DisplayActionSheet($"Miejsce nie jest puste, odłożyć mimo to? :", "NIE", "TAK", "");
 
 
-                        if (await viewModel.IsPlaceEmpty(towar.MsI_TwrNumer, 0, placeName))
+                        if (odp == "TAK" || string.IsNullOrEmpty(odp))
                         {
                             if (!string.IsNullOrEmpty(placeName))
                             {
@@ -183,13 +186,39 @@ namespace Zatwierdz_MM.Views
                             }
                             else
                             {
-                                await DisplayAlert("info", "Nazwa miejsca nie może być pusta", "OK");
+                                await DisplayAlert("info", "Podaj lokalizacje", "OK");
                             }
+
                         }
-                        else
-                        {
-                            await DisplayAlert("info", "To miejsce jest już zajęte", "OK");
-                        }
+
+                        //if (await viewModel.IsPlaceEmpty(towar.MsI_TwrNumer, 0, placeName))
+                        //{
+                        //    if (!string.IsNullOrEmpty(placeName))
+                        //    {
+                        //        if (await AddTowarToPlace(towar, placeName))
+                        //        {
+                        //            await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {placeName}", "OK");
+                        //            foreach (var item in viewModel.Items)
+                        //            {
+                        //                if (item.MsI_TwrNumer == towar.MsI_TwrNumer)
+                        //                {
+                        //                    towar.Msi_IsPut = true;
+
+                        //                }
+                        //            }
+                        //        }
+                        //        else
+                        //            await DisplayAlert("info", "Pozycja z tej MM została już dodana", "OK");
+                        //    }
+                        //    else
+                        //    {
+                        //        await DisplayAlert("info", "Nazwa miejsca nie może być pusta", "OK");
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    await DisplayAlert("info", "To miejsce jest już zajęte", "OK");
+                        //}
 
                     }
 

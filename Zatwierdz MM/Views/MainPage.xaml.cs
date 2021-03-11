@@ -35,6 +35,12 @@ namespace Zatwierdz_MM.Views
                         break;
                     case (int)MenuItemType.Lista:
                         MenuPages.Add(id, new NavigationPage(new ListaZeskanowaychPage()));
+                        break; 
+                    case (int)MenuItemType.ListaNieSkanowanych:
+                        MenuPages.Add(id, new NavigationPage(new ListaNieZeskanowaychPage()));
+                        break;
+                    case (int)MenuItemType.Mijesca:
+                        MenuPages.Add(id, new NavigationPage(new PlacesPage()));
                         break;
                     case (int)MenuItemType.About:
                         MenuPages.Add(id, new NavigationPage(new AboutPage()));

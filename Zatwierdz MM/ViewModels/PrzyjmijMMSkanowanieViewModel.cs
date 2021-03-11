@@ -26,12 +26,17 @@ namespace Zatwierdz_MM.ViewModels
         public ObservableCollection<PC_MsInwentory> Items { get; private set; }
         List<DaneMMElem> daneMMElem;
 
-        public PrzyjmijMMSkanowanieViewModel(List<DaneMMElem> daneMMElem)
+        public PrzyjmijMMSkanowanieViewModel(List<DaneMMElem> daneMMElem= null)
         {
-            Title = daneMMElem[0].TrN_DokumentObcy;
-            Items = new ObservableCollection<PC_MsInwentory>();
-            Trn_Gidnumer = daneMMElem[0].Trn_Gidnumer;
-            this.daneMMElem = daneMMElem;
+            if(daneMMElem!=null)
+            {
+                Title = daneMMElem[0].TrN_DokumentObcy;
+                Items = new ObservableCollection<PC_MsInwentory>();
+                Trn_Gidnumer = daneMMElem[0].Trn_Gidnumer;
+                this.daneMMElem = daneMMElem;
+            }
+        
+
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
             InsertToBase = new Command<string>(async (string ean) => await ExecInsertToBase(ean));
             LoadRaport = new Command(async () => await ExecuteLoadItems());

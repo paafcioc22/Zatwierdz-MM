@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Zatwierdz_MM.Views.PlacesPage" Title="{Binding Title}">
+
+
+
+    <AbsoluteLayout>
+
+
+        <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" 
+                           AbsoluteLayout.LayoutBounds="0.5,0.5,1,.07"
+                           AbsoluteLayout.LayoutFlags="All"/>
+
+        <Frame  HasShadow="true"  BorderColor="DarkGray"   
+                                CornerRadius="10" BackgroundColor="White"
+                                OutlineColor="Gray" Padding="1" 
+                                AbsoluteLayout.LayoutBounds="0.05,0.02,1,.07"
+                                AbsoluteLayout.LayoutFlags="All">
+            <SearchBar Text="{Binding Filter, Mode=TwoWay}" SearchCommand="{Binding SearchCommand}" 
+                           Placeholder="Wyszukaj położenie lub kod towaru" Keyboard="Default"   />
+        </Frame>
+
+
+
+        <ListView x:Name="MyListView"
+            ItemsSource="{Binding Items}"
+            ItemTapped="Handle_ItemTapped"
+            CachingStrategy="RecycleElement"
+            RefreshCommand="{Binding LoadItemsCommand}"
+            IsRefreshing="{Binding IsBusy, Mode=OneWay}"
+              HasUnevenRows="True"
+              IsPullToRefreshEnabled="true" 
+                   AbsoluteLayout.LayoutBounds="0.01,.5,1,.82"
+                   AbsoluteLayout.LayoutFlags="All"
+              >
+
+            <!--Built in Cells-->
+
+
+            <!--Custom View Cells-->
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Frame BorderColor="DarkGray" Padding="5"  CornerRadius="10" HasShadow="True" Margin="5">
+                            <StackLayout Orientation="Horizontal"  HorizontalOptions="FillAndExpand" Padding="10" Spacing="8" BackgroundColor="WhiteSmoke" Margin="5" >
+                                 
+                                <StackLayout   Margin="5" HorizontalOptions="FillAndExpand"  >
+                                    <Label Text="{Binding PlaceOpis}" TextColor="Black" FontSize="20" HorizontalTextAlignment="Center"/>
+                                    <!--<Label Text="{Binding Trn_DataSkan}" />--> 
+                                    <Label Text="{Binding PlaceName}" FontAttributes="Bold" HorizontalOptions="Start" FontSize="25"/>
+                                    <Label Text="{Binding PlaceQuantity, StringFormat='{0} szt'}" FontAttributes="Bold" HorizontalOptions="CenterAndExpand" FontSize="18"/>
+
+                                    
+                                </StackLayout>
+
+                                <!--<CheckBox  x:Name="checkBox1" HorizontalOptions="End" IsEnabled="False" IsChecked="{Binding IsFinish}" Scale="2" Margin="0,0,15,0"/>-->
+
+                            </StackLayout>
+                        </Frame>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+        <Button Text="Odłóż na miejesce" Clicked="Button_Clicked" BorderColor="Black" BorderWidth="2" CornerRadius="22"     
+               AbsoluteLayout.LayoutBounds="0.5,1,.95,.1"
+               AbsoluteLayout.LayoutFlags="All" />
+    </AbsoluteLayout>
+</ContentPage>
