@@ -46,6 +46,7 @@ namespace Zatwierdz_MM.Views
         {
             if (e.Item == null)
                 return;
+            string odp3 = "";
 
             List<string> opcje = new List<string> { "Odłóż na miejsce odkładcze", "Edytuj", "Pokaż wszystkie wpisy dla modelu" };
 
@@ -69,10 +70,10 @@ namespace Zatwierdz_MM.Views
 
 
                         if(!await viewModel.IsPlaceEmpty(towar.MsI_TwrNumer, 0, placeName))
-                              odp2 = await DisplayActionSheet($"Miejsce nie jest puste, odłożyć mimo to? :", "NIE", "TAK", "");
+                              odp3 = await DisplayActionSheet($"Miejsce nie jest puste, odłożyć mimo to? :", "NIE", "TAK", "");
 
 
-                        if (odp2=="TAK" || string.IsNullOrEmpty(odp2))
+                        if (odp3=="TAK" || string.IsNullOrEmpty(odp3))
                         {
                             if (!string.IsNullOrEmpty(placeName))
                             {
@@ -162,10 +163,10 @@ namespace Zatwierdz_MM.Views
 
 
                         if (!await viewModel.IsPlaceEmpty(towar.MsI_TwrNumer, 0, placeName))
-                            odp = await DisplayActionSheet($"Miejsce nie jest puste, odłożyć mimo to? :", "NIE", "TAK", "");
+                            odp3 = await DisplayActionSheet($"Miejsce nie jest puste, odłożyć mimo to? :", "NIE", "TAK", "");
 
 
-                        if (odp == "TAK" || string.IsNullOrEmpty(odp))
+                        if (odp3 == "TAK" || string.IsNullOrEmpty(odp3))
                         {
                             if (!string.IsNullOrEmpty(placeName))
                             {
