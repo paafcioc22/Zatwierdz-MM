@@ -84,7 +84,8 @@ namespace Zatwierdz_MM.ViewModels
                 int intt = Convert.ToInt32(tmp[0]);
                 filtr = $@"{intt}/{tmp[1]}/{tmp[2]}";
 
-                ff = $"and(t.TrN_DokumentObcy  like '' %{ filtr}% ''";
+                ff = $"and t.TrN_DokumentObcy  like ''%{filtr}%'' and t.trn_trnnumer={intt} ";
+                filtr = "";
             }
             else
             if (filtr.Contains("bufor"))
@@ -113,7 +114,7 @@ namespace Zatwierdz_MM.ViewModels
             join cdn.tranag mmp on mmp.trn_zwrnumer =t.trn_GIDNumer 
         join cdn.magazyny on mag_gidnumer=t.trn_magdnumer
         where t.trn_magdnumer=141 {filtr} {ff}
-        and t.trn_data3 > datediff(d,''18001228'',getdate()-60)
+        and t.trn_data3 > datediff(d,''18001228'',getdate()-260)
         and t.trn_gidtyp=1603
         and not exists (select * from cdn.pc_zatwierdzonemm where mmp.trn_gidnumer=trn_gidnumer)
         order by 1'";

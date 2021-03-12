@@ -61,11 +61,11 @@ namespace Zatwierdz_MM.ViewModels
             {
                 Items.Clear();
 
-                var sqlPobierzMMki = $@"cdn.PC_WykonajSelect N'	select twr_kod PlaceOpis , PlaceName, sum(cast(placequantity as int)) PlaceQuantity
+                var sqlPobierzMMki = $@"cdn.PC_WykonajSelect N'	select twr_kod PlaceOpis , PlaceName, sum(cast(placequantity as int)) PlaceQuantity, PlaceTwrNumer
                             from cdn.pc_mspolozenie a
                             join cdn.TwrKarty on Twr_GIDNumer= placetwrnumer
                             where twr_kod like ''%{filtr}%'' or placename like ''%{filtr}%''
-                            group by twr_kod , placeName
+                            group by twr_kod , placeName,PlaceTwrNumer
                             order by 2'";
 
 
@@ -102,5 +102,49 @@ namespace Zatwierdz_MM.ViewModels
             }
             
         }
+
+
+
+        internal async Task<bool> UpdatePlaceName(Place towar, string place)
+        {
+
+
+            // $@"cdn.PC_WykonajSelect N'Select * from cdn.PC_MsPolozenie where  PlaceTwrNumer={msi.Twr_Gidnumer} and  PlaceTrnNumer= {msi.MsI_TrnNumer}'";
+            bool done = false;
+
+            try
+            {
+                var data = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                var sqlInsert = $@"cdn.PC_WykonajSelect N'Update cdn.PC_MsPolozenie 
+                                    set PlaceName= ''{place}'', PlaceTime=''{data}''
+                                                           where  PlaceTwrNumer={towar.PlaceTwrNumer} and PlaceName= ''{towar.PlaceName}''
+                            '";
+
+                await App.TodoManager.PobierzDaneZWeb<Place>(sqlInsert);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                done = true;
+            }
+
+
+            //var Webquery = $@"cdn.PC_WykonajSelect N'Select * from cdn.PC_MsPolozenie where  PlaceTwrNumer={msi.Twr_Gidnumer}  '";
+
+            //var dane = await App.TodoManager.PobierzDaneZWeb<Place>(Webquery);
+
+            //return IsAddRow;
+            return done;
+
+        }
+
+
+
+
+
     }
 }

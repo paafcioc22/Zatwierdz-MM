@@ -72,7 +72,7 @@ namespace Zatwierdz_MM.Views
                               odp2 = await DisplayActionSheet($"Miejsce nie jest puste, odłożyć mimo to? :", "NIE", "TAK", "");
 
 
-                        if (odp2=="TAK" || string.IsNullOrEmpty(odp))
+                        if (odp2=="TAK" || string.IsNullOrEmpty(odp2))
                         {
                             if (!string.IsNullOrEmpty(placeName))
                             {
