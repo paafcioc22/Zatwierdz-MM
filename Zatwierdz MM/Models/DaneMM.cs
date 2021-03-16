@@ -17,6 +17,7 @@ namespace Zatwierdz_MM.Models
 		public string DclMagKod { get; set; }
 		public string Fmm_NrListu { get; set; }
 		public string Fmm_NrlistuPaczka { get; set; }
+		public string Trn_Opis{ get; set; }
 	}
  
 }

@@ -76,6 +76,7 @@
                                         <Label Text="{Binding Trn_Stan}" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
                                     </StackLayout>
                                     <Label Text="{Binding Fmm_NrlistuPaczka}" TextColor="Black" FontSize="20" HorizontalTextAlignment="Center"/>
+                                    <Label Text="{Binding Trn_Opis}" TextColor="Black" FontSize="12" HorizontalTextAlignment="Center"/>
                                 </StackLayout>
 
                                 <!--<CheckBox  x:Name="checkBox1" HorizontalOptions="End" IsEnabled="False" IsChecked="{Binding IsFinish}" Scale="2" Margin="0,0,15,0"/>-->

@@ -16,7 +16,7 @@ namespace Zatwierdz_MM.ViewModels
         public ObservableCollection<DaneMM> Items { get; private set; }
         public Command LoadItemsCommand { get; set; }
         public ICommand DeleteFromList { get; }
-        public  ICommand SearchCommand => new Command(Search);
+        public  ICommand SearchCommand => new Command(async ()=>await Search());
 
         private string _filter;
 
@@ -24,7 +24,8 @@ namespace Zatwierdz_MM.ViewModels
         {
             Title = "Lista Zeskanowanych";
             Items = new ObservableCollection<DaneMM>();
-            LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
+          //  LoadItemsCommand = new Command<string>(async (string filtrr) => await ExecuteLoadItemsCommand(filtrr));
+            LoadItemsCommand = new Command(async () => await Search());
             DeleteFromList = new Command(async () => await UsunZlistCommand());
         }
 
@@ -75,7 +76,7 @@ namespace Zatwierdz_MM.ViewModels
 
         }
 
-        public string Filter
+        public  string Filter
         {
             get { return _filter; }
             set
@@ -86,7 +87,7 @@ namespace Zatwierdz_MM.ViewModels
             }
         }
 
-        async public void Search()
+        async public Task Search()
         {
             if (string.IsNullOrWhiteSpace(_filter))
             {

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Zatwierdz_MM.Models;
 
@@ -15,13 +16,18 @@ namespace Zatwierdz_MM.ViewModels
 
     public class PrzyjmijMMViewModel : BaseViewModel
     {
+        ICommand tapCommand;
+
         public Command LoadItemsCommand { get; set; }
         public ICommand DeleteFromList { get; }
-       // public ICommand SearchCommand => new Command(Search);
+        public ICommand OpenWebCommand { get; }
+        // public ICommand SearchCommand => new Command(Search);
         public ObservableCollection<DaneMMElem> Items { get; private set; }
         DaneMM dane;
-         
-
+        public ICommand TapCommand
+        {
+            get { return tapCommand; }
+        }
 
 
         public PrzyjmijMMViewModel(DaneMM daneMM)
@@ -31,8 +37,15 @@ namespace Zatwierdz_MM.ViewModels
             dane = daneMM;
             Title = daneMM.Trn_NrDokumentu;
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
+            //OpenWebCommand = new Command<string>(async (string url) => await Browser.OpenAsync(url));
+            tapCommand = new Command<string>(async (string url) => await OnTapped(url));
         }
 
+        async Task OnTapped(string s)
+        {
+
+            await Browser.OpenAsync(s);
+        }
 
 
         async Task ExecuteLoadItemsCommand(string filtr = "")

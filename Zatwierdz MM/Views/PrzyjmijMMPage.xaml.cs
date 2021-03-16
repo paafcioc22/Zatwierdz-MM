@@ -23,8 +23,8 @@ namespace Zatwierdz_MM.Views
         public PrzyjmijMMPage(PrzyjmijMMViewModel viewModel)
         {
             InitializeComponent();
-            BindingContext = this.viewModel = viewModel;
-            
+            BindingContext = this.viewModel = viewModel; 
+
         }
 
         async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
@@ -36,8 +36,8 @@ namespace Zatwierdz_MM.Views
 
             await Launcher.OpenAsync(new Uri(karta.Url.Replace("Miniatury/", "")));
 
-            //await Clipboard.SetTextAsync(karta.Ean);
-            //DependencyService.Get<Services.IWebService> ().ShowLong("Skopiowano Ean");
+            await Clipboard.SetTextAsync(karta.Ean);
+            DependencyService.Get<Services.IWebService> ().ShowLong("Skopiowano Ean");
 
             //Deselect Item
             ((ListView)sender).SelectedItem = null;
@@ -57,5 +57,7 @@ namespace Zatwierdz_MM.Views
         {
             await Navigation.PushAsync(new PrzyjmijMMSkanowanie(new PrzyjmijMMSkanowanieViewModel(viewModel.Items.ToList())));
         }
+
+        
     }
 }

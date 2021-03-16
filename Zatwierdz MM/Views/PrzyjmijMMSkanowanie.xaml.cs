@@ -113,16 +113,23 @@ namespace Zatwierdz_MM.Views
                 else
                 {
                     var places = isExists.Select(s => s.PlaceName).Distinct().ToArray();
-                    //var quantSum = from aa in isExists
-                    //               group aa by aa.PlaceTwrNumer into g
-                    //               select new Place
-                    //               {
-                    //                   PlaceQuantity = g.Sum(s => s.PlaceQuantity)
-                    //               };
+               
 
+                    var IsExistsFromThisMM= await IsPlaceExists(towar.MsI_TwrNumer, towar.MsI_TrnNumer);
 
+                    if (IsExistsFromThisMM.Count > 0)
+                    {
+                        odp = await DisplayActionSheet($"Dodaj do istniejącego :", null, "Anuluj", places);//"Dodaj nowe położenie"
 
-                    odp = await DisplayActionSheet($"Dodaj do istniejącego :", "Dodaj nowe położenie", "Anuluj", places);
+                    }
+                    else
+                    {
+                        odp = await DisplayActionSheet($"Dodaj do istniejącego :", "Dodaj nowe położenie", "Anuluj", places);//"Dodaj nowe położenie"
+
+                    }
+
+                    //todo: czy dodawać nowe położenie??
+                    //odp = await DisplayActionSheet($"Dodaj do istniejącego :",null,  "Anuluj", places);//""
                     if (odp != "Dodaj nowe położenie" && odp != "Anuluj")
                     {
 
@@ -183,7 +190,9 @@ namespace Zatwierdz_MM.Views
                                     }
                                 }
                                 else
+                                {
                                     await DisplayAlert("info", "Pozycja z tej MM została już dodana", "OK");
+                                }
                             }
                             else
                             {

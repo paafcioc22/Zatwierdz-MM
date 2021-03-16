@@ -7,8 +7,9 @@
              x:Class="Zatwierdz_MM.Views.MenuPage"
              Title="Menu">
              
-    <StackLayout VerticalOptions="FillAndExpand">
-        <BoxView BackgroundColor="AliceBlue" HeightRequest="100"/>
+    <StackLayout VerticalOptions="FillAndExpand"  BackgroundColor="White">
+        <!--<BoxView BackgroundColor="AliceBlue" HeightRequest="200" />-->
+        <Image Source="szachlogo.9" HeightRequest="200" Aspect="AspectFit"/>
         <ListView x:Name="ListViewMenu"
                     HasUnevenRows="True">
             <d:ListView.ItemsSource>

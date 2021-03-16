@@ -47,7 +47,11 @@ namespace Zatwierdz_MM.Views
             base.OnAppearing();
 
             //if (zatwierdzonevm.Items.Count == 0)
+            if(!string.IsNullOrEmpty(zatwierdzonevm.Filter))
+                zatwierdzonevm.LoadItemsCommand.Execute(zatwierdzonevm.Filter);
+            else
                 zatwierdzonevm.LoadItemsCommand.Execute(null);
+
         }
     }
 }

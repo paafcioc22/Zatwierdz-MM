@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Zatwierdz_MM.Views.PrzyjmijMMPage" Title="{Binding Title}" >
+             x:Class="Zatwierdz_MM.Views.PrzyjmijMMPage" Title="{Binding Title}"
+             >
 
 
     <StackLayout>
@@ -72,11 +73,14 @@
 
 
 
-                            <Image  Source="{Binding Url}" 
+                            <Image  Source="{Binding Url}" x:Name="foto"  
                                        AbsoluteLayout.LayoutBounds="1,0.05,.25,0.95"
                                        AbsoluteLayout.LayoutFlags="All"
-                                       Aspect="AspectFill"
-                                        />
+                                       Aspect="AspectFill" >
+                                <!--<Image.GestureRecognizers >
+                                    <TapGestureRecognizer  Command="{Binding TapCommand}" CommandParameter="{Binding Url}" />
+                                </Image.GestureRecognizers>-->
+                            </Image>
                             <!--<ffimageloading:CachedImage 
                                 Source="{Binding TwrUrl}"
                                 CacheDuration= "50"
