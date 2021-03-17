@@ -31,13 +31,16 @@
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="Start"
                                             />
-                       
+
                             <Label Text="{Binding MsI_Rca}" FontSize="20" 
                                        TextColor="Black" 
                                        AbsoluteLayout.LayoutBounds="0.25,.6,.2,.3"
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="End"
-                                       />
+                                   
+                                       >
+                                
+                            </Label>
 
                             <!--<Label HorizontalTextAlignment="End"  
                                    VerticalTextAlignment="Start"
@@ -61,8 +64,8 @@
 
 
                             <Image  Source="{Binding Url}" 
-                                       AbsoluteLayout.LayoutBounds="1,0.05,.25,0.95"
-                                       AbsoluteLayout.LayoutFlags="All"
+                                       AbsoluteLayout.LayoutBounds=".98,0.05,100,120"
+                                       AbsoluteLayout.LayoutFlags="PositionProportional"
                                        Aspect="AspectFill"
                                         />
                             <!--<ffimageloading:CachedImage 
@@ -88,6 +91,8 @@
             </ListView.ItemTemplate>
 
         </ListView>
-       
+        <Button Text="Zatwierdź raport" x:Name="btn_finishRaport" Clicked="btn_finishRaport_Clicked" BorderColor="Black" BorderWidth="2" CornerRadius="22"     
+               AbsoluteLayout.LayoutBounds="0.5,1,.95,.1"
+               AbsoluteLayout.LayoutFlags="All" />
     </AbsoluteLayout>
 </ContentPage>

@@ -36,6 +36,7 @@ namespace Zatwierdz_MM.ViewModels
                          from
                          (
                          select MsI_TrnNumer ,  MsI_MagNumer,p.MsI_TwrNumer, Twr_Kod,  isnull(mm,0)MsI_TwrIloscMM, isnull(skan,0)MsI_TwrIloscSkan  
+ ,replace(twr_url,Twr_Kod+''.JPG'',''Miniatury/''+Twr_kod+''.JPG'') Url
                          from
                          (
 	                         select typ, MsI_TwrNumer,isnull(cast(ilosc as int),0)ilosc,msi_trnnumer ,  MsI_MagNumer, twr_kod, twr_url
@@ -61,17 +62,55 @@ namespace Zatwierdz_MM.ViewModels
             foreach (var s in items)
             {
                 //s.Url= viewModel.Items.
-                foreach (var x in viewModel.Items)
-                {
-                    if (s.Twr_Kod.Equals(x.Twr_Kod))
-                    {
-                        s.Url = x.Url;
-                    }
-                }
+                //foreach (var x in viewModel.Items)
+                //{
+                //    if (s.Twr_Kod.Equals(x.Twr_Kod))
+                //    {
+                //        s.Url = x.Url;
+                //    }
+                //}
 
                     
                 Items.Add(s);
             }
+        }
+
+
+        private async Task ExecInsertToBase(string ean)
+        {
+        
+                var data = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            string sql = "";
+
+
+            foreach (var i in Items)
+            {
+                
+            }
+
+
+                var sqlInsert = $@"cdn.PC_WykonajSelect N' 
+                       
+                        begin
+                             Insert into cdn.PC_MsRaport values ()
+                        end'";
+ //           [MsR_MagNumer] [int] NOT NULL,
+ // [MsR_TrnNumer] [int] NOT NULL,
+ // [MsR_TwrNumer] [int] NULL,
+	//[MsR_Ilosc] [int] NULL,
+	//[MsR_TypDok] [int] NULL,
+	//[MsR_StanDok] [tinyint] NULL,
+	//[MsR_Data] [datetime] NULL,
+	//[MsR_NewGidNumer]
+
+
+            var items = await App.TodoManager.PobierzDaneZWeb<PC_MsInwentory>(sqlInsert);
+         
+
+            NrMMki = "";
+            //entry_MM.Focus();
+
+           
         }
     }
 }

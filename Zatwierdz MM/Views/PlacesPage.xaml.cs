@@ -43,25 +43,29 @@ namespace Zatwierdz_MM.Views
                 string placeName = await DisplayPromptAsync("Tworzenie nowego wpisu", "Podaj nową pozycję", "OK", "Anuluj", "", 3, 
                     keyboard: Keyboard.Create(KeyboardFlags.CapitalizeCharacter), "");
 
-                if (!await viewModel.IsPlaceEmpty(place.PlaceTwrNumer, 0, placeName))                
-                      odp2 = await DisplayActionSheet($"Miejsce nie jest puste, odłożyć mimo to? :", "NIE", "TAK", "");
+                if (!string.IsNullOrEmpty(placeName))
+                {
+                    if (!await viewModel.IsPlaceEmpty(place.PlaceTwrNumer, 0, placeName))
+                        odp2 = await DisplayActionSheet($"Miejsce nie jest puste, odłożyć mimo to? :", "NIE", "TAK", "");
 
-                    if (odp2 == "TAK"||string.IsNullOrEmpty(odp2))
+                    if (odp2 == "TAK" || string.IsNullOrEmpty(odp2))
                     {
                         if (!string.IsNullOrEmpty(placeName))
                         {
                             if (await zatwierdzonevm.UpdatePlaceName(place, placeName))
                             {
                                 await DisplayAlert("info", $"Zmieniono położenie na {placeName}", "OK");
+                                //todo : pobierz nowa liste bo następuje agregacja
                                 place.PlaceName = placeName;
                             }
-                               
+
                         }
                         else
                         {
                             await DisplayAlert("info", "Podaj lokalizacje", "OK");
                         }
-                    }
+                    } 
+                }
                 
                    
 

@@ -42,5 +42,10 @@ namespace Zatwierdz_MM.Views
             //Deselect Item
             ((ListView)sender).SelectedItem = null;
         }
+
+        private void btn_finishRaport_Clicked(object sender, EventArgs e)
+        {
+
+        }
     }
 }
