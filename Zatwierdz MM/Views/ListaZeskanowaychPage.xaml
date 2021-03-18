@@ -74,6 +74,7 @@
                                     <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
                                         <Label Text="{Binding DclMagKod}" FontAttributes="Bold" HorizontalOptions="Start"/>
                                         <Label Text="{Binding Trn_Stan}" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
+                                        <CheckBox  HorizontalOptions="End" IsChecked="{Binding Raport}" Color="DarkGreen"/>
                                     </StackLayout>
                                     <Label Text="{Binding Fmm_NrlistuPaczka}" TextColor="Black" FontSize="20" HorizontalTextAlignment="Center"/>
                                     <Label Text="{Binding Trn_Opis}" TextColor="Black" FontSize="12" HorizontalTextAlignment="Center"/>

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace Zatwierdz_MM.Models
 {
-    public class PC_MsRaport
+	[XmlType("Table")]
+	public class PC_MsRaport
     {
 		public int MsR_Id { get; set; }
 		public int MsR_MagNumer { get; set; }

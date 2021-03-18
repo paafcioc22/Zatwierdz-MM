@@ -76,41 +76,60 @@ namespace Zatwierdz_MM.ViewModels
         }
 
 
-        private async Task ExecInsertToBase(string ean)
+        private async Task<int> IsRaportExists(  int TrnGidnumer   )
         {
-        
-                var data = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            string sql = "";
+           
 
 
-            foreach (var i in Items)
+            var Webquery = $@"cdn.PC_WykonajSelect N'Select * from cdn.PC_MsRaport where    MsR_TrnNumer= {TrnGidnumer} '";
+            var dane = await App.TodoManager.PobierzDaneZWeb<PC_MsRaport>(Webquery);
+
+
+            return dane.Count;
+
+        }
+
+
+
+        public  async Task<bool> SaveRaportToBase( )
+        {
+            bool isSaveOk = false;
+            var data = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            string sql = "Insert into cdn.PC_MsRaport values ";
+
+            int trnNumer = Items[0].MsI_TrnNumer;
+            int ilosc = 0;
+            int docType = 0;
+            string insert = "";
+
+            if (await IsRaportExists(trnNumer) == 0)
+            {
+                foreach (var i in Items)
+                {
+                    ilosc = (i.MsI_TwrIloscSkan - i.MsI_TwrIloscMM);
+                    docType = ilosc < 0 ? 1603 : 1617;
+
+                    insert += $"({i.MsI_MagNumer},{i.MsI_TrnNumer},{i.MsI_TwrNumer},{Math.Abs(ilosc)},{docType},0,''{data}'',0),";//+ Environment.NewLine;
+                }
+
+                sql += insert.Substring(0, insert.Length - 1);
+
+
+                var sqlInsert = $@"cdn.PC_WykonajSelect N'{sql}  Select * from cdn.PC_MsRaport where MsR_TrnNumer={trnNumer}  '";
+
+
+                var response = await App.TodoManager.PobierzDaneZWeb<PC_MsRaport>(sqlInsert);
+
+                if (response.Count == Items.Count)
+                    isSaveOk = true;
+            }
+            else
             {
                 
             }
+                  
 
-
-                var sqlInsert = $@"cdn.PC_WykonajSelect N' 
-                       
-                        begin
-                             Insert into cdn.PC_MsRaport values ()
-                        end'";
- //           [MsR_MagNumer] [int] NOT NULL,
- // [MsR_TrnNumer] [int] NOT NULL,
- // [MsR_TwrNumer] [int] NULL,
-	//[MsR_Ilosc] [int] NULL,
-	//[MsR_TypDok] [int] NULL,
-	//[MsR_StanDok] [tinyint] NULL,
-	//[MsR_Data] [datetime] NULL,
-	//[MsR_NewGidNumer]
-
-
-            var items = await App.TodoManager.PobierzDaneZWeb<PC_MsInwentory>(sqlInsert);
-         
-
-            NrMMki = "";
-            //entry_MM.Focus();
-
-           
+            return isSaveOk;
         }
     }
 }

@@ -91,7 +91,8 @@
             </ListView.ItemTemplate>
 
         </ListView>
-        <Button Text="Zatwierdź raport" x:Name="btn_finishRaport" Clicked="btn_finishRaport_Clicked" BorderColor="Black" BorderWidth="2" CornerRadius="22"     
+        <Button Text="Zatwierdź raport" x:Name="btn_finishRaport" Clicked="btn_finishRaport_Clicked" BorderColor="Black" BorderWidth="2" CornerRadius="22"  
+                
                AbsoluteLayout.LayoutBounds="0.5,1,.95,.1"
                AbsoluteLayout.LayoutFlags="All" />
     </AbsoluteLayout>

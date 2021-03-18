@@ -43,9 +43,16 @@ namespace Zatwierdz_MM.Views
             ((ListView)sender).SelectedItem = null;
         }
 
-        private void btn_finishRaport_Clicked(object sender, EventArgs e)
+        private async void btn_finishRaport_Clicked(object sender, EventArgs e)
         {
-
+            if(await viewModel.SaveRaportToBase())
+            {
+                await DisplayAlert("Info", "Raport zapisany pomyślnie", "OK");
+            }
+            else
+            {
+                await DisplayAlert("Info", "Raport już istnieje", "OK");
+            }
         }
     }
 }

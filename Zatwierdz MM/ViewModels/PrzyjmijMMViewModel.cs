@@ -61,20 +61,31 @@ namespace Zatwierdz_MM.ViewModels
 
 
                 var sqlPobierzMMki = $@"cdn.PC_WykonajSelect N'
-   select  TrN_DokumentObcy,TrE_GIDLp,   Trn_Gidnumer, Twr_Gidnumer,Mag_GidNumer,twr_ean Ean,
-Twr_Kod,Twr_Nazwa,  Mag_Kod
-,cast(max(TwC_Wartosc) as float)Cena,cast( (tre_ilosc) as int)Ilosc,
-  replace(twr_url, substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4),
- substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4) + ''Miniatury/'') Url, cast(sum(twz_ilosc)as int) StanMS
-from cdn.tranag
-join cdn.traelem on tre_gidnumer=trn_gidnumer and trn_gidtyp=TrN_GIDTyp
-JOIN cdn.twrkarty on twr_gidnumer=tre_twrnumer
-left join cdn.TwrCeny on Twr_GIDNumer=twc_twrnumer and TwC_TwrLp=2
-join cdn.magazyny on trn_magznumer=Mag_GIDNumer
-left join cdn.TwrZasoby on TwZ_TwrNumer=Twr_GIDNumer and TwZ_MagNumer=141
-where TrN_gidnumer={dane.Trn_GidNumer}
-group by TrN_DokumentObcy,TrE_GIDLp,   Trn_Gidnumer, Twr_Gidnumer,Mag_GidNumer,twr_ean,
-Twr_Kod,Twr_Nazwa,  Mag_Kod,twr_url,tre_ilosc'";
+    select *  from 
+ (
+	   select  TrN_DokumentObcy,min(TrE_GIDLp) TrE_GIDLp ,  Trn_Gidnumer, Twr_Gidnumer,Mag_GidNumer,twr_ean Ean,
+	Twr_Kod,Twr_Nazwa,  Mag_Kod
+	,cast(max(TwC_Wartosc) as float)Cena,cast(sum (tre_ilosc) as int)Ilosc  
+	,replace(twr_url,Twr_Kod+''.JPG'',''Miniatury/''+Twr_kod+''.JPG'') Url ,
+isnull(left(atr_wartosc,1),'''') As IlKol
+	from cdn.tranag
+	join cdn.traelem on tre_gidnumer=trn_gidnumer and trn_gidtyp=TrN_GIDTyp
+	JOIN cdn.twrkarty on twr_gidnumer=tre_twrnumer
+left join cdn.atrybuty on twr_gidnumer=Atr_ObiNumer  and atr_atkid=24
+	left join cdn.TwrCeny on Twr_GIDNumer=twc_twrnumer and TwC_TwrLp=2
+	join cdn.magazyny on trn_magznumer=Mag_GIDNumer 
+	where TrN_gidnumer={dane.Trn_GidNumer}
+	group by TrN_DokumentObcy,    Trn_Gidnumer, Twr_Gidnumer,Mag_GidNumer,twr_ean,
+	Twr_Kod,Twr_Nazwa,  Mag_Kod,twr_url ,atr_wartosc
+)mm
+left join
+(
+	select TwZ_TwrNumer, cast(sum(twz_ilosc)as int) StanMS 
+	from cdn.TwrZasoby
+	where TwZ_MagNumer=141
+	group by TwZ_TwrNumer
+)MS on mm.Twr_GIDNumer= MS.TwZ_TwrNumer  
+ order by TrE_GIDLp'";
 
 
                 var items = await App.TodoManager.PobierzDaneZWeb<DaneMMElem>(sqlPobierzMMki);

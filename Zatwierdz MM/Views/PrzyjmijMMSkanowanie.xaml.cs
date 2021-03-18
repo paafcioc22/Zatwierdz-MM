@@ -272,6 +272,7 @@ namespace Zatwierdz_MM.Views
                     {
                         towar.MsI_TwrIloscSkan = nowa;
                         await viewModel.UpdateModelInInventory(towar);
+                        await DisplayAlert("uwaga!", "Ponownie odłóż tą wartość na miejsce odkładcze", "OK");
                     }
                     else
                     {

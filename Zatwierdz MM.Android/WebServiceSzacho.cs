@@ -51,7 +51,8 @@ namespace Zatwierdz_MM.Droid
 
 
             var query = $@"cdn.PC_WykonajSelect N'select {top} mmw.Trn_GidNumer,mm.Trn_GidTyp,mmw.TrN_DokumentObcy Trn_NrDokumentu ,mm.Trn_DataSkan,mm.Trn_DataZatwierdz,mm.Trn_StanMM,trn.TrN_Stan Trn_Stan , mag_kod DclMagKod ,Fmm_NrlistuPaczka,
-replace(Tno_opis,char(10),'''')Trn_Opis
+replace(Tno_opis,char(10),'''')Trn_Opis,
+(select top 1 case when [MsR_TrnNumer]=mmw.trn_GIDNumer  then 1 else 0 end from cdn.PC_MsRaport) Raport
                         from cdn.PC_ZatwierdzoneMM mm
                         join cdn.tranag trn on trn.TrN_GIDNumer=mm.Trn_GidNumer and trn.TrN_GIDTyp=mm.Trn_GidTyp
                         join cdn.tranag mmw on trn.trn_zwrnumer =mmw.trn_GIDNumer 
@@ -109,7 +110,7 @@ replace(Tno_opis,char(10),'''')Trn_Opis
                     var InsertString = $@"cdn.PC_InsertOrderNag                                 ";
 
                     var respone = client.ExecuteSQLCommand(InsertString);
-
+                   
                     odp = respone;
                     odp = odp.Replace("<ROOT>\r\n  <Table>\r\n    <statuss>", "").Replace("</statuss>\r\n  </Table>\r\n</ROOT>", "");
 
