@@ -730,6 +730,7 @@ namespace Zatwierdz_MM.Views
 
             short.TryParse(entry_ilosc.Text, out ilosc);
             towar.MsI_TwrIloscSkan = ilosc;
+            towar.MsI_TrnNumer = 1;
 
             if (regex.IsMatch(placeName))
             {
@@ -748,10 +749,13 @@ namespace Zatwierdz_MM.Views
                         if (await viewModel.AddTowarToPlace(towar, placeName))
                         {
                             await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {placeName}", "OK");
-                            //await Navigation.PopAsync();
+                            await Navigation.PopModalAsync();
                         }
                         else
+                        {
+
                             await DisplayAlert("info", "Pozycja z tej MM została już dodana", "OK");
+                        }
                     }
                     else
                     {

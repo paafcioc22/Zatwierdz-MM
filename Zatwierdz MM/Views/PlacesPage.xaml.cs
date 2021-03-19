@@ -71,7 +71,22 @@ namespace Zatwierdz_MM.Views
 
             }else if(odp== "Pokaż wszystkie wpisy dla modelu")
             {
-                await DisplayAlert("info", "JEszcze nie dziala", "OK");
+                var sql = $@"cdn.PC_WykonajSelect N'select PlaceName, cdn.NazwaObiektu(1603, placetrnnumer,0,2) PlaceOpis, PlaceQuantity  
+                            from  cdn.pc_mspolozenie
+                            where placetwrnumer={place.PlaceTwrNumer} and placeName=''{place.PlaceName}'''";
+
+                var listaplace = await App.TodoManager.PobierzDaneZWeb<Place>(sql);
+
+                string wpisy = "";
+                List<string> wpisies = new List<string>();
+
+                foreach (var i in listaplace)
+                {
+                    wpisies.Add($@"{i.PlaceName} - {i.PlaceOpis} :  {i.PlaceQuantity} szt");
+                }
+
+               ;
+                await DisplayActionSheet($"Lista wpisów, : suma {listaplace.Sum(s => s.PlaceQuantity)} szt", "", "Anuluj", wpisies.ToArray());
             }
 
 

@@ -97,35 +97,50 @@ namespace Zatwierdz_MM.ViewModels
             var data = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             string sql = "Insert into cdn.PC_MsRaport values ";
 
-            int trnNumer = Items[0].MsI_TrnNumer;
+            int trnNumer = viewModel.Trn_Gidnumer;// Items[0].MsI_TrnNumer;
+           // int magNumer = viewModel.
             int ilosc = 0;
             int docType = 0;
             string insert = "";
 
             if (await IsRaportExists(trnNumer) == 0)
             {
-                foreach (var i in Items)
+
+                if (Items.Count > 0)
                 {
-                    ilosc = (i.MsI_TwrIloscSkan - i.MsI_TwrIloscMM);
-                    docType = ilosc < 0 ? 1603 : 1617;
+                    foreach (var i in Items)
+                    {
+                        ilosc = (i.MsI_TwrIloscSkan - i.MsI_TwrIloscMM);
+                        docType = ilosc < 0 ? 1603 : 1617;
 
-                    insert += $"({i.MsI_MagNumer},{i.MsI_TrnNumer},{i.MsI_TwrNumer},{Math.Abs(ilosc)},{docType},0,''{data}'',0),";//+ Environment.NewLine;
+                        insert += $"({i.MsI_MagNumer},{i.MsI_TrnNumer},{i.MsI_TwrNumer},{Math.Abs(ilosc)},{docType},0,''{data}'',0),";//+ Environment.NewLine;
+                    }
+
+                    sql += insert.Substring(0, insert.Length - 1);
+
+
+                    var sqlInsert = $@"cdn.PC_WykonajSelect N'{sql}  Select * from cdn.PC_MsRaport where MsR_TrnNumer={trnNumer}  '";
+
+
+                    var response = await App.TodoManager.PobierzDaneZWeb<PC_MsRaport>(sqlInsert);
+
+                    if (response.Count == Items.Count)
+                        isSaveOk = true;
                 }
+                else
+                {
+                    sql = $"Insert into cdn.PC_MsRaport values (0,{trnNumer},0,0,0,0,''{ data}'',0)";
+                    insert = $@"cdn.PC_WykonajSelect N'{sql}  Select * from cdn.PC_MsRaport where MsR_TrnNumer={trnNumer}  '";
 
-                sql += insert.Substring(0, insert.Length - 1);
-
-
-                var sqlInsert = $@"cdn.PC_WykonajSelect N'{sql}  Select * from cdn.PC_MsRaport where MsR_TrnNumer={trnNumer}  '";
-
-
-                var response = await App.TodoManager.PobierzDaneZWeb<PC_MsRaport>(sqlInsert);
-
-                if (response.Count == Items.Count)
-                    isSaveOk = true;
+                    var response = await App.TodoManager.PobierzDaneZWeb<PC_MsRaport>(insert);
+                    if (response.Count == 1)
+                        isSaveOk = true;
+                }
+                
             }
             else
             {
-                
+
             }
                   
 

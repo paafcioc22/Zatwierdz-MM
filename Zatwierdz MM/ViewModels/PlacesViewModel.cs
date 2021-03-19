@@ -17,7 +17,7 @@ namespace Zatwierdz_MM.ViewModels
         public ObservableCollection<Place> Items { get; }
         public Command LoadItemsCommand { get; set; }
         public Command FilterList { get; }
-        public ICommand SearchCommand => new Command(Search);
+        public ICommand SearchCommand => new Command(async ()=> await Search());
 
         public string Filter
         {
@@ -33,12 +33,12 @@ namespace Zatwierdz_MM.ViewModels
         {
             Title = "Miejsca odkładcze";
             Items = new ObservableCollection<Place>();
-            LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
+            LoadItemsCommand = new Command(async () => await Search());
             FilterList = new Command(async () => await ExecuteLoadItemsCommand("bufor"));
         }
 
 
-        async public void Search()
+        async public Task Search()
         {
             if (string.IsNullOrWhiteSpace(_filter))
             {

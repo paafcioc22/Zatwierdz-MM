@@ -187,13 +187,23 @@ namespace Zatwierdz_MM.ViewModels
 
             // $@"cdn.PC_WykonajSelect N'Select * from cdn.PC_MsPolozenie where  PlaceTwrNumer={msi.Twr_Gidnumer} and  PlaceTrnNumer= {msi.MsI_TrnNumer}'";
             bool done = false;
-
+            string sqlInsert = "";
                 try
                 {
                     var data = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                    var sqlInsert = $@"cdn.PC_WykonajSelect N'Update cdn.PC_MsPolozenie set PlaceQuantity= {towar.MsI_TwrIloscSkan}, PlaceTime=''{data}''
-                                                           where PlaceTrnNumer={towar.MsI_TrnNumer} and PlaceTwrNumer={towar.MsI_TwrNumer} and PlaceName= ''{place} ''
-                            '";
+                    if (towar.MsI_TrnNumer == 1)
+                    {
+                        sqlInsert = $@"cdn.PC_WykonajSelect N'Update cdn.PC_MsPolozenie set PlaceQuantity+= {towar.MsI_TwrIloscSkan}, PlaceTime=''{data}''
+                                                               where PlaceTrnNumer={towar.MsI_TrnNumer} and PlaceTwrNumer={towar.MsI_TwrNumer} and PlaceName= ''{place} ''
+                                '";
+                    }
+                    else
+                    {
+                          sqlInsert = $@"cdn.PC_WykonajSelect N'Update cdn.PC_MsPolozenie set PlaceQuantity= {towar.MsI_TwrIloscSkan}, PlaceTime=''{data}''
+                                                               where PlaceTrnNumer={towar.MsI_TrnNumer} and PlaceTwrNumer={towar.MsI_TwrNumer} and PlaceName= ''{place} ''
+                                '";
+                    }
+                    
 
                     await App.TodoManager.PobierzDaneZWeb<Place>(sqlInsert);
                 }
@@ -268,7 +278,15 @@ namespace Zatwierdz_MM.ViewModels
 
                 if (IsAddedRow.Count != 0)
                 {
-                    IsAddRow = false;
+                    if (msi.MsI_TrnNumer == 1)
+                    {
+                        await UpdateModelInPlace(msi, placeName);
+                        IsAddRow = true;
+                    }
+                    else
+                    {
+                        IsAddRow = false;
+                    }
                 }
                 else
                 {
