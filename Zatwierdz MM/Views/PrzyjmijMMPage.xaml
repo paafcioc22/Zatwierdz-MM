@@ -24,7 +24,7 @@
 
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <ViewCell>
+                    <ViewCell Height="140">
                         <AbsoluteLayout     >
 
                             <Label Text="{Binding Twr_Kod }" TextColor="Black" FontSize="18" 
@@ -39,13 +39,13 @@
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="Start"
                                             />
-                            <Label Text="{Binding StanMS, StringFormat='MS: {0}'}" FontSize="16"  
+                            <Label Text="{Binding StanMS, StringFormat='MS: {0}'}" FontSize="16"   
                                        TextColor="Black" 
                                        AbsoluteLayout.LayoutBounds="0.05,1,.5,.3"
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="Start"
                                        />
-                            <Label Text="{Binding Ilosc}" FontSize="20" 
+                            <Label Text="{Binding Ilosc}" FontSize="22" 
                                        TextColor="Black" FontAttributes="Bold"
                                        AbsoluteLayout.LayoutBounds="0.25,.6,.2,.3"
                                        AbsoluteLayout.LayoutFlags="All"
@@ -54,7 +54,7 @@
 
                             <Label HorizontalTextAlignment="End"  
                                    VerticalTextAlignment="Start"
-                                   AbsoluteLayout.LayoutBounds="0.65,0.1,.25,.5"
+                                   AbsoluteLayout.LayoutBounds="0.6,0.1,.25,.5"
                                    AbsoluteLayout.LayoutFlags="All" 
                                    Text="{Binding TrE_GIDLp}" TextColor="LightGray"
                                    >
@@ -63,19 +63,19 @@
 
 
                             <!--</StackLayout>-->
-                            <Label Text="{Binding IlKol, StringFormat='Kolory : {0}'}" TextColor="Black" FontSize="16" 
-                                       AbsoluteLayout.LayoutBounds="0.7,0.8,.25,.5"
+                            <Label Text="{Binding IlKol, StringFormat='Kolory : {0}'}" TextColor="Black" FontSize="16"  
+                                       AbsoluteLayout.LayoutBounds="0.6,1,.25,.3"
                                        AbsoluteLayout.LayoutFlags="All"
-                                       HorizontalTextAlignment="Center" 
-                                       VerticalTextAlignment="End"
+                                       HorizontalTextAlignment="End" 
+                                    
                                        />
                             <!--</StackLayout>-->
 
 
 
                             <Image  Source="{Binding Url}" x:Name="foto"  
-                                       AbsoluteLayout.LayoutBounds="1,0.05,100,120"
-                                       AbsoluteLayout.LayoutFlags="PositionProportional"
+                                       AbsoluteLayout.LayoutBounds=".99,0.5,.26,.98"
+                                       AbsoluteLayout.LayoutFlags="All"
                                        Aspect="AspectFill" >
                                 <!--<Image.GestureRecognizers >
                                     <TapGestureRecognizer  Command="{Binding TapCommand}" CommandParameter="{Binding Url}" />
@@ -104,7 +104,7 @@
             </ListView.ItemTemplate>
 
         </ListView>
-        <Button Text="Rozpocznij skanowanie" Clicked="Button_Clicked" HeightRequest="80"/>
+        <Button Text="Rozpocznij skanowanie" Clicked="Button_Clicked" HeightRequest="80" BorderColor="Black" CornerRadius="30" BorderWidth="2" Margin="5,0,5,5"/>
     </StackLayout>
 
 </ContentPage>
