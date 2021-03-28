@@ -167,6 +167,7 @@ replace(Tno_opis,char(10),'''')Trn_Opis,
                             insert into cdn.pc_zatwierdzonemm
                                                 values ({daneMM.Trn_GidNumer},
                                                 {daneMM.Trn_GidTyp},''{daneMM.Trn_NrDokumentu}'',{daneMM.Trn_Stan},''{czas.ToString("yyyy-MM-dd HH:mm:ss")}'',null,0,''{daneMM.Fmm_NrListu}'',''{daneMM.Fmm_NrlistuPaczka}'')
+                                                if @@ROWCOUNT>0
                                                 select ''OK'' as statuss
 
                             end else

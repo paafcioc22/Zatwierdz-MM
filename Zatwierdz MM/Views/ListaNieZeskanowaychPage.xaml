@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Zatwierdz_MM.Views.ListaNieZeskanowaychPage"  Title="{Binding Title}" BackgroundColor="Aqua" >
+             x:Class="Zatwierdz_MM.Views.ListaNieZeskanowaychPage"  Title="{Binding Title}" BackgroundColor="#96BCE3" >
 
         <ContentPage.ToolbarItems>
             <ToolbarItem Text="Tylko w buforze"

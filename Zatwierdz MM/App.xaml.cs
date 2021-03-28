@@ -9,12 +9,29 @@ namespace Zatwierdz_MM
     public partial class App : Application
     {
         public static WebMenager TodoManager { get; set; }
+        private const string password = "password";
         public App()
         {
             InitializeComponent();
 
-            MainPage = new MainPage();
+            MainPage = new NavigationPage(new LoginPage());
         }
+
+        public string Password
+        {
+            get
+            {
+                if (Properties.ContainsKey(password))
+                    return Properties[password].ToString();
+                return "";
+            }
+            set
+            {
+                Properties[password] = value;
+            }
+
+        }
+
 
         protected override void OnStart()
         {

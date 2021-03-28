@@ -4,6 +4,13 @@
              x:Class="Zatwierdz_MM.Views.PrzyjmijMMRaportRoznic" 
              Title="{Binding Title}">
 
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Usuń"
+                 Order="Primary"                 
+                 Priority="0"  Command="{Binding DeleteRaport}" />
+    </ContentPage.ToolbarItems>
+
     <AbsoluteLayout>
 
 
@@ -19,8 +26,8 @@
                     <ViewCell>
                         <AbsoluteLayout     >
 
-                            <Label Text="{Binding Twr_Kod }" TextColor="Black" FontSize="18"
-                                       AbsoluteLayout.LayoutBounds="0.02,0.01,.5,.3"
+                            <Label Text="{Binding Twr_Kod }" TextColor="Black" FontSize="18"  
+                                       AbsoluteLayout.LayoutBounds="0.02,0.01,.65,.3"
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="Start"
                                        />
@@ -32,9 +39,9 @@
                                        HorizontalTextAlignment="Start"
                                             />
 
-                            <Label Text="{Binding MsI_Rca}" FontSize="20" 
+                            <Label Text="{Binding MsI_Rca}" FontSize="20"  
                                        TextColor="Black" 
-                                       AbsoluteLayout.LayoutBounds="0.25,.6,.2,.3"
+                                       AbsoluteLayout.LayoutBounds="0.45,.6,.2,.3"
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="End"
                                    

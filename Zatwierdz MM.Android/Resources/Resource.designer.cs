@@ -10958,13 +10958,16 @@ namespace Zatwierdz_MM.Droid
 			public const int szachlogo = 2131165301;
 			
 			// aapt resource value: 0x7F070076
-			public const int tooltip_frame_dark = 2131165302;
+			public const int szacho = 2131165302;
 			
 			// aapt resource value: 0x7F070077
-			public const int tooltip_frame_light = 2131165303;
+			public const int tooltip_frame_dark = 2131165303;
 			
 			// aapt resource value: 0x7F070078
-			public const int xamarin_logo = 2131165304;
+			public const int tooltip_frame_light = 2131165304;
+			
+			// aapt resource value: 0x7F070079
+			public const int xamarin_logo = 2131165305;
 			
 			static Drawable()
 			{

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Xamarin.Forms;
 using Zatwierdz_MM.Models;
 
@@ -14,6 +15,7 @@ namespace Zatwierdz_MM.ViewModels
 
         private PrzyjmijMMSkanowanieViewModel viewModel;
 
+        public ICommand DeleteRaport { get; }
         public Command LoadRaport { get; set; }
         List<DaneMMElem> daneMMs;
 
@@ -25,6 +27,29 @@ namespace Zatwierdz_MM.ViewModels
             Title = viewModel.Title;
             this.viewModel = viewModel;
             LoadRaport = new Command(async () => await ExecuteLoadItemsCommand(gidnr));
+            DeleteRaport = new Command(async () => await DeleteCommand(gidnr));
+
+        }
+
+        private async Task DeleteCommand(int gidnumer)
+        {
+            var odp = await Application.Current.MainPage.DisplayAlert($"Pytanie..","Usunąć raport z tej mmki?", "OK", "Anuluj");
+            if (odp )
+            {
+                var deletRaport = $@"cdn.PC_WykonajSelect N'
+
+Delete from cdn.PC_MsRaport where MsR_TrnNumer={gidnumer} 
+if @@ROWCOUNT>0
+ select MsR_StanDok=1
+'";
+
+                var response=await App.TodoManager.PobierzDaneZWeb<PC_MsRaport>(deletRaport);
+
+                if(response.Count>0)
+                    if(response[0].MsR_StanDok == 1)
+                    await Application.Current.MainPage.DisplayAlert($"Info..", "Raport usunięto", "OK");
+
+            }
         }
 
         private async Task ExecuteLoadItemsCommand(int trn_Gidnumer)

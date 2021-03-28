@@ -4,7 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="Zatwierdz_MM.Views.ListaZeskanowaychPage" Title="{Binding Title}" BackgroundColor="Aqua"  >
+             x:Class="Zatwierdz_MM.Views.ListaZeskanowaychPage" Title="{Binding Title}" BackgroundColor="#96BCE3"  >
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Usuń"
@@ -74,7 +74,7 @@
                                     <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
                                         <Label Text="{Binding DclMagKod}" FontAttributes="Bold" HorizontalOptions="Start"/>
                                         <Label Text="{Binding Trn_Stan}" FontAttributes="Bold" HorizontalOptions="CenterAndExpand"/>
-                                        <CheckBox  HorizontalOptions="End" IsChecked="{Binding Raport}" Color="DarkGreen"/>
+                                        <CheckBox  HorizontalOptions="End" IsChecked="{Binding Raport}" Color="DarkGreen" IsEnabled="False"/>
                                     </StackLayout>
                                     <Label Text="{Binding Fmm_NrlistuPaczka}" TextColor="Black" FontSize="20" HorizontalTextAlignment="Center"/>
                                     <Label Text="{Binding Trn_Opis}" TextColor="Black" FontSize="12" HorizontalTextAlignment="Center"/>

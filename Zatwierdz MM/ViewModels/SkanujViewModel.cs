@@ -87,17 +87,32 @@ namespace Zatwierdz_MM.ViewModels
                                 mmki.Sort((s1, s2) => s1.CompareTo(s2));
 
                                 var mmka = await App.TodoManager.GetDataFromWeb(select);
-                                if (mmka.Trn_NrDokumentu != "not" && !string.IsNullOrEmpty(mmka.Trn_NrDokumentu) && mmka.Trn_NrDokumentu != "zatwierdzona")
+
+                                if (
+                                    mmka.Trn_NrDokumentu != "not" && 
+                                    !string.IsNullOrEmpty(mmka.Trn_NrDokumentu) && 
+                                    mmka.Trn_NrDokumentu != "zatwierdzona"
+                                    )
+                                {
                                     DependencyService.Get<Services.IWebService>().ShowLong($"Dodano do listy {mmka.Trn_NrDokumentu}");
+                                }
                                 else if (string.IsNullOrEmpty(mmka.Trn_NrDokumentu))
+                                {
                                     await Application.Current.MainPage.DisplayAlert("info", $"Brak dokumentu", "OK");
+                                }
                                 else if (mmka.Trn_NrDokumentu == "zatwierdzona")
+                                {
                                     await Application.Current.MainPage.DisplayAlert("info", $"Dokument jest już zatwierdzony", "OK");
+                                }
                                 else
+                                {
                                     await Application.Current.MainPage.DisplayAlert("info", $"Nie udał się dodać pozycji- paczka już zeskanowana?", "OK");
+                                }
                             }
                             if (fedex.Count > 1)
-                                await Application.Current.MainPage.DisplayActionSheet($"Mmki w paczce {fedex[0].Fmm_NrPaczki}:", "OK", null, mmki.ToArray());
+                            {
+                                 await Application.Current.MainPage.DisplayActionSheet($"Mmki w paczce {fedex[0].Fmm_NrPaczki}:", "OK", null, mmki.ToArray());
+                            }
                         }
                         else
                         {

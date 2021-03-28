@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="Zatwierdz_MM.Views.LoginPage" NavigationPage.HasNavigationBar="False">
+    <RelativeLayout BackgroundColor="#96BCE3">
+        <BoxView Color="#1976F3"
+                 HeightRequest="130"
+                 RelativeLayout.WidthConstraint="{ConstraintExpression
+                    Type=RelativeToParent,Property=Width, Factor=1}"
+                 />
+
+        <Button BorderRadius="70" x:Name="imageCircleBack" HeightRequest="135" WidthRequest="135" 
+                RelativeLayout.XConstraint="{ConstraintExpression 
+            Type=RelativeToParent,
+            Property=Width, 
+            Factor=.5, 
+            Constant = -70}" 
+                
+                RelativeLayout.YConstraint="{ConstraintExpression 
+            Type=RelativeToParent, 
+            Factor=0, 
+            Property=Y, 
+            Constant=60}" BackgroundColor="#96BCE3" />
+
+        <Button x:Name="btn_click"  BorderRadius="63" Clicked="Button_Clicked" BackgroundColor="Black" HeightRequest="125" ImageSource="szacho.9" Scale="1" TextColor="White"
+            WidthRequest="125" RelativeLayout.XConstraint="{ConstraintExpression 
+            Type=RelativeToView, 
+            ElementName=imageCircleBack, 
+            Property=X, 
+            Factor=1,
+            Constant=5}" 
+                RelativeLayout.YConstraint="{ConstraintExpression 
+            Type=RelativeToParent, 
+            Factor=0, 
+            Property=Y, 
+            Constant=65}" />
+
+        <Label Text="Logowanie" FontSize="25" TextColor="Black" HorizontalTextAlignment="Center"  
+               RelativeLayout.XConstraint="{ConstraintExpression
+            Type=RelativeToView,ElementName=imageCircleBack,Property=X,Factor=1,Constant=10}"
+               
+                RelativeLayout.YConstraint="{ConstraintExpression 
+            Type=RelativeToParent, 
+            Factor=0, 
+            Property=Y, 
+            Constant=220}" 
+               />
+        <Entry Placeholder="Podaj hasło" x:Name="entry_haslo" Text="{Binding Password}"
+               IsPassword="True" 
+                Keyboard="Text"   
+               BackgroundColor="White" 
+               TextColor="Black" 
+               HorizontalTextAlignment="Center"
+               Completed="Entry_Completed"
+            RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=320}"
+            RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=0.1, Constant=0}"
+            RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.8,Constant=0}"
+            RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0,Constant=50}" 
+           >
+
+
+        </Entry>
+
+        <Label x:Name="wersja_label" TextColor="Black"  HorizontalTextAlignment="End"  Text="wpisz j0@rt"
+            RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1,Constant=-30}"
+            RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1, Constant=-190}"
+            RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=0.4,Constant=0}"/>
+
+        <ActivityIndicator  Color="#f4b9fe"    x:Name="kolko"
+            RelativeLayout.XConstraint="{ConstraintExpression
+            Type=RelativeToView,ElementName=imageCircleBack,Property=X,Factor=1.4}"
+               
+                RelativeLayout.YConstraint="{ConstraintExpression 
+            Type=RelativeToParent, 
+            Factor=0, 
+            Property=Y, 
+            Constant=260}"/>
+
+
+    </RelativeLayout>
+</ContentPage>

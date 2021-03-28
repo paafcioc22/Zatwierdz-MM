@@ -10,7 +10,7 @@
 
 
 
-    <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" BackgroundColor="Aqua">
+    <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" BackgroundColor="#96BCE3">
         <Frame VerticalOptions="CenterAndExpand">
             <Entry Placeholder="Skanuj lub wprowadź"  FontSize="20" x:Name="entry_MM" 
                HorizontalTextAlignment="Center" VerticalOptions="CenterAndExpand"
