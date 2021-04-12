@@ -52,7 +52,7 @@ namespace Zatwierdz_MM.Views
 
             var towar = e.Item as PC_MsInwentory;
 
-            var odp = await DisplayActionSheet($"Wybierz :", null, "Anuluj", opcje.ToArray());
+            var odp = await DisplayActionSheet($"Wybierz :", "Anuluj", "Usuń", opcje.ToArray());
             if (odp == "Odłóż na miejsce odkładcze")
             {
                 var isExists = await IsPlaceExists(towar.MsI_TwrNumer); // czy w ogóle kod dodany
@@ -69,11 +69,11 @@ namespace Zatwierdz_MM.Views
                         string placeName = await DisplayPromptAsync("Tworzenie nowego wpisu", "Podaj pozycję np. A10..", "OK", "Anuluj", "", 3, keyboard: Keyboard.Create(KeyboardFlags.CapitalizeCharacter), "");
 
 
-                        if(!await viewModel.IsPlaceEmpty(towar.MsI_TwrNumer, 0, placeName))
-                              odp3 = await DisplayActionSheet($"Miejsce nie jest puste, odłożyć mimo to? :", "NIE", "TAK", "");
+                        if (!await viewModel.IsPlaceEmpty(towar.MsI_TwrNumer, 0, placeName))
+                            odp3 = await DisplayActionSheet($"Miejsce nie jest puste, odłożyć mimo to? :", "NIE", "TAK", "");
 
 
-                        if (odp3=="TAK" || string.IsNullOrEmpty(odp3))
+                        if (odp3 == "TAK" || string.IsNullOrEmpty(odp3))
                         {
                             if (!string.IsNullOrEmpty(placeName))
                             {
@@ -113,9 +113,9 @@ namespace Zatwierdz_MM.Views
                 else
                 {
                     var places = isExists.Select(s => s.PlaceName).Distinct().ToArray();
-               
 
-                    var IsExistsFromThisMM= await IsPlaceExists(towar.MsI_TwrNumer, towar.MsI_TrnNumer);
+
+                    var IsExistsFromThisMM = await IsPlaceExists(towar.MsI_TwrNumer, towar.MsI_TrnNumer);
 
                     if (IsExistsFromThisMM.Count > 0)
                     {
@@ -147,7 +147,7 @@ namespace Zatwierdz_MM.Views
                                     }
                                 }
                             }
-                            else  if (await DisplayAlert("info", $"{towar.Twr_Kod} z tej MM został już dodany\n Chcesz zaktualizować wpis?", "Tak", "Nie"))
+                            else if (await DisplayAlert("info", $"{towar.Twr_Kod} z tej MM został już dodany\n Chcesz zaktualizować wpis?", "Tak", "Nie"))
                             {
                                 if (await viewModel.UpdateModelInPlace(towar, odp))
                                     await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {odp}", "OK");
@@ -263,7 +263,7 @@ namespace Zatwierdz_MM.Views
             else if (odp == "Edytuj")
             {
                 short nowa;
-                string nowailosc = await DisplayPromptAsync("Edycja wpisu", $"Podaj nową wartość dla {towar.Twr_Kod}","OK", "Anuluj", "", 3, keyboard: Keyboard.Numeric , "");
+                string nowailosc = await DisplayPromptAsync("Edycja wpisu", $"Podaj nową wartość dla {towar.Twr_Kod}", "OK", "Anuluj", "", 3, keyboard: Keyboard.Numeric, "");
 
 
                 if (!string.IsNullOrEmpty(nowailosc))
@@ -277,12 +277,28 @@ namespace Zatwierdz_MM.Views
                     else
                     {
                         await DisplayAlert("uwaga", "To nie liczba", "OK");
-                    } 
+                    }
                 }
-                    
+
 
 
             }
+            else if (odp == "Usuń")
+            {
+                var odpDelete=await DisplayAlert("uwaga", "Czy chcesz usunąć pozycję?\nWpis zostanie usunięty również z położenia", "TAK", "NIE");
+                if(odpDelete)
+                {
+                    var response = await viewModel.DeleteFromSkanAndPolozenie(towar.MsI_TrnNumer, towar.Twr_Gidnumer);
+                    if (response)
+                    {
+                        var obj = viewModel.Items.Where(s => s.MsI_TrnNumer == towar.MsI_TrnNumer && s.MsI_TwrNumer == towar.Twr_Gidnumer).FirstOrDefault();
+                        viewModel.Items.Remove(obj);
+                       await DisplayAlert("info", "Wpis usunięto", "OK");
+                    }
+                }
+            }
+
+
                 //Deselect Item
                 ((ListView)sender).SelectedItem = null;
         }

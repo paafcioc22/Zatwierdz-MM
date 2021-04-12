@@ -418,5 +418,42 @@ namespace Zatwierdz_MM.ViewModels
             return daneMMElem;
 
         }
+
+
+        public async Task<bool> DeleteFromSkanAndPolozenie(int TrnGidnumer, int twrnumer)
+        {
+            DaneMMElem daneMMElem = new DaneMMElem();
+
+
+            try
+            {
+
+
+                var Webquery = $@"cdn.PC_WykonajSelect N' delete from [CDN].[PC_MsInwentory] 
+                    where MsI_TrnNumer =  {TrnGidnumer} and MsI_TwrNumer={twrnumer} if @@ROWCOUNT>0
+ select MsI_TwrNumer=1'";
+
+
+
+                var dane = await App.TodoManager.PobierzDaneZWeb<DaneMMElem>(Webquery);
+                if (dane.Count > 0)
+                {
+                    daneMMElem = dane[0];
+                    return true;
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+
+
+            return false;
+
+        }
+
+
     }
 }
