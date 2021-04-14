@@ -16,6 +16,7 @@ namespace Zatwierdz_MM.ViewModels
         private PrzyjmijMMSkanowanieViewModel viewModel;
 
         public ICommand DeleteRaport { get; }
+       
         public Command LoadRaport { get; set; }
         List<DaneMMElem> daneMMs;
 
@@ -116,7 +117,7 @@ if @@ROWCOUNT>0
 
 
 
-        public  async Task<bool> SaveRaportToBase( )
+        public  async Task<bool> SaveRaportToBase(string opis )
         {
             bool isSaveOk = false;
             var data = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
@@ -138,7 +139,7 @@ if @@ROWCOUNT>0
                         ilosc = (i.MsI_TwrIloscSkan - i.MsI_TwrIloscMM);
                         docType = ilosc < 0 ? 1603 : 1617;
 
-                        insert += $"({i.MsI_MagNumer},{i.MsI_TrnNumer},{i.MsI_TwrNumer},{Math.Abs(ilosc)},{docType},0,''{data}'',0),";//+ Environment.NewLine;
+                        insert += $"({i.MsI_MagNumer},{i.MsI_TrnNumer},{i.MsI_TwrNumer},{Math.Abs(ilosc)},{docType},0,''{data}'',0,''{opis}''),";//+ Environment.NewLine;
                     }
 
                     sql += insert.Substring(0, insert.Length - 1);

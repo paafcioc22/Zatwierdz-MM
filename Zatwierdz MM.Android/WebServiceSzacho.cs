@@ -211,7 +211,7 @@ replace(Tno_opis,char(10),'''')Trn_Opis,
             catch (Exception s)
             {
 
-                throw;
+                return null;
             }
         }
 

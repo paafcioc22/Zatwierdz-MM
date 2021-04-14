@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Zatwierdz_MM.Views.FotoBrowser"
+             xmlns:forms="clr-namespace:dotMorten.Xamarin.Forms;assembly=dotMorten.Xamarin.Forms.AutoSuggestBox"
+             Title="{Binding Title}"
+             x:Name="CurrentPage"
+             >
+
+
+    <AbsoluteLayout>
+
+        <forms:AutoSuggestBox PlaceholderText="kontrahent.." 
+                              WidthRequest="250" 
+                              x:Name="kotrahentSugestsBox"
+                              HorizontalOptions="Center"
+                              VerticalOptions="CenterAndExpand"
+                             TextChanged="kotrahentSugestsBox_TextChanged"
+                                QuerySubmitted="kotrahentSugestsBox_QuerySubmitted"
+                               Focused="kotrahentSugestsBox_Focused"
+                                AbsoluteLayout.LayoutBounds="0,.01,1,.1"
+                                AbsoluteLayout.LayoutFlags="All"
+                                  />
+
+
+        <forms:AutoSuggestBox PlaceholderText="grupa.." 
+                              WidthRequest="250" 
+                              x:Name="grupaSuggetstBox"
+                              HorizontalOptions="Center"
+                              VerticalOptions="CenterAndExpand"
+                               TextChanged="grupaSuggetstBox_TextChanged"
+                                QuerySubmitted="grupaSuggetstBox_QuerySubmitted"
+                            Focused="grupaSuggetstBox_Focused"
+                             AbsoluteLayout.LayoutBounds="0,.12,1,.1"
+                            AbsoluteLayout.LayoutFlags="All"
+                                  />
+
+
+
+        <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                           AbsoluteLayout.LayoutBounds="0.5,.25,1,.1"
+                           AbsoluteLayout.LayoutFlags="All" />
+
+        <CollectionView ItemsSource="{Binding FotoBrowserList}"  
+            AbsoluteLayout.LayoutBounds="0,1,1,.75" SelectionMode="Single"  
+            AbsoluteLayout.LayoutFlags="All">
+            <!--<CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical"
+                        Span="2" />
+            </CollectionView.ItemsLayout>-->
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10" BindingContext="{Binding FotoBrowser}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"   />
+                            <!--<ColumnDefinition Width="Auto" />-->
+                        </Grid.ColumnDefinitions>
+                        <Image  Grid.Row="0" HorizontalOptions="Center"  
+                       Source="{Binding Url}"
+                       Aspect="AspectFill"
+                       HeightRequest="250"
+                       WidthRequest="190" >
+                            <Image.GestureRecognizers>
+
+                                <TapGestureRecognizer  Command="{Binding Source={x:Reference CurrentPage}, Path=BindingContext.ClickCommand} " CommandParameter="{Binding .}" />
+
+                            </Image.GestureRecognizers>
+                        </Image>
+
+                        <Label Grid.Row="1" HorizontalOptions="Center"  
+                       Text="{Binding TwrKod}"
+                       FontAttributes="Bold" />
+                        <!--<Label Grid.Row="1"
+                       Grid.Column="1"
+                       Text="{Binding TwgKod}"
+                       FontAttributes="Italic"
+                       VerticalOptions="End" />-->
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            
+        </CollectionView>
+
+
+    </AbsoluteLayout>
+</ContentPage>

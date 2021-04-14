@@ -72,6 +72,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="dotMorten.Xamarin.Forms.AutoSuggestBox">
+      <Version>1.1.1</Version>
+    </PackageReference>
     <PackageReference Include="Rg.Plugins.Popup">
       <Version>2.0.0.10</Version>
     </PackageReference>

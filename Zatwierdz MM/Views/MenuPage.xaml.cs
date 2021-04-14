@@ -25,6 +25,7 @@ namespace Zatwierdz_MM.Views
                 new HomeMenuItem {Id = MenuItemType.Lista, Title="Lista zeskanowanych" },
                 new HomeMenuItem {Id = MenuItemType.ListaNieSkanowanych, Title="Lista Nie zeskanowanych" },
                 new HomeMenuItem {Id = MenuItemType.Mijesca, Title="Miejsca odkładcze" },
+                new HomeMenuItem {Id = MenuItemType.FotoBrowser, Title="Szukaj Foto" },
                 new HomeMenuItem {Id = MenuItemType.Ustawienia, Title="Ustawienia" },
                 //new HomeMenuItem {Id = MenuItemType.PrzyjmijMM, Title="Przyjmij MM" },
                 new HomeMenuItem {Id = MenuItemType.About, Title="Info" }

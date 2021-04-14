@@ -46,6 +46,15 @@ namespace Zatwierdz_MM.ViewModels
             set { SetProperty(ref nrMMki, value); }
         }
 
+        private string description;
+
+        public string Description
+        {
+            get { return description; } 
+            set { SetProperty(ref description, value); }
+        }
+
+
         protected bool SetProperty<T>(ref T backingStore, T value,
             [CallerMemberName]string propertyName = "",
             Action onChanged = null)

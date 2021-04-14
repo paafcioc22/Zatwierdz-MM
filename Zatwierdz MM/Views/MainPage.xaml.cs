@@ -48,6 +48,9 @@ namespace Zatwierdz_MM.Views
                     case (int)MenuItemType.Ustawienia:
                         MenuPages.Add(id, new NavigationPage(new UstawieniaPage()));
                         break;
+                    case (int)MenuItemType.FotoBrowser:
+                        MenuPages.Add(id, new NavigationPage(new FotoBrowser()));
+                        break;
                    
                 }
             }

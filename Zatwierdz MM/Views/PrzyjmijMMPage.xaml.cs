@@ -51,6 +51,7 @@ namespace Zatwierdz_MM.Views
 
             //if (zatwierdzonevm.Items.Count == 0)
             viewModel.LoadItemsCommand.Execute(null);
+           
         }
 
         private async void Button_Clicked(object sender, EventArgs e)

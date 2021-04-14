@@ -6,6 +6,7 @@
 
 
     <StackLayout>
+        <Label Text="{Binding Description}" HorizontalTextAlignment="Center" />
         <ListView x:Name="MyListView" RowHeight="80" 
             ItemsSource="{Binding Items}"
             ItemTapped="Handle_ItemTapped"

@@ -17,5 +17,6 @@ namespace Zatwierdz_MM.Models
 		public byte MsR_StanDok { get; set; }
 		public DateTime MsR_Data { get; set; }
 		public int MsR_NewGidNumer { get; set; }
+		public string MsR_Opis { get; set; }
 	}
 }

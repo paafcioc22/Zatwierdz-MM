@@ -12,7 +12,8 @@ namespace Zatwierdz_MM.Models
         Mijesca,
         About,
         Ustawienia,
-        PrzyjmijMM
+        PrzyjmijMM,
+        FotoBrowser
     }
     public class HomeMenuItem
     {

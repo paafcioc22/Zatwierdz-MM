@@ -22,6 +22,8 @@ namespace Zatwierdz_MM.Views
             InitializeComponent();
             BindingContext = this.viewModel = przyjmijMMRaportRcaViewModel;
 
+            MyListView.IsVisible = viewModel.Items.Any();
+            notFound.IsVisible = !MyListView.IsVisible;
         }
 
         protected override void OnAppearing()
@@ -37,7 +39,7 @@ namespace Zatwierdz_MM.Views
             if (e.Item == null)
                 return;
 
-            await DisplayAlert("Item Tapped", "An item was tapped.", "OK");
+           // await DisplayAlert("Item Tapped", "An item was tapped.", "OK");
 
             //Deselect Item
             ((ListView)sender).SelectedItem = null;
@@ -45,14 +47,21 @@ namespace Zatwierdz_MM.Views
 
         private async void btn_finishRaport_Clicked(object sender, EventArgs e)
         {
-            if(await viewModel.SaveRaportToBase())
+            string opisRaport = await DisplayPromptAsync("Zapisywanie raportu", "Dodaj ewentualny opis", "OK", "Anuluj", "", 50,
+                    keyboard: Keyboard.Create(KeyboardFlags.CapitalizeCharacter), "");
+
+            if (opisRaport!=null)
             {
-                await DisplayAlert("Info", "Raport zapisany pomyślnie", "OK");
+                if (await viewModel.SaveRaportToBase(opisRaport))
+                {
+                    await DisplayAlert("Info", "Raport zapisany pomyślnie", "OK");
+                }
+                else
+                {
+                    await DisplayAlert("Info", "Raport już istnieje", "OK");
+                }
             }
-            else
-            {
-                await DisplayAlert("Info", "Raport już istnieje", "OK");
-            }
+            
         }
     }
 }

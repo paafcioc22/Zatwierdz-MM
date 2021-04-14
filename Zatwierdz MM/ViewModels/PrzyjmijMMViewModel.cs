@@ -47,7 +47,18 @@ namespace Zatwierdz_MM.ViewModels
             await Browser.OpenAsync(s);
         }
 
+        async Task<string> GetOpisFromRaport()
+        {
+            var sqlPobierzMMki = $@"cdn.PC_WykonajSelect N' select top 1 MsR_Data from[CDN].[PC_MsRaport]
+            where[MsR_TrnNumer] = {dane.Trn_GidNumer}'";
 
+            var opis= await App.TodoManager.PobierzDaneZWeb<PC_MsRaport>(sqlPobierzMMki);
+            //todo: popraw na opis
+            if (opis.Count > 0)
+                return opis[0].MsR_Opis;
+            return "";
+
+        }
         async Task ExecuteLoadItemsCommand(string filtr = "")
         {
             if (IsBusy)
@@ -59,6 +70,7 @@ namespace Zatwierdz_MM.ViewModels
             {
                 Items.Clear();
 
+                this.Description =await  GetOpisFromRaport();
 
                 var sqlPobierzMMki = $@"cdn.PC_WykonajSelect N'
     select *  from 
