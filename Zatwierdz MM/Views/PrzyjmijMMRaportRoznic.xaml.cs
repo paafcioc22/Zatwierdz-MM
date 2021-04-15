@@ -21,18 +21,24 @@ namespace Zatwierdz_MM.Views
         {
             InitializeComponent();
             BindingContext = this.viewModel = przyjmijMMRaportRcaViewModel;
-
-            MyListView.IsVisible = viewModel.Items.Any();
+            var lista=Task.Run(()=>viewModel.GetPC_MsInwentories(this.viewModel.gidnr)).Result;
+            //Task.Run(() => App.TodoManager.PobierzDaneZWeb<PC_MsInwentory>(sqlPobierzMMki)).Result; 
+            //viewModel.LoadRaport.Execute(null);
+            MyListView.IsVisible = lista.Any();
             notFound.IsVisible = !MyListView.IsVisible;
+
         }
 
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
+        //protected override void OnAppearing()
+        //{
+        //    base.OnAppearing();
 
-            //if (zatwierdzonevm.Items.Count == 0)
-            viewModel.LoadRaport.Execute(null);
-        }
+        //    //if (zatwierdzonevm.Items.Count == 0)
+        //    viewModel.LoadRaport.Execute(null);
+
+        //    //MyListView.IsVisible = viewModel.Items.Any();
+        //    //notFound.IsVisible = !MyListView.IsVisible;
+        //}
 
         async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
         {
@@ -48,7 +54,7 @@ namespace Zatwierdz_MM.Views
         private async void btn_finishRaport_Clicked(object sender, EventArgs e)
         {
             string opisRaport = await DisplayPromptAsync("Zapisywanie raportu", "Dodaj ewentualny opis", "OK", "Anuluj", "", 50,
-                    keyboard: Keyboard.Create(KeyboardFlags.CapitalizeCharacter), "");
+                    keyboard: Keyboard.Create(KeyboardFlags.CapitalizeSentence), "");
 
             if (opisRaport!=null)
             {

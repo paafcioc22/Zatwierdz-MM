@@ -49,11 +49,11 @@ namespace Zatwierdz_MM.ViewModels
 
         async Task<string> GetOpisFromRaport()
         {
-            var sqlPobierzMMki = $@"cdn.PC_WykonajSelect N' select top 1 MsR_Data from[CDN].[PC_MsRaport]
+            var sqlPobierzMMki = $@"cdn.PC_WykonajSelect N' select top 1 MsR_Opis from[CDN].[PC_MsRaport]
             where[MsR_TrnNumer] = {dane.Trn_GidNumer}'";
 
             var opis= await App.TodoManager.PobierzDaneZWeb<PC_MsRaport>(sqlPobierzMMki);
-            //todo: popraw na opis
+           
             if (opis.Count > 0)
                 return opis[0].MsR_Opis;
             return "";

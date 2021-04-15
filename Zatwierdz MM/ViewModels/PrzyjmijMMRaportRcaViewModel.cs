@@ -13,6 +13,7 @@ namespace Zatwierdz_MM.ViewModels
     {
         public ObservableCollection<PC_MsInwentory> Items { get; private set; }
 
+        public readonly int gidnr;
         private PrzyjmijMMSkanowanieViewModel viewModel;
 
         public ICommand DeleteRaport { get; }
@@ -24,10 +25,10 @@ namespace Zatwierdz_MM.ViewModels
         {
 
             Items = new ObservableCollection<PC_MsInwentory>();
-            var gidnr = viewModel.Trn_Gidnumer;
+            gidnr = viewModel.Trn_Gidnumer;
             Title = viewModel.Title;
             this.viewModel = viewModel;
-            LoadRaport = new Command(async () => await ExecuteLoadItemsCommand(gidnr));
+            LoadRaport = new Command(  () =>   Task.Run(()=> ExecuteLoadItemsCommand(gidnr)));
             DeleteRaport = new Command(async () => await DeleteCommand(gidnr));
 
         }
@@ -84,22 +85,66 @@ if @@ROWCOUNT>0
                             '";
 
             var items = await App.TodoManager.PobierzDaneZWeb<PC_MsInwentory>(sqlPobierzMMki);
+            //var items = Task.Run(()=>  App.TodoManager.PobierzDaneZWeb<PC_MsInwentory>(sqlPobierzMMki)).Result;
+
+            
+
 
             foreach (var s in items)
             {
-                //s.Url= viewModel.Items.
-                //foreach (var x in viewModel.Items)
-                //{
-                //    if (s.Twr_Kod.Equals(x.Twr_Kod))
-                //    {
-                //        s.Url = x.Url;
-                //    }
-                //}
-
-                    
+                     
                 Items.Add(s);
             }
+             
         }
+
+
+        internal async Task<ObservableCollection<PC_MsInwentory>> GetPC_MsInwentories(int trn_Gidnumer)
+        {
+            Items.Clear();
+            var sqlPobierzMMki = $@"cdn.PC_WykonajSelect N'
+                         select 
+                         *,  MsI_TwrIloscSkan-MsI_TwrIloscMM as MsI_Rca
+                         from
+                         (
+                         select MsI_TrnNumer ,  MsI_MagNumer,p.MsI_TwrNumer, Twr_Kod,  isnull(mm,0)MsI_TwrIloscMM, isnull(skan,0)MsI_TwrIloscSkan  
+ ,replace(twr_url,Twr_Kod+''.JPG'',''Miniatury/''+Twr_kod+''.JPG'') Url
+                         from
+                         (
+	                         select typ, MsI_TwrNumer,isnull(cast(ilosc as int),0)ilosc,msi_trnnumer ,  MsI_MagNumer, twr_kod, twr_url
+	                         from(
+			                        select ''skan''typ,msi_twrnumer MsI_TwrNumer, MsI_TwrIloscSkan ilosc , MsI_TrnNumer ,  MsI_MagNumer
+			                        from cdn.PC_MsInwentory
+			                        where msi_trnnumer={ trn_Gidnumer}
+		                          union all
+			                        select ''mm''typ, tre_twrnumer,tre_ilosc,tre_gidnumer, TrN_MagZNumer
+			                        from cdn.TraElem
+			                        join cdn.TraNag on TrE_GIDTyp=TrN_GIDTyp and TrE_GIDNumer=TrN_GIDNumer
+			                        where tre_gidnumer={trn_Gidnumer}
+	                          )a
+	                          join cdn.twrkarty on a.MsI_TwrNumer=Twr_GIDNumer
+                          )d
+                          pivot( sum(ilosc) for typ in ([skan],[mm]))as p
+                          )a
+                          where MsI_TwrIloscSkan-MsI_TwrIloscMM <>0
+                            '";
+
+            var items = await App.TodoManager.PobierzDaneZWeb<PC_MsInwentory>(sqlPobierzMMki);
+            //var items = Task.Run(()=>  App.TodoManager.PobierzDaneZWeb<PC_MsInwentory>(sqlPobierzMMki)).Result;
+
+
+
+
+            foreach (var s in items)
+            {
+
+                Items.Add(s);
+            }
+
+            return Items;
+        }
+
+
 
 
         private async Task<int> IsRaportExists(  int TrnGidnumer   )
@@ -155,7 +200,7 @@ if @@ROWCOUNT>0
                 }
                 else
                 {
-                    sql = $"Insert into cdn.PC_MsRaport values (0,{trnNumer},0,0,0,0,''{ data}'',0)";
+                    sql = $"Insert into cdn.PC_MsRaport values (0,{trnNumer},0,0,0,0,''{ data}'',0,''{opis}'')";
                     insert = $@"cdn.PC_WykonajSelect N'{sql}  Select * from cdn.PC_MsRaport where MsR_TrnNumer={trnNumer}  '";
 
                     var response = await App.TodoManager.PobierzDaneZWeb<PC_MsRaport>(insert);

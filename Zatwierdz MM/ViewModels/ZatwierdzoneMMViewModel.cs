@@ -52,8 +52,8 @@ namespace Zatwierdz_MM.ViewModels
                     {
 
                         //todo: !!!Popraw to 
-                        var query = $@" cdn.PC_WykonajSelect ' select * from cdn.PC_ZatwierdzoneMM where Fmm_NrlistuPaczka=''{Items[0].Fmm_NrlistuPaczka}''' ";
-                        //var query = $@" cdn.PC_WykonajSelect ' delete from cdn.PC_ZatwierdzoneMM where Fmm_NrlistuPaczka=''{Items[0].Fmm_NrlistuPaczka}''' ";
+                        //var query = $@" cdn.PC_WykonajSelect ' select * from cdn.PC_ZatwierdzoneMM where Fmm_NrlistuPaczka=''{Items[0].Fmm_NrlistuPaczka}''' ";
+                        var query = $@" cdn.PC_WykonajSelect ' delete from cdn.PC_ZatwierdzoneMM where Fmm_NrlistuPaczka=''{Items[0].Fmm_NrlistuPaczka}''' ";
 
 
                         var usun = await App.TodoManager.PobierzDaneZWeb<DaneMM>(query);

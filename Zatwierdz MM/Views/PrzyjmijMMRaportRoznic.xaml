@@ -19,7 +19,7 @@
             <Label Text="Raport zgodny.." TextColor="Gray" HorizontalOptions="Center" FontSize="20" />
         </Frame>
 
-        <ListView x:Name="MyListView"  
+        <ListView x:Name="MyListView"   
             ItemsSource="{Binding Items}"
             ItemTapped="Handle_ItemTapped"
             CachingStrategy="RecycleElement" HasUnevenRows="True"
