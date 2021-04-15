@@ -46,40 +46,31 @@ namespace Zatwierdz_MM.ViewModels
             try
             {
 
-                string Webquery = $@"cdn.PC_WykonajSelect N'with pz as
-                (
-                select  tre_twrnumer, max(z.TrN_GIDNumer) maxgidnr 
-			                from cdn.traelem b
-			                join cdn.tranag  z on z.trn_gidnumer=b.tre_gidnumer and b.tre_gidtyp=z.trn_gidtyp
-			                where b.tre_gidtyp in(1489,1490) 
-                            and TrN_VatRok>YEAR(getdate())-3
-			                group by tre_twrnumer 
-                )  
-  
-
-                select  distinct   (Knt_Akronim) Kontrahent
-                from cdn.twrkarty
-                    JOIN CDN.TwrGrupyDom ON Twr_GIDTyp = TGD_GIDTyp AND Twr_GIDNumer = TGD_GIDNumer 
-				    JOIN CDN.TwrGrupy ON TGD_GrOTyp = TwG_GIDTyp AND TGD_GrONumer = TwG_GIDNumer
-	                join cdn.TraElem on TrE_TwrNumer=Twr_GIDNumer
-	                join cdn.tranag on TrN_GIDNumer=TrE_GIDNumer and trn_gidtyp=TrE_GIDTyp
-	                join pz on pz.maxgidnr=TrN_GIDNumer and Twr_GIDNumer=pz.TrE_TwrNumer
-	                join cdn.KntKarty on TrN_KntNumer = Knt_GIDNumer
-                     where  
-                        twg_kod like ''%{grupa}%'' 
-                        and Knt_Akronim like ''%{kontrahent}%''
-                     order by 1 '";
+                string Webquery = $@"cdn.PC_WykonajSelect N'      
+                select    Knt_Akronim as Kontrahent 
+                from cdn.twrkarty t 
+	                join cdn.TraElem on TrE_TwrNumer=t.Twr_GIDNumer
+	                join cdn.tranag a on a.TrN_GIDNumer=TrE_GIDNumer and a.trn_gidtyp=TrE_GIDTyp 
+	                left join cdn.KntKarty on a.TrN_KntNumer = Knt_GIDNumer
+                    where   tre_gidtyp in(1489,1490,1497,1498)  
+                    
+					and TrN_VatRok>YEAR(getdate())-6
+					group by Knt_Akronim'";
                 // var twrdane = await App.TodoManager.GetDataFromWeb(Webquery);
 
 
                 var kontahenci = await App.TodoManager.PobierzDaneZWeb<FotoBrowser>(Webquery);
 
-                foreach (var i in kontahenci)
+                if (kontahenci != null)
                 {
-                    kontrahentList.Add(i.Kontrahent);
-                }
+                    foreach (var i in kontahenci)
+                    {
+                        kontrahentList.Add(i.Kontrahent);
+                    }
 
-                return kontrahentList;
+                    return kontrahentList;
+                }
+                return null;
             }
             catch (Exception)
             {
@@ -91,6 +82,14 @@ namespace Zatwierdz_MM.ViewModels
 
         internal async Task<List<string>> GetMainGropup(string kontrahent)
         {
+            string filtrKnt = "";
+
+
+            if (!string.IsNullOrEmpty(kontrahent))
+            {
+                filtrKnt = $"and Knt_Akronim like ''%{ kontrahent}%''";
+            }
+
 
                 GrupaList.Clear();
             try
@@ -103,12 +102,12 @@ namespace Zatwierdz_MM.ViewModels
 				JOIN CDN.TwrGrupy ON TGD_GrOTyp = TwG_GIDTyp AND TGD_GrONumer = TwG_GIDNumer
 	                join cdn.TraElem on TrE_TwrNumer=t.Twr_GIDNumer
 	                join cdn.tranag a on a.TrN_GIDNumer=TrE_GIDNumer and a.trn_gidtyp=TrE_GIDTyp 
-	                join cdn.KntKarty on a.TrN_KntNumer = Knt_GIDNumer
+	                left join cdn.KntKarty on a.TrN_KntNumer = Knt_GIDNumer
                      where   tre_gidtyp in(1489,1490,1497,1498)   
-                        and Knt_Akronim like ''%{kontrahent}%''
-						and TrN_VatRok>YEAR(getdate())-3
+                        {filtrKnt}
+						and TrN_VatRok>YEAR(getdate())-6
 						group by  twg_kod 
-						order by 1 '";
+						 '";
                 // var twrdane = await App.TodoManager.GetDataFromWeb(Webquery);
 
 
@@ -142,7 +141,7 @@ namespace Zatwierdz_MM.ViewModels
             {
 
                 string Webquery = $@"cdn.PC_WykonajSelect N' 
-                select   t.twr_kod TwrKod, twg_kod TwgKod,Knt_Akronim as PzKontrahent, max(trn_gidnumer)gg 
+                select   t.twr_kod TwrKod, twg_kod TwgKod,Knt_Akronim as Kontrahent, max(trn_gidnumer)gg 
 	,replace(twr_url,Twr_Kod+''.JPG'',''Miniatury/''+Twr_kod+''.JPG'') Url ,Twr_Ean
                 from cdn.twrkarty t
 				JOIN CDN.TwrGrupyDom ON t.Twr_GIDTyp = TGD_GIDTyp AND t.Twr_GIDNumer = TGD_GIDNumer 
@@ -150,10 +149,10 @@ namespace Zatwierdz_MM.ViewModels
 	                join cdn.TraElem on TrE_TwrNumer=t.Twr_GIDNumer
 	                join cdn.tranag a on a.TrN_GIDNumer=TrE_GIDNumer and a.trn_gidtyp=TrE_GIDTyp 
 	                join cdn.KntKarty on a.TrN_KntNumer = Knt_GIDNumer
-                     where   tre_gidtyp in(1489,1490) and
+                     where   tre_gidtyp in(1489,1490,1497,1498)  and
                          twg_kod like ''{grupa}%''
                         and Knt_Akronim like ''%{kontrahent}%''
-						and TrN_VatRok>YEAR(getdate())-3
+						and TrN_VatRok>YEAR(getdate())-6
 						group by t.twr_kod, twg_kod,Knt_Akronim,	twr_url ,Twr_Ean
 						order by gg desc '";
 

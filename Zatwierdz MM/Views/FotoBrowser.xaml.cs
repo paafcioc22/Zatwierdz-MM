@@ -68,9 +68,9 @@ namespace Zatwierdz_MM.Views
                    
         }
 
-        private  void kotrahentSugestsBox_QuerySubmitted(object sender, dotMorten.Xamarin.Forms.AutoSuggestBoxQuerySubmittedEventArgs e)
+        private  async void kotrahentSugestsBox_QuerySubmitted(object sender, dotMorten.Xamarin.Forms.AutoSuggestBoxQuerySubmittedEventArgs e)
         {
-             
+           // GrupaList = await viewModel.GetMainGropup(kotrahentSugestsBox.Text);
         }
 
         private async void grupaSuggetstBox_QuerySubmitted(object sender, dotMorten.Xamarin.Forms.AutoSuggestBoxQuerySubmittedEventArgs e)

@@ -1,0 +1,23 @@
+﻿string Webquery = $@"cdn.PC_WykonajSelect N'with pz as
+                (
+                select  tre_twrnumer, max(z.TrN_GIDNumer) maxgidnr 
+			                from cdn.traelem b
+			                join cdn.tranag  z on z.trn_gidnumer=b.tre_gidnumer and b.tre_gidtyp=z.trn_gidtyp
+			                where b.tre_gidtyp in(1489,1490) 
+                            and TrN_VatRok>YEAR(getdate())-6
+			                group by tre_twrnumer 
+                )  
+  
+
+                select  distinct   (Knt_Akronim) Kontrahent
+                from cdn.twrkarty
+                    JOIN CDN.TwrGrupyDom ON Twr_GIDTyp = TGD_GIDTyp AND Twr_GIDNumer = TGD_GIDNumer 
+				    JOIN CDN.TwrGrupy ON TGD_GrOTyp = TwG_GIDTyp AND TGD_GrONumer = TwG_GIDNumer
+	                join cdn.TraElem on TrE_TwrNumer=Twr_GIDNumer
+	                join cdn.tranag on TrN_GIDNumer=TrE_GIDNumer and trn_gidtyp=TrE_GIDTyp
+	                join pz on pz.maxgidnr=TrN_GIDNumer and Twr_GIDNumer=pz.TrE_TwrNumer
+	                join cdn.KntKarty on TrN_KntNumer = Knt_GIDNumer
+                     where  
+                       -- twg_kod like ''%{grupa}%'' 
+                        and Knt_Akronim like ''%{kontrahent}%''
+                     order by 1 '";
