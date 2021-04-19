@@ -122,6 +122,18 @@ namespace Zatwierdz_MM.ViewModels
             await ExecuteLoadItemsCommand();
         }
 
+        internal async Task<bool> IsRaportExists(int TrnGidnumer)
+        {
+
+            var Webquery = $@"cdn.PC_WykonajSelect N'Select * from cdn.PC_MsRaport where    MsR_TrnNumer= {TrnGidnumer} '";
+            var dane = await App.TodoManager.PobierzDaneZWeb<PC_MsRaport>(Webquery);
+
+            if (dane.Count > 0)
+                return true;
+            return false;
+
+        }
+
         private async  Task ExecuteLoadItemsCommand(string filtr = "")
         {
             if (IsBusy)
@@ -338,6 +350,43 @@ namespace Zatwierdz_MM.ViewModels
             var dane = await App.TodoManager.PobierzDaneZWeb<Place>(Webquery);
 
             return dane;
+
+        }
+        //   -- , isnull(Mpe_Quantity-LAG(Mpe_Quantity) over (order by mpe_twrnumer, mpe_data),0) PlaceDifrent
+        internal async Task<List<string>> GetListaZmianPolozenia(int twrnumer)
+        {
+            List<string> places = new List<string>();
+
+            try
+            {
+     
+                var sqlInsert = $@"cdn.PC_WykonajSelect N' 
+                                    select   
+                                      Mpe_Quantity PlaceQuantity
+, isnull(Mpe_Quantity-LAG(Mpe_Quantity) over (order by mpe_twrnumer, mpe_data),0) PlaceDifrent
+	                                  ,Mpe_Data PlaceTime
+                                  FROM CDN.PC_MsPolozenieElem
+                                  where mpe_twrnumer={twrnumer}
+                            '";
+
+                var lista = await App.TodoManager.PobierzDaneZWeb<Place>(sqlInsert);
+                if (lista != null)
+                {
+                    foreach (var item in lista)
+                    {
+                        places.Add(string.Concat(item.PlaceTime, " ; ", item.PlaceQuantity, " ; ", item.PlaceDifrent));
+                    }
+                     
+                }
+                return places;
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
 
         }
 

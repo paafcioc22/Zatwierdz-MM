@@ -104,6 +104,8 @@ namespace Zatwierdz_MM.ViewModels
         }
 
 
+        
+
 
         internal async Task<bool> UpdatePlaceName(Place towar, string place)
         {

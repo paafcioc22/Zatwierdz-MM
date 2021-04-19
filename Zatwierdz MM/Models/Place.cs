@@ -24,6 +24,7 @@ namespace Zatwierdz_MM.Models
         public int PlaceTrnNumer { get; set; }
         public int PlaceMagZrd { get; set; }
         public int PlaceQuantity { get; set; }
+        public int PlaceDifrent { get; set; }
         public DateTime PlaceTime { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;

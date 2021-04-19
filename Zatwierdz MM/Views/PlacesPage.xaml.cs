@@ -31,7 +31,7 @@ namespace Zatwierdz_MM.Views
             if (e.Item == null)
                 return;
 
-            List<string> opcje = new List<string> { "Zmień położenie (nazwę)", "Pokaż wszystkie wpisy dla modelu" };
+            List<string> opcje = new List<string> { "Zmień położenie (nazwę)", "Pokaż wszystkie wpisy dla modelu","Historia przesunięć do MS" };
 
             var place = e.Item as Place;
 
@@ -65,11 +65,9 @@ namespace Zatwierdz_MM.Views
                             await DisplayAlert("info", "Podaj lokalizacje", "OK");
                         }
                     } 
-                }
-                
-                   
-
-            }else if(odp== "Pokaż wszystkie wpisy dla modelu")
+                } 
+            }
+            else if(odp== "Pokaż wszystkie wpisy dla modelu")
             {
                 var sql = $@"cdn.PC_WykonajSelect N'select PlaceName, cdn.NazwaObiektu(1603, placetrnnumer,0,2) PlaceOpis, PlaceQuantity  
                             from  cdn.pc_mspolozenie
@@ -87,6 +85,11 @@ namespace Zatwierdz_MM.Views
 
                ;
                 await DisplayActionSheet($"Lista wpisów, : suma {listaplace.Sum(s => s.PlaceQuantity)} szt", "", "Anuluj", wpisies.ToArray());
+            }
+            else if (odp == "Historia przesunięć do MS")
+            {
+                var historia = await viewModel.GetListaZmianPolozenia(place.PlaceTwrNumer);
+                await DisplayActionSheet($"Lista wpisów", "", "Anuluj", historia.ToArray());
             }
 
 

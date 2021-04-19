@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Zatwierdz_MM.Models;
@@ -65,7 +66,97 @@ namespace Zatwierdz_MM.Views
             WidokSkaner(gidnumer);
             regex = new Regex(@"^[A-Z]\d{1,2}");
             viewModel = new PrzyjmijMMSkanowanieViewModel();
+            entry_polozenie.Focused += Entry_polozenie_Focused;
 
+        }
+
+        private async Task<List<Place>> IsPlaceExists(int twr_Gidnumer, int trn_Gidnumer = 0)
+        {
+            var odp = await viewModel.IsPlaceExists(twr_Gidnumer, trn_Gidnumer);
+            return odp.ToList();
+        }
+
+        private async void Entry_polozenie_Focused(object sender, FocusEventArgs e)
+        {
+             
+            var isExists = await IsPlaceExists(towar.MsI_TwrNumer); // czy w ogóle kod dodany
+            string odp3 = "";
+            string odp = "";
+
+                if (isExists.Count == 0)
+                {
+                    //var odp2 = await DisplayActionSheet($"Nie przypisano do miejsca :", "Utwórz nowe", "Anuluj", "");
+
+                    //if (odp2 == "Utwórz nowe")
+                    //{
+                    //    //isExists = await IsPlaceExists( towar.MsI_TwrNumer, towar.MsI_TrnNumer); // czy istniej wpis z tej mmki 
+
+                    //    string placeName = await DisplayPromptAsync("Tworzenie nowego wpisu", "Podaj pozycję np. A10..", "OK", "Anuluj", "", 3, keyboard: Keyboard.Create(KeyboardFlags.CapitalizeCharacter), "");
+
+
+                    //    if (!await viewModel.IsPlaceEmpty(towar.MsI_TwrNumer, 0, placeName))
+                    //        odp3 = await DisplayActionSheet($"Miejsce nie jest puste, odłożyć mimo to? :", "NIE", "TAK", "");
+
+
+                    //    if (odp3 == "TAK" || string.IsNullOrEmpty(odp3))
+                    //    {
+                    //        if (!string.IsNullOrEmpty(placeName))
+                    //        {
+                    //            if (await viewModel.AddTowarToPlace(towar, placeName))
+                    //            {
+                    //                await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {placeName}", "OK");
+                    //                foreach (var item in viewModel.Items)
+                    //                {
+                    //                    if (item.MsI_TwrNumer == towar.MsI_TwrNumer)
+                    //                    {
+                    //                        towar.Msi_IsPut = true;
+
+                    //                    }
+                    //                }
+                    //            }
+                    //            else
+                    //                await DisplayAlert("info", "Pozycja z tej MM została już dodana", "OK");
+                    //        }
+                    //        else
+                    //        {
+                    //            await DisplayAlert("info", "Podaj lokalizacje", "OK");
+                    //        }
+
+                    //    }
+                    //    //else
+                    //    //{
+                    //    //    await DisplayAlert("info", "To miejsce jest już zajęte", "OK");
+                    //    //}
+
+                     
+                }
+                else
+                {
+                    var places = isExists.Select(s => s.PlaceName).Distinct().ToArray();
+
+
+                    var IsExistsFromThisMM = await IsPlaceExists(towar.MsI_TwrNumer, towar.MsI_TrnNumer);
+
+                    if (IsExistsFromThisMM.Count > 0)
+                    {
+                        odp = await DisplayActionSheet($"Dodaj do istniejącego :", null, "Anuluj", places);//"Dodaj nowe położenie"
+
+                    }
+
+
+                if (odp == "Anuluj")
+                {
+                    return;
+                }
+
+                entry_polozenie.Text = odp;
+
+                    //todo: czy dodawać nowe położenie??
+                    //odp = await DisplayActionSheet($"Dodaj do istniejącego :",null,  "Anuluj", places);//""
+                     
+
+                }
+             
         }
 
         private void WidokSkaner(int gidnumer)
@@ -160,6 +251,7 @@ namespace Zatwierdz_MM.Views
 
             };
 
+            
 
             //,  @"^[A-Z]\d{1,2}";
 
@@ -208,11 +300,7 @@ namespace Zatwierdz_MM.Views
             AbsoluteLayout.SetLayoutBounds(stack_dane, new Rectangle(0, 1, 1, .45));
             AbsoluteLayout.SetLayoutFlags(stack_dane, AbsoluteLayoutFlags.All);
 
-
-
-
-            //stackLayout.VerticalOptions = LayoutOptions.EndAndExpand; //Center
-            //stackLayout.Padding = new Thickness(15, 0, 15, 0);
+             
 
             absoluteLayout.Children.Add(img_foto);
             absoluteLayout.Children.Add(lbl_naglowek);
@@ -223,12 +311,9 @@ namespace Zatwierdz_MM.Views
             Content = absoluteLayout;
 
 
-            // scrollView.Content = relativeLayout;//dodane scrollview
+   
 
-            //Content = stackLayout_gl;
-            //Content = scrollView;
-
-            Appearing += (object sender, System.EventArgs e) => entry_kodean.Focus();
+            //Appearing += (object sender, System.EventArgs e) => entry_kodean.Focus();
         }
 
         private void WidokAparat(int gidnumer)

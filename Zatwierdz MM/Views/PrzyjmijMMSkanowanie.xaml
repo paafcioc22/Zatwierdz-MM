@@ -107,7 +107,7 @@
         <Frame VerticalOptions="CenterAndExpand" CornerRadius="10" BorderColor="Gray" BackgroundColor="CornflowerBlue"
                AbsoluteLayout.LayoutBounds="0.5,1,.95,.15"
                AbsoluteLayout.LayoutFlags="All">
-            <Entry Placeholder="Skanuj lub wprowadź"  FontSize="20" x:Name="entry_MM" 
+            <Entry Placeholder="Skanuj lub wprowadź"  FontSize="20" x:Name="entry_MM"  Focused="entry_MM_Focused"
                HorizontalTextAlignment="Center" VerticalOptions="CenterAndExpand"
                HorizontalOptions="CenterAndExpand"  WidthRequest="400" HeightRequest="70"
                Keyboard="Default" Text="{Binding NrMMki}"  

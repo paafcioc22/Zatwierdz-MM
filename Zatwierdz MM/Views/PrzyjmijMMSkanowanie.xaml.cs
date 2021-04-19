@@ -19,12 +19,16 @@ namespace Zatwierdz_MM.Views
     {
         public ObservableCollection<string> Items { get; set; }
         PrzyjmijMMSkanowanieViewModel viewModel;
+        private bool isRaportExists;
+
         public PrzyjmijMMSkanowanie(PrzyjmijMMSkanowanieViewModel viewModel)
         {
             InitializeComponent();
 
             BindingContext = this.viewModel = viewModel;
+            
             entry_MM.Completed += Entry_MM_Completed; ;
+            //
         }
 
         private async void Entry_MM_Completed(object sender, EventArgs e)
@@ -41,23 +45,34 @@ namespace Zatwierdz_MM.Views
                 await DisplayAlert("Bład", s.Message, "OK");
             }
         }
-
+     
         async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             if (e.Item == null)
                 return;
             string odp3 = "";
 
-            List<string> opcje = new List<string> { "Odłóż na miejsce odkładcze", "Edytuj", "Pokaż wszystkie wpisy dla modelu" };
+            List<string> opcje = null;
+            string deleteButton = null;
+
+            if (isRaportExists)
+            {
+                opcje = new List<string> { "Pokaż wszystkie wpisy dla modelu" };
+            }
+            else
+            {
+                opcje = new List<string> { "Odłóż na miejsce odkładcze", "Edytuj", "Pokaż wszystkie wpisy dla modelu" };
+                deleteButton = "Usuń";
+            }
 
             var towar = e.Item as PC_MsInwentory;
 
-            var odp = await DisplayActionSheet($"Wybierz :", "Anuluj", "Usuń", opcje.ToArray());
+            var odp = await DisplayActionSheet($"Wybierz :", "Anuluj", deleteButton, opcje.ToArray());
             if (odp == "Odłóż na miejsce odkładcze")
             {
                 var isExists = await IsPlaceExists(towar.MsI_TwrNumer); // czy w ogóle kod dodany
 
-
+            
                 if (isExists.Count == 0)
                 {
                     var odp2 = await DisplayActionSheet($"Nie przypisano do miejsca :", "Utwórz nowe", "Anuluj", "");
@@ -319,6 +334,11 @@ namespace Zatwierdz_MM.Views
             base.OnAppearing();
 
             viewModel.LoadItemsCommand.Execute(null);
+            isRaportExists = Task.Run(() => viewModel.IsRaportExists(viewModel.Trn_Gidnumer)).Result;
+
+            if(!isRaportExists)
+            entry_MM.IsEnabled = !isRaportExists;
+
         }
 
         private async void Button_Clicked(object sender, EventArgs e)
@@ -329,6 +349,15 @@ namespace Zatwierdz_MM.Views
         private async void ToolbarItem_Clicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new PrzyjmijMMRaportRoznic(new PrzyjmijMMRaportRcaViewModel(viewModel)));
+        }
+
+        private void entry_MM_Focused(object sender, FocusEventArgs e)
+        {
+            entry_MM.IsEnabled = !isRaportExists;
+            if (isRaportExists)
+            {
+                DisplayAlert("uwaga", "Raport wysłany - edycja niemożliwa", "OK");
+            }
         }
     }
 }

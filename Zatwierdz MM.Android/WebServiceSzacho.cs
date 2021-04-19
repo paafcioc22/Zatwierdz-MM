@@ -58,7 +58,7 @@ replace(Tno_opis,char(10),'''')Trn_Opis,
                         join cdn.tranag mmw on trn.trn_zwrnumer =mmw.trn_GIDNumer 
                         join cdn.Magazyny on trn.TrN_MagDNumer = MAG_GIDNumer
                                      left join cdn.trnopisy on tno_trnnumer= mmw.trn_gidnumer
-                        where mm.Trn_DataSkan>=getdate()-20 {ff} 
+                        where mm.Trn_DataSkan>=getdate()-200 {ff} 
                         order by mm.Trn_DataSkan desc '";
             //Trn_NrDokumentu.Contains(filtr.ToUpper())|| item.Fmm_NrlistuPaczka.Contains(filtr.ToUpper()
             var respone = client.ExecuteSQLCommand(query);
