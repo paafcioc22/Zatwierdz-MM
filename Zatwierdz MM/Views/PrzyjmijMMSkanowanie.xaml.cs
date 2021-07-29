@@ -54,7 +54,7 @@ namespace Zatwierdz_MM.Views
 
             List<string> opcje = null;
             string deleteButton = null;
-
+            //todo: dodaj w menu zdjćeice
             if (isRaportExists)
             {
                 opcje = new List<string> { "Pokaż wszystkie wpisy dla modelu" };

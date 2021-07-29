@@ -14,7 +14,8 @@ namespace Zatwierdz_MM.Droid
         Icon = "@mipmap/skanerICO", 
         Theme = "@style/MainTheme", 
         MainLauncher = true, 
-        ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+        ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.KeyboardHidden |
+        ConfigChanges.Keyboard)]
 
 
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity

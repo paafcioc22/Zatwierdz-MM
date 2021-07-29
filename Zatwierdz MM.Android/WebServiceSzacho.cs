@@ -46,12 +46,12 @@ namespace Zatwierdz_MM.Droid
 
            
 
-            var ff =string.IsNullOrEmpty(filtr)?"": $"-300 and(mmw.TrN_DokumentObcy  like''%{filtr}%'' or Fmm_NrlistuPaczka like''%{filtr}%'')";
+            var ff =string.IsNullOrEmpty(filtr)?"": $" -300 and(mmw.TrN_DokumentObcy  like''%{filtr}%'' or Fmm_NrlistuPaczka like''%{filtr}%'')";
             var top =string.IsNullOrEmpty(filtr)?" top 200 ": "top 500";
 
 
             var query = $@"cdn.PC_WykonajSelect N'select {top} mmw.Trn_GidNumer,mm.Trn_GidTyp,mmw.TrN_DokumentObcy Trn_NrDokumentu ,mm.Trn_DataSkan,mm.Trn_DataZatwierdz,mm.Trn_StanMM,trn.TrN_Stan Trn_Stan , mag_kod DclMagKod ,Fmm_NrlistuPaczka,
-replace(Tno_opis,char(10),'''')Trn_Opis,
+replace(replace(Tno_opis,char(10),''''),''_'','' '')Trn_Opis,
 ( select top 1 1 from cdn.PC_MsRaport a where exists (select * from cdn.PC_MsRaport  where a.MsR_TrnNumer=mmw.trn_GIDNumer )   ) Raport
                         from cdn.PC_ZatwierdzoneMM mm
                         join cdn.tranag trn on trn.TrN_GIDNumer=mm.Trn_GidNumer and trn.TrN_GIDTyp=mm.Trn_GidTyp
