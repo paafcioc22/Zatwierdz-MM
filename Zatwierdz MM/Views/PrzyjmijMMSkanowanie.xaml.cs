@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Zatwierdz_MM.Models;
@@ -26,7 +26,7 @@ namespace Zatwierdz_MM.Views
             InitializeComponent();
 
             BindingContext = this.viewModel = viewModel;
-            
+           
             entry_MM.Completed += Entry_MM_Completed; ;
             //
         }
@@ -36,8 +36,16 @@ namespace Zatwierdz_MM.Views
             try
             {
                 entry_MM.Unfocus();
-                await Task.Delay(1000);
-                entry_MM.Focus();
+                //var objj = viewModel.Items.Where(s => s.Ean == viewModel.EanSkan).FirstOrDefault();
+                //MyListView.ScrollTo(objj, ScrollToPosition.Center, true);
+                await Task.Delay(1500);
+                //if(viewModel.twrkarta!=null)
+                //viewModel.SelectItem = viewModel.Items.Where(s => s.Ean == viewModel.EanSkan).FirstOrDefault();
+                
+                //Task.Delay(2000).Wait();
+                //MyListView.SelectedItem = ;
+                //viewModel.SelectItem = 2;
+                 entry_MM.Focus();
             }
             catch (Exception s)
             {
@@ -61,7 +69,7 @@ namespace Zatwierdz_MM.Views
             }
             else
             {
-                opcje = new List<string> { "Odłóż na miejsce odkładcze", "Edytuj", "Pokaż wszystkie wpisy dla modelu" };
+                opcje = new List<string> { "Odłóż na miejsce odkładcze", "Edytuj", "Pokaż wszystkie wpisy dla modelu","Pokaż zdjęcie" };
                 deleteButton = "Usuń";
             }
 
@@ -311,6 +319,11 @@ namespace Zatwierdz_MM.Views
                        await DisplayAlert("info", "Wpis usunięto", "OK");
                     }
                 }
+            }else if(odp== "Pokaż zdjęcie")
+            {
+                //var karta = e.Item as DaneMMElem;
+
+                await Launcher.OpenAsync(new Uri(towar.Url.Replace("Miniatury/", "")));
             }
 
 
@@ -335,8 +348,8 @@ namespace Zatwierdz_MM.Views
 
             viewModel.LoadItemsCommand.Execute(null);
             isRaportExists = Task.Run(() => viewModel.IsRaportExists(viewModel.Trn_Gidnumer)).Result;
-
-            if(!isRaportExists)
+            
+            if (!isRaportExists)
             entry_MM.IsEnabled = !isRaportExists;
 
         }

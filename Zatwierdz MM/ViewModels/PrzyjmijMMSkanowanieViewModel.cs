@@ -15,6 +15,16 @@ namespace Zatwierdz_MM.ViewModels
 {
     public class PrzyjmijMMSkanowanieViewModel : BaseViewModel
     {
+        internal string EanSkan;
+
+        private PC_MsInwentory selectItem;
+
+        public PC_MsInwentory SelectItem
+        {
+            get { return selectItem; } 
+            set { SetProperty(ref selectItem, value); }
+        }
+
 
         public ICommand LoadRaport { get; set; }
         public Command LoadItemsCommand { get; set; }
@@ -51,7 +61,7 @@ namespace Zatwierdz_MM.ViewModels
                          *,  MsI_TwrIloscSkan-MsI_TwrIloscMM as MsI_Rca
                          from
                          (
-                         select MsI_TrnNumer ,  MsI_MagNumer,p.MsI_TwrNumer, Twr_Kod, isnull(mm,0)MsI_TwrIloscMM, isnull(skan,0)MsI_TwrIloscSkan  
+                         select MsI_TrnNumer ,  MsI_MagNumer,p.MsI_TwrNumer, Twr_Kod, isnull(mm,0)MsI_TwrIloscMM, isnull(skan,0) MsI_TwrIloscSkan  
                          from
                          (
 	                         select typ, MsI_TwrNumer,isnull(cast(ilosc as int),0)ilosc,msi_trnnumer ,  MsI_MagNumer, twr_kod, twr_url
@@ -77,18 +87,28 @@ namespace Zatwierdz_MM.ViewModels
              
         }
 
+        internal DaneMMElem twrkarta;
         private async Task ExecInsertToBase(string ean)
         {
-            var twrkarta = await Pobierztwrkod(ean);
+            EanSkan = ean;
+            twrkarta = await Pobierztwrkod(ean);
             int ilosZmm = 0;
             var quantityFromMM = daneMMElem.Where(x => x.Twr_Gidnumer == twrkarta.Twr_Gidnumer).SingleOrDefault();
 
-            if(quantityFromMM != null)
+            var obj = this.Items.Where(s => s.Twr_Gidnumer == twrkarta.Twr_Gidnumer).FirstOrDefault();
+
+            this.SelectItem = this.Items.Where(s => s.Ean == this.EanSkan).FirstOrDefault();
+
+
+            if (quantityFromMM != null)
             {
                 ilosZmm = quantityFromMM.Ilosc;
             }
 
 
+            // MyListView.ScrollTo(obj, ScrollToPosition.Center, true);
+
+            await Task.Delay(500);
 
             if (twrkarta.Twr_Gidnumer!=0)
             {
@@ -101,11 +121,31 @@ namespace Zatwierdz_MM.ViewModels
                         if @@ROWCOUNT =0
                         begin
                              Insert into cdn.PC_MsInwentory values (1604,{Trn_Gidnumer},{twrkarta.Twr_Gidnumer},{ilosZmm},1,''{data}'',{this.daneMMElem[0].Mag_GidNumer})
-                        end'";
+                                if @@ROWCOUNT >0
+                                    Select ''insert'' as Twr_Symbol
+                        end 
+else 
+begin 
+select ''update'' as Twr_Symbol
+end'";
                 //todo : popraw ilosc 
 
 
                 var items = await App.TodoManager.PobierzDaneZWeb<PC_MsInwentory>(sqlInsert);
+
+                if(items.Count>0)
+                {
+                    if(items[0].Twr_Symbol== "update")
+                    {
+                        obj.MsI_TwrIloscSkan += 1;
+                    }
+                    else
+                    {
+                        await ExecuteLoadItemsCommand();
+                        this.SelectItem = this.Items.Where(s => s.Ean == this.EanSkan).FirstOrDefault();
+
+                    }
+                }
             }
             else
             {
@@ -119,7 +159,7 @@ namespace Zatwierdz_MM.ViewModels
                 view?.Focus();
             });
 
-            await ExecuteLoadItemsCommand();
+            //await ExecuteLoadItemsCommand();
         }
 
         internal async Task<bool> IsRaportExists(int TrnGidnumer)
@@ -166,7 +206,7 @@ namespace Zatwierdz_MM.ViewModels
                         var karta = await Pobierztwrkod(daneMMElem[0].Twr_Gidnumer);
                         //item.DaneMMElem = karta;
                         Items.Add(item);
-                        
+                       
                     }
 
                 }

@@ -61,13 +61,20 @@ namespace Zatwierdz_MM.Views
                 if (await viewModel.SaveRaportToBase(opisRaport))
                 {
                     await DisplayAlert("Info", "Raport zapisany pomyślnie", "OK");
+                    await Navigation.PopToRootAsync(true);
+
                 }
                 else
                 {
                     await DisplayAlert("Info", "Raport już istnieje", "OK");
                 }
+            }else  // todo : usuń tą sekscje to tlko do testu
+            {
+                //await Navigation.PopToRootAsync(true);
+
             }
-            
+
+
         }
     }
 }

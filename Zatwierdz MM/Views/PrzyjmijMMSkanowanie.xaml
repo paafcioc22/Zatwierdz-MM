@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Zatwierdz_MM.Views.PrzyjmijMMSkanowanie" Title="{Binding Title}">
+             x:Class="Zatwierdz_MM.Views.PrzyjmijMMSkanowanie" Title="{Binding Title}"
+             xmlns:extensions="clr-namespace:Zatwierdz_MM.Extensions"
+             >
 
                   <!--IconImageSource="ic_stat_delete_forever.png"-->
     <ContentPage.ToolbarItems>
@@ -13,9 +15,9 @@
     <AbsoluteLayout>
 
 
-        <ListView x:Name="MyListView" 
-            ItemsSource="{Binding Items}"
-            ItemTapped="Handle_ItemTapped"
+        <ListView x:Name="MyListView"  
+            ItemsSource="{Binding Items}"  SelectedItem="{Binding SelectItem, Mode=TwoWay}"
+            ItemTapped="Handle_ItemTapped" extensions:ListViewExtensions.ScrollTo="{Binding SelectItem}"
             CachingStrategy="RecycleElement" HasUnevenRows="True"
             AbsoluteLayout.LayoutBounds="0,0,1,.84"
             AbsoluteLayout.LayoutFlags="All">
@@ -37,15 +39,24 @@
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="Start"
                                             />
+
+                            <Label Text="{Binding Twr_Symbol }" 
+                                       TextColor="Black"  
+                                       FontSize="12"   
+                                       AbsoluteLayout.LayoutBounds="0.05,0.6,.25,.2"
+                                       AbsoluteLayout.LayoutFlags="All"
+                                       HorizontalTextAlignment="Start"
+                                            />
+                            
                             <Label Text="{Binding MsI_TwrIloscMM, StringFormat='szt z MM: {0}'}" FontSize="16"  
-                                       TextColor="Black" 
+                                       TextColor="Black"  
                                        AbsoluteLayout.LayoutBounds="0.05,1,.5,.3"
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="Start"
                                        />
                             <Label Text="{Binding MsI_TwrIloscSkan}" FontSize="20" FontAttributes="Bold"
                                        TextColor="Black" 
-                                       AbsoluteLayout.LayoutBounds="0.25,.6,.2,.3"
+                                       AbsoluteLayout.LayoutBounds="0.35,.6,.2,.3"
                                        AbsoluteLayout.LayoutFlags="All"
                                        HorizontalTextAlignment="End"
                                        />
