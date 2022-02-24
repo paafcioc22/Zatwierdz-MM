@@ -167,7 +167,7 @@ namespace Zatwierdz_MM.ViewModels
 				  select top 1 mmp.trn_gidnumer Trn_GidNumer,mmp.TrN_GIDTyp Trn_GidTyp,mmp.Trn_Stan  
                     ,cdn.nazwaobiektu(mmp.trn_gidtyp, mmp.trn_gidnumer,0,2)Trn_NrDokumentu {addfedex}
                   from cdn.tranag mmw   
-                  join cdn.tranag mmp on mmp.trn_zwrnumer =mmw.trn_GIDNumer   
+                  join cdn.tranag mmp on mmp.trn_zwrnumer =mmw.trn_GIDNumer   and mmp.TrN_ZwrTyp =mmw.TrN_GIDTyp 
                   where 
 				  mmw.TrN_GIDTyp = 1603 and 
 				  mmw.TrN_TrNNumer=@nrdok and 
