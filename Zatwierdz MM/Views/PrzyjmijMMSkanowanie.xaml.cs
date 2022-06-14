@@ -323,7 +323,7 @@ namespace Zatwierdz_MM.Views
             {
                 //var karta = e.Item as DaneMMElem;
 
-                await Launcher.OpenAsync(new Uri(towar.Url.Replace("Miniatury/", "")));
+                await Launcher.OpenAsync(new Uri(towar.Url.Replace("Miniatury/", "").Replace("small", "large")));
             }
 
 

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Zatwierdz_MM.Services;
@@ -35,6 +38,11 @@ namespace Zatwierdz_MM
 
         protected override void OnStart()
         {
+            AppCenter.Start("android=9f53c6c9-16f0-4e8f-ba7f-360de4964c97;" +
+                "uwp={Your UWP App secret here};" +
+                "ios={Your iOS App secret here};" +
+                "macos={Your macOS App secret here};",
+                typeof(Analytics), typeof(Crashes));
         }
 
         protected override void OnSleep()

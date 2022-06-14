@@ -34,7 +34,7 @@ namespace Zatwierdz_MM.Views
 
             var karta = e.Item as DaneMMElem; 
 
-            await Launcher.OpenAsync(new Uri(karta.Url.Replace("Miniatury/", "")));
+            await Launcher.OpenAsync(new Uri(karta.Url.Replace("Miniatury/", "").Replace("small", "large").Replace("home", "large")));
 
             await Clipboard.SetTextAsync(karta.Ean);
             DependencyService.Get<Services.IWebService> ().ShowLong("Skopiowano Ean");

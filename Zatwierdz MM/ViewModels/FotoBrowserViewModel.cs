@@ -31,7 +31,7 @@ namespace Zatwierdz_MM.ViewModels
         {
             if (karta != null)
             {
-                await Browser.OpenAsync(karta.Url.Replace("Miniatury/", ""));
+                await Browser.OpenAsync(karta.Url.Replace("Miniatury/", "").Replace("small", "large"));
 
                 await Clipboard.SetTextAsync(karta.Twr_Ean);
                 DependencyService.Get<Services.IWebService>().ShowLong("Skopiowano Ean");
@@ -142,7 +142,7 @@ namespace Zatwierdz_MM.ViewModels
 
                 string Webquery = $@"cdn.PC_WykonajSelect N' 
                 select   t.twr_kod TwrKod, twg_kod TwgKod,Knt_Akronim as Kontrahent, max(trn_gidnumer)gg 
-	,replace(twr_url,Twr_Kod+''.JPG'',''Miniatury/''+Twr_kod+''.JPG'') Url ,Twr_Ean
+	,CDN.PC_GetTwrUrl3(t.twr_gidnumer,1) as Url ,Twr_Ean
                 from cdn.twrkarty t
 				JOIN CDN.TwrGrupyDom ON t.Twr_GIDTyp = TGD_GIDTyp AND t.Twr_GIDNumer = TGD_GIDNumer 
 				JOIN CDN.TwrGrupy ON TGD_GrOTyp = TwG_GIDTyp AND TGD_GrONumer = TwG_GIDNumer
@@ -153,17 +153,23 @@ namespace Zatwierdz_MM.ViewModels
                          twg_kod like ''{grupa}%''
                         and Knt_Akronim like ''%{kontrahent}%''
 						and TrN_VatRok>YEAR(getdate())-6
-						group by t.twr_kod, twg_kod,Knt_Akronim,	twr_url ,Twr_Ean
+						group by t.twr_kod, twg_kod,Knt_Akronim,t.twr_gidnumer,	Twr_Ean
 						order by gg desc '";
 
 
 
                 var grupy = await App.TodoManager.PobierzDaneZWeb<FotoBrowser>(Webquery);
 
-                foreach (var i in grupy)
+                if (grupy.Count > 0)
                 {
-                    FotoBrowserList.Add(i);
+                    foreach (var i in grupy)
+                    {
+                        //i.Url = ConvertUrlToOtherSize(i.Url, i.TwrKod, OtherSize.small);
+                        FotoBrowserList.Add(i);
+                    }
                 }
+
+              
 
                 IsBusy = false;
                 return FotoBrowserList;
@@ -177,7 +183,7 @@ namespace Zatwierdz_MM.ViewModels
         }
 
 
-
+       
 
 
     }

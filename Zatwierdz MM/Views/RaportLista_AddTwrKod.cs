@@ -195,8 +195,8 @@ namespace Zatwierdz_MM.Views
             TapGestureRecognizer tapGesture = new TapGestureRecognizer();
             tapGesture.Tapped += (s, e) =>
             {
-                Launcher.OpenAsync(twr_url.Replace("Miniatury/", ""));
-                //Launcher.OpenAsync(twr_url.Replace("Miniatury/", ""));
+                Launcher.OpenAsync(twr_url.Replace("Miniatury/", "").Replace("small", "large"));
+                
             };
             img_foto.GestureRecognizers.Add(tapGesture);
             AbsoluteLayout.SetLayoutBounds(img_foto, new Rectangle(0, 0.1, 1, .5));
@@ -353,7 +353,7 @@ namespace Zatwierdz_MM.Views
             TapGestureRecognizer tapGesture = new TapGestureRecognizer();
             tapGesture.Tapped += (s, e) =>
             {
-                Launcher.OpenAsync(twr_url.Replace("Miniatury/", ""));
+                Launcher.OpenAsync(twr_url.Replace("Miniatury/", "").Replace("small", "large"));
                 //Launcher.OpenAsync(twr_url.Replace("Miniatury/", ""));
             };
             img_foto.GestureRecognizers.Add(tapGesture);
@@ -616,11 +616,11 @@ namespace Zatwierdz_MM.Views
 
 
             img_foto = new Image();
-            img_foto.Source = akcje.Url.Replace("Miniatury/", "");
+            img_foto.Source = akcje.Url.Replace("Miniatury/", "").Replace("small", "home");
             var tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += (s, e) =>
             {
-                Launcher.OpenAsync(akcje.Url.Replace("Miniatury/", ""));
+                Launcher.OpenAsync(akcje.Url.Replace("Miniatury/", "").Replace("small", "large"));
             };
             img_foto.GestureRecognizers.Add(tapGestureRecognizer);
             stackLayout.Children.Add(img_foto);
@@ -1003,13 +1003,11 @@ namespace Zatwierdz_MM.Views
                 {
 
 
-                    var Webquery = $@"cdn.PC_WykonajSelect N'Select Twr_Kod, Twr_Nazwa, Twr_Katalog Twr_Symbol, cast(twc_wartosc as decimal(5,2))Cena ,cast(sum(TwZ_Ilosc) as int)Ilosc, case when len(twr_kod) > 5 and len(twr_url)> 5 
-		                then replace(twr_url, substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4),  substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4) + ''Miniatury/'') 
-		                else twr_kod end as Url ,Twr_Ean Ean , Twr_Gidnumer
+                    var Webquery = $@"cdn.PC_WykonajSelect N'Select Twr_Kod, Twr_Nazwa, Twr_Katalog Twr_Symbol, cast(twc_wartosc as decimal(5,2))Cena ,cast(sum(TwZ_Ilosc) as int)Ilosc, cdn.PC_GetTwrUrl(Twr_Kod) as Url ,Twr_Ean Ean , Twr_Gidnumer
 		                from cdn.TwrKarty 
 		                join cdn.TwrCeny on Twr_GIDNumer = TwC_TwrNumer and TwC_TwrLp = 2 
 		                left join cdn.TwrZasoby on Twr_GIDNumer = TwZ_TwrNumer where twr_ean=''{_ean}'' or twr_kod=''{_ean}''
-		                group by twr_kod, twr_nazwa, Twr_Katalog,twc_wartosc, twr_url,twr_ean,Twr_Gidnumer'";
+		                group by twr_kod, twr_nazwa, Twr_Katalog,twc_wartosc, twr_ean,Twr_Gidnumer'";
 
 
 
@@ -1047,7 +1045,7 @@ namespace Zatwierdz_MM.Views
                     lbl_cena.Text = twr_cena;
                     lbl_stan.Text = "Stan : " + stan_szt;
                     if (!string.IsNullOrEmpty(twr_url))
-                        img_foto.Source = twr_url.Replace("Miniatury/", ""); //twr_url;
+                        img_foto.Source = twr_url.Replace("Miniatury/", "").Replace("small", "home"); //twr_url;
 
                 }
                 catch (Exception)

@@ -43,7 +43,7 @@ namespace Zatwierdz_MM.ViewModels
 
         async Task OnTapped(string s)
         {
-
+            
             await Browser.OpenAsync(s);
         }
 
@@ -78,7 +78,7 @@ namespace Zatwierdz_MM.ViewModels
 	   select  TrN_DokumentObcy,min(TrE_GIDLp) TrE_GIDLp ,  Trn_Gidnumer, Twr_Gidnumer,Mag_GidNumer,twr_ean Ean,
 	Twr_Kod,Twr_Nazwa,  Mag_Kod
 	,cast(max(TwC_Wartosc) as float)Cena,cast(sum (tre_ilosc) as int)Ilosc  
-	,replace(twr_url,Twr_Kod+''.JPG'',''Miniatury/''+Twr_kod+''.JPG'') Url ,
+	,cdn.PC_GetTwrUrl(Twr_Kod) as Url ,
 isnull(left(atr_wartosc,1),'''') As IlKol
 	from cdn.tranag
 	join cdn.traelem on tre_gidnumer=trn_gidnumer and trn_gidtyp=TrN_GIDTyp
@@ -88,7 +88,7 @@ left join cdn.atrybuty on twr_gidnumer=Atr_ObiNumer  and atr_atkid=24
 	join cdn.magazyny on trn_magznumer=Mag_GIDNumer 
 	where TrN_gidnumer={dane.Trn_GidNumer}
 	group by TrN_DokumentObcy,    Trn_Gidnumer, Twr_Gidnumer,Mag_GidNumer,twr_ean,
-	Twr_Kod,Twr_Nazwa,  Mag_Kod,twr_url ,atr_wartosc
+	Twr_Kod,Twr_Nazwa,  Mag_Kod,atr_wartosc
 )mm
 left join
 (

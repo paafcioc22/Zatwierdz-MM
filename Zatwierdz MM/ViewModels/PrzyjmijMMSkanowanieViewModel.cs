@@ -64,7 +64,7 @@ namespace Zatwierdz_MM.ViewModels
                          select MsI_TrnNumer ,  MsI_MagNumer,p.MsI_TwrNumer, Twr_Kod, isnull(mm,0)MsI_TwrIloscMM, isnull(skan,0) MsI_TwrIloscSkan  
                          from
                          (
-	                         select typ, MsI_TwrNumer,isnull(cast(ilosc as int),0)ilosc,msi_trnnumer ,  MsI_MagNumer, twr_kod, twr_url
+	                         select typ, MsI_TwrNumer,isnull(cast(ilosc as int),0)ilosc,msi_trnnumer ,  MsI_MagNumer, twr_kod, CDN.PC_GetTwrUrl(twr_kod) as twr_url
 	                         from(
 			                        select ''skan''typ,msi_twrnumer MsI_TwrNumer, MsI_TwrIloscSkan ilosc , MsI_TrnNumer ,  MsI_MagNumer
 			                        from cdn.PC_MsInwentory
@@ -187,9 +187,7 @@ end'";
 
 
                 var sqlPobierzMMki = $@"cdn.PC_WykonajSelect N'select  msi.*,Twr_Gidnumer, Twr_Kod, Twr_Nazwa, Twr_Katalog Twr_Symbol, cast(twc_wartosc as decimal(5,2))Cena 
-                , case when len(twr_kod) > 5 and len(twr_url)> 5 
-		                then replace(twr_url, substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4),  substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4) + ''Miniatury/'') 
-		                else twr_kod end as Url ,Twr_Ean Ean ,
+                , CDN.PC_GetTwrUrl(twr_kod)   as Url ,Twr_Ean Ean ,
 (case when (select count(*) from cdn.pc_mspolozenie where placetwrnumer=Twr_GIDNumer and placetrnnumer={daneMMElem[0].Trn_Gidnumer} )>=1 then 1 else 0 end)Msi_IsPut
                         from cdn.PC_MsInwentory msi
                         join cdn.twrkarty  on twr_gidnumer=msi_twrnumer
@@ -439,14 +437,12 @@ end'";
                 {
 
 
-                    var Webquery = $@"cdn.PC_WykonajSelect N'Select Twr_Gidnumer, Twr_Kod, Twr_Nazwa, Twr_Katalog Twr_Symbol, cast(twc_wartosc as decimal(5,2))Cena ,cast(sum(TwZ_Ilosc) as int)Ilosc, case when len(twr_kod) > 5 and len(twr_url)> 5 
-		                then replace(twr_url, substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4),  substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4) + ''Miniatury/'') 
-		                else twr_kod end as Url ,Twr_Ean Ean 
+                    var Webquery = $@"cdn.PC_WykonajSelect N'Select Twr_Gidnumer, Twr_Kod, Twr_Nazwa, Twr_Katalog Twr_Symbol, cast(twc_wartosc as decimal(5,2))Cena ,cast(sum(TwZ_Ilosc) as int)Ilosc, CDN.PC_GetTwrUrl(twr_kod) as Url ,Twr_Ean Ean 
 		                from cdn.TwrKarty 
 		                join cdn.TwrCeny on Twr_GIDNumer = TwC_TwrNumer and TwC_TwrLp = 2 
 		                left join cdn.TwrZasoby on Twr_GIDNumer = TwZ_TwrNumer 
                         where twr_ean=''{_ean}'' or twr_kod=''{_ean}''
-		                group by Twr_Gidnumer,twr_kod, twr_nazwa, Twr_Katalog,twc_wartosc, twr_url,twr_ean'";
+		                group by Twr_Gidnumer,twr_kod, twr_nazwa, Twr_Katalog,twc_wartosc, twr_ean'";
 
 
 
@@ -479,13 +475,11 @@ end'";
 
 
                     var Webquery = $@"cdn.PC_WykonajSelect N'Select Twr_Gidnumer, Twr_Kod, Twr_Nazwa, Twr_Katalog Twr_Symbol, cast(twc_wartosc as decimal(5,2))Cena ,
-                        cast(sum(TwZ_Ilosc) as int)Ilosc, case when len(twr_kod) > 5 and len(twr_url)> 5 
-		                then replace(twr_url, substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4),  substring(twr_url, 1, len(twr_url) - len(twr_kod) - 4) + ''Miniatury/'') 
-		                else twr_kod end as Url ,Twr_Ean Ean 
+                        cast(sum(TwZ_Ilosc) as int)Ilosc, CDN.PC_GetTwrUrl(twr_kod) as Url ,Twr_Ean Ean 
 		                from cdn.TwrKarty 
 		                join cdn.TwrCeny on Twr_GIDNumer = TwC_TwrNumer and TwC_TwrLp = 2 
 		                left join cdn.TwrZasoby on Twr_GIDNumer = TwZ_TwrNumer where Twr_Gidnumer={twrnumer}
-		                group by Twr_Gidnumer,twr_kod, twr_nazwa, Twr_Katalog,twc_wartosc, twr_url,twr_ean'";
+		                group by Twr_Gidnumer,twr_kod, twr_nazwa, Twr_Katalog,twc_wartosc, twr_ean'";
 
 
 
