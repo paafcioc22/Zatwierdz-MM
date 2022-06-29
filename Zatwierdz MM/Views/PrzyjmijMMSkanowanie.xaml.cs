@@ -338,8 +338,11 @@ namespace Zatwierdz_MM.Views
 
         private async Task<List<Place>> IsPlaceExists(int twr_Gidnumer, int trn_Gidnumer = 0)
         {
-            var odp = await viewModel.IsPlaceExists(twr_Gidnumer, trn_Gidnumer);
-            return odp.ToList();
+            IList<Place> lista = new List<Place>();
+            lista = await viewModel.IsPlaceExists(twr_Gidnumer, trn_Gidnumer);
+          
+            return lista.ToList();          
+      
         }
 
         protected override void OnAppearing()

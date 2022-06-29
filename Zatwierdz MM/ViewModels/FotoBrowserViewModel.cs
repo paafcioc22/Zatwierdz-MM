@@ -31,7 +31,7 @@ namespace Zatwierdz_MM.ViewModels
         {
             if (karta != null)
             {
-                await Browser.OpenAsync(karta.Url.Replace("Miniatury/", "").Replace("small", "large"));
+                await Browser.OpenAsync(karta.Url.Replace("Miniatury/", "").Replace("home", "large"));
 
                 await Clipboard.SetTextAsync(karta.Twr_Ean);
                 DependencyService.Get<Services.IWebService>().ShowLong("Skopiowano Ean");

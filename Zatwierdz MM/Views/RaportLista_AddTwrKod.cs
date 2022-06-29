@@ -817,41 +817,52 @@ namespace Zatwierdz_MM.Views
             towar.MsI_TwrIloscSkan = ilosc;
             towar.MsI_TrnNumer = 1;
 
-            if (regex.IsMatch(placeName))
+            if (!string.IsNullOrEmpty(placeName))
             {
-                if (!await viewModel.IsPlaceEmpty(towar.MsI_TwrNumer, 0, placeName))
+
+
+                if (regex.IsMatch(placeName))
                 {
-
-                     odp = await DisplayActionSheet($"Miejsce nie jest puste, odłożyć mimo to? :", "NIE", "TAK", "");
-                     
-                }
-
-
-                if (odp == "TAK"||string.IsNullOrEmpty(odp))
-                {
-                    if (!string.IsNullOrEmpty(placeName))
+                    if (!await viewModel.IsPlaceEmpty(towar.MsI_TwrNumer, 0, placeName))
                     {
-                        if (await viewModel.AddTowarToPlace(towar, placeName))
+
+                        odp = await DisplayActionSheet($"Miejsce nie jest puste, odłożyć mimo to? :", "NIE", "TAK", "");
+
+                    }
+
+
+                    if (odp == "TAK" || string.IsNullOrEmpty(odp))
+                    {
+                        if (!string.IsNullOrEmpty(placeName))
                         {
-                            await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {placeName}", "OK");
-                            await Navigation.PopModalAsync();
+                            if (await viewModel.AddTowarToPlace(towar, placeName))
+                            {
+                                await DisplayAlert("info", $"Dodano {towar.MsI_TwrIloscSkan} szt do {placeName}", "OK");
+                                await Navigation.PopModalAsync();
+                            }
+                            else
+                            {
+
+                                await DisplayAlert("info", "Pozycja z tej MM została już dodana", "OK");
+                            }
                         }
                         else
                         {
-
-                            await DisplayAlert("info", "Pozycja z tej MM została już dodana", "OK");
+                            await DisplayAlert("info", "Podaj lokalizacje", "OK");
                         }
-                    }
-                    else
-                    {
-                        await DisplayAlert("info", "Podaj lokalizacje", "OK");
-                    }
 
+                    }
+                }
+
+                else
+                {
+                    await DisplayAlert("uwaga", "Nazwa położenia zawiera błędy", "OK");
                 }
             }
-
             else
-                await DisplayAlert("uwaga", "nazwa połozenia zawiera błędy", "OK");
+            {
+                await DisplayAlert("uwaga", "Nazwa połozenia nie może być pusta", "OK");
+            }
         }
 
 
