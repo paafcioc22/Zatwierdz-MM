@@ -366,7 +366,7 @@ end'";
            
             var filtrPlace = string.IsNullOrEmpty(placname) ? "" : $" and PlaceName =''{ placname}''";
 
-
+            //todo : nie pobieraj całości tylko count
             var Webquery = $@"cdn.PC_WykonajSelect N'Select * from cdn.PC_MsPolozenie where  PlaceTwrNumer<>{TwrGidnumer}  {filtrPlace} '";
             var dane = await App.TodoManager.PobierzDaneZWeb<Place>(Webquery);
             if (dane.Count > 0)
